@@ -1,0 +1,28 @@
+#ifndef CELL_H
+#define CELL_H
+
+#include <ncurses.h>
+#include <stdbool.h>
+#include "entity.h"
+#include "terrain.h"
+
+typedef struct s_cell
+{
+	t_terrain	*terrain; // static dumb stuff
+	t_entity	*entity; // thinking or moving or movable stuff
+}	t_cell;
+
+typedef enum
+{
+	UPLEFT,		UP,		UPRIGHT,
+	LEFT,       		RIGHT,
+	DOWNLEFT, 	DOWN, 	DOWNRIGHT
+}	e_direction;
+
+
+void print_cell(t_cell cell);
+t_cell new_cell(char ch);
+bool is_blocking(t_cell *cell);
+t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell);
+
+#endif
