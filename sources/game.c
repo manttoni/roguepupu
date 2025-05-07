@@ -26,9 +26,10 @@ void draw(t_game *game)
 
 	for (int i = 0; i < AREA(game->area); ++i)
 	{
-		if (y_draw < y_max && y_draw >= 0
-			&& x_draw < x_max && x_draw >= 0)
-			draw_cell(y_draw, x_draw, &area->cells[i]);
+		t_cell *cell = &area->cells[i];
+		if (y_draw < y_max && y_draw >= 0 && x_draw < x_max && x_draw >= 0)
+			if (is_visible(area, &area->cells[player_index], cell))
+				draw_cell(y_draw, x_draw, cell);
 		x_draw++;
 		if ((i + 1) % area->width == 0)
 		{

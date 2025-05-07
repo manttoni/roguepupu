@@ -1,7 +1,7 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Wextra -Werror -g
-LFLAGS := -lncurses
+CFLAGS := -Wall -Wextra -Werror -g -DNCURSES_WIDECHAR
+LFLAGS := -lncursesw  # Make sure to use ncursesw
 
 # Directories
 SRC_DIR := sources
@@ -30,10 +30,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 clean:
 	rm -rf $(OBJ_DIR)
 
-fclean:	clean
+fclean: clean
 	rm -f $(BIN)
 
-re:	fclean all
+re: fclean all
 
 .PHONY: all clean fclean re
 
