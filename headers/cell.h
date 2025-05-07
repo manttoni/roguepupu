@@ -3,13 +3,14 @@
 
 #include <ncurses.h>
 #include <stdbool.h>
-#include "entity.h"
+#include "creature.h"
 #include "terrain.h"
 
 typedef struct s_cell
 {
-	t_terrain	*terrain; // static dumb stuff
-	t_entity	*entity; // thinking or moving or movable stuff
+	t_terrain	*terrain; // ground, walls, obstacles...
+	t_creature	*creature; // player, goblin, spider...
+	// can have traps, doors, chests, light sources...
 }	t_cell;
 
 typedef enum

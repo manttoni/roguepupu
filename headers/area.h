@@ -13,10 +13,9 @@ typedef struct s_area
 	t_cell	*cells;
 }	t_area;
 
-t_entity *get_player(t_area *area);
+t_creature *get_player(t_area *area);
 int	get_player_index(t_area *area);
 void print_area(t_area *area);
-void allocate(t_area *area);
 void populate(t_area *area, char *raw);
 t_area *new_area(char *file);
 

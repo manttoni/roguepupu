@@ -19,9 +19,9 @@ int get_player_index(t_area *area)
 	for (int i = 0; i < area->width * area->height; ++i)
 	{
 		t_cell *c = &area->cells[i];
-		if (c->entity == NULL)
+		if (c->creature == NULL)
 			continue;
-		if (c->entity->ch == '@')
+		if (c->creature->ch == '@')
 			return i;
 	}
 	logger("player char index not found");
@@ -29,11 +29,11 @@ int get_player_index(t_area *area)
 	return -1;
 }
 
-t_entity *get_player(t_area *area)
+t_creature *get_player(t_area *area)
 {
 	int i = get_player_index(area);
 	t_cell *c = &area->cells[i];
-	return c->entity;
+	return c->creature;
 }
 
 t_area *new_area(char *file)

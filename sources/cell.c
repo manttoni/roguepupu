@@ -7,14 +7,14 @@
 t_cell new_cell(char ch)
 {
 	t_cell cell;
-	cell.entity = NULL;
+	cell.creature = NULL;
 	cell.terrain = new_terrain(ch);
 	return cell;
 }
 
 bool is_blocking(t_cell *cell)
 {
-	char ch = cell->entity->ch;
+	char ch = cell->creature->ch;
 	const char blockers[] = "#";
 	return strchr(blockers, ch) != NULL;
 }

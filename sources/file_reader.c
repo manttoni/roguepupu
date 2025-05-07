@@ -5,7 +5,6 @@
 #include <stdarg.h>
 #include "../headers/utils.h"
 
-
 void logger(const char *format, ...)
 {
     FILE *logfile = fopen("logs/debug.log", "a");
@@ -20,7 +19,6 @@ void logger(const char *format, ...)
 
     fclose(logfile);
 }
-
 
 char *read_file(char *file)
 {
