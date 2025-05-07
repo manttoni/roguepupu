@@ -21,12 +21,17 @@ void attack(t_cell *dst, t_cell *src)
 
 void move_creature(t_cell *dst, t_cell *src)
 {
+	logger("Moving creature");
+	logger("Destination ch is \'%c\'", dst->terrain->ch);
 	if (dst == NULL)
 		return;
-	if (is_blocking(dst))
+	logger("dst is not null");
+	if (dst->terrain->ch == '#')
 		return;
+	logger("dst is not blocking");
 	if (dst->creature != NULL)
 		return;
+	logger("there is no creature at dst");
 	dst->creature = src->creature;
 	src->creature = NULL;
 }

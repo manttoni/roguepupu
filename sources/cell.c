@@ -12,13 +12,6 @@ t_cell new_cell(char ch)
 	return cell;
 }
 
-bool is_blocking(t_cell *cell)
-{
-	char ch = cell->creature->ch;
-	const char blockers[] = "#";
-	return strchr(blockers, ch) != NULL;
-}
-
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell)
 {
 	int index = cell - area->cells;

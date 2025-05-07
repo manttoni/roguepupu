@@ -40,13 +40,24 @@ void draw(t_game *game)
 
 void start(t_game *game)
 {
-	draw(game);
+
 	while(1)
 	{
-		int input = getch();
-		if (input == 27)
-			break;
+		t_creature *player = get_player(game->area);
+		t_area *area = game->area;
+		int player_index = get_player_index(game->area);
+		t_cell *cell = &area->cells[player_index];
+
+		erase();
 		draw(game);
+		//refresh();
+
+		int input = getch();
+		player->action = get_player_action(input);
+		if (player->action == NONE)
+			break;
+		act(area, cell, player);
+		player->action = NONE;
 	}
 }
 

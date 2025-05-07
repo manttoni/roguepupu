@@ -4,6 +4,7 @@
 #include "../headers/area.h"
 #include "../headers/utils.h"
 #include "../headers/game.h"
+
 int main(void)
 {
 	// reset debug.log

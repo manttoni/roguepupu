@@ -23,7 +23,6 @@ typedef enum
 
 void print_cell(t_cell cell);
 t_cell new_cell(char ch);
-bool is_blocking(t_cell *cell);
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell);
 
 #endif
