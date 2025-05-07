@@ -3,31 +3,15 @@
 #include <stdlib.h>
 #include "../headers/area.h"
 #include "../headers/utils.h"
-
-void creature_actions(t_area *area)
-{
-	(void) area;
-	// increase creatures turn counter
-	// when/if it reaches a limit, its that creatures turn
-	// 	creature does some action, if its the player the player is prompted
-	// 	depending on action the counter decreases some amount
-	// loop all creatures
-}
-
-void start(void)
-{
-	// main loop does an iteration once a tick
-	// every round it calls creature_actions
-	// and other things like fire spreading, light stuff
-}
-
+#include "../headers/game.h"
 int main(void)
 {
-    FILE *fp = fopen("logs/debug.log", "w");
-    fclose(fp);
-
+	// reset debug.log
+    fclose((fopen("logs/debug.log", "w")));
 	signal(SIGSEGV, handle_segfault);
+
 	init_ncurses();
-	start();
+	t_game *game = new_game(new_area(HOUSE));
+	start(game);
 	end_ncurses(0);
 }

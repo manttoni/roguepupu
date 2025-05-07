@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include "../headers/file_reader.h"
+#include "../headers/area.h"
 
-void *my_malloc(size_t size)
+void *my_calloc(size_t size)
 {
     void *mem = malloc(size);
     if (mem == NULL)
@@ -56,4 +57,43 @@ void handle_segfault(int sig)
 	end_ncurses(sig);
 }
 
+/* LINKED LIST STUFF */
+t_node *init_node(void *data)
+{
+	t_node *node = my_calloc(sizeof(t_node));
+	node->data = data;
+	return node;
+}
 
+void add_node_last(t_node **list, t_node *add)
+{
+	if (*list == NULL)
+	{
+		*list = add;
+		return;
+	}
+	t_node *last = *list;
+	while (last->next != NULL)
+		last = last->next;
+	last->next = add;
+}
+
+void remove_node(t_node **list, t_node *remove)
+{
+	if (*list == remove)
+	{
+		*list = remove->next;
+		return;
+	}
+	t_node *prev = *list;
+	while (prev->next != remove)
+		prev = prev->next;
+	prev->next = remove->next;
+	free(remove);
+}
+
+void list_clear(t_node **list)
+{
+	while (*list)
+		remove_node(list, *list);
+}

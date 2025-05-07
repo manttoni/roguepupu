@@ -4,7 +4,7 @@
 
 t_creature *new_creature(char ch)
 {
-	t_creature *creature = my_malloc(sizeof(t_creature));
+	t_creature *creature = my_calloc(sizeof(t_creature));
 	creature->ch = ch;
 	creature->color = COLOR_WHITE;
 	creature->action = NONE;

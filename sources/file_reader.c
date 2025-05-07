@@ -27,7 +27,7 @@ char *read_file(char *file)
 		end_ncurses(errno);
 	size_t len = lseek(fd, 0, SEEK_END);
 	lseek(fd, 0, SEEK_SET);
-	char *buf = my_malloc((len + 1) * sizeof(char));
+	char *buf = my_calloc((len + 1) * sizeof(char));
 	memset(buf, 0, len + 1);
 	if (read(fd, buf, len) < 0)
 		end_ncurses(errno);

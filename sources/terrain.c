@@ -4,7 +4,7 @@
 
 t_terrain *new_terrain(char ch)
 {
-	t_terrain *terrain = my_malloc(sizeof(t_terrain));
+	t_terrain *terrain = my_calloc(sizeof(t_terrain));
 	terrain->ch = ch;
 	terrain->color = COLOR_WHITE;
 	return terrain;

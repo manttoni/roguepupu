@@ -1,9 +1,12 @@
 #ifndef AREA_H
 #define AREA_H
 
+#define AREA(area) ((area)->width * (area)->height)
 #define HOUSE "maps/house.txt"
 
 #include "cell.h"
+
+typedef struct s_node t_node;
 
 typedef struct s_area
 {
@@ -18,5 +21,7 @@ int	get_player_index(t_area *area);
 void print_area(t_area *area);
 void populate(t_area *area, char *raw);
 t_area *new_area(char *file);
+void add_creature(t_area *area, t_creature *creature, int index);
+t_node *get_creatures(t_area *area);
 
 #endif
