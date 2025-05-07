@@ -54,3 +54,20 @@ void act(t_area *area, t_cell *cell, t_entity *entity)
 			break;
 	}
 }
+
+e_action get_player_action(int input)
+{
+	switch(input)
+	{
+		case KEY_UP:
+			return MOVE_UP;
+		case KEY_DOWN:
+			return MOVE_DOWN;
+		case KEY_LEFT:
+			return MOVE_LEFT;
+		case KEY_RIGHT:
+			return MOVE_RIGHT;
+		default:
+			return NONE;
+	}
+}

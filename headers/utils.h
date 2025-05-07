@@ -11,5 +11,6 @@ void *my_malloc(size_t size);
 void init_ncurses();
 void end_ncurses(int exit_value);
 int count_char(char *str, char c);
+void handle_segfault(int sig);
 
 #endif

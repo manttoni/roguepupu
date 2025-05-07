@@ -49,3 +49,11 @@ int count_char(char *str, char c)
 	}
 	return count;
 }
+
+void handle_segfault(int sig)
+{
+    logger("segfault");
+	end_ncurses(sig);
+}
+
+

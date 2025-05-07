@@ -24,5 +24,6 @@ typedef struct s_entity
 t_entity *new_entity(char ch);
 void move_entity(t_cell *dest, t_cell *src);
 void act(t_area *area, t_cell *cell, t_entity *entity);
+e_action get_player_action(int input);
 
 #endif
