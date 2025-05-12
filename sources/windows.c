@@ -37,10 +37,10 @@ WINDOW *my_newwin(t_winset winset)
 {
 	int y_max, x_max;
 	getmaxyx(stdscr, y_max, x_max);
-	int height = 0.5 + (y_max * winset.height) / 100;
-	int width = 0.5 + (x_max * winset.width) / 100;
-	int y = 0.5 + (y_max * winset.y) / 100;
-	int x = 0.5 + (x_max * winset.x) / 100;
+	int height = 0.5 + (double)(y_max * winset.height) / 100;
+	int width = 0.5 + (double)(x_max * winset.width) / 100;
+	int y = 0.5 + (double)(y_max * winset.y) / 100;
+	int x = 0.5 + (double)(x_max * winset.x) / 100;
 	WINDOW *window = newwin(height, width, y, x);
 	if (window == NULL)
 		end_ncurses(errno);
