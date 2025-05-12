@@ -15,7 +15,7 @@ void print_log(char *str)
 	refresh_window(log_win);
 }
 
-static WINDOW * my_newwin(t_winset winset)
+WINDOW * my_newwin(t_winset winset)
 {
 	int y_max, x_max;
 	getmaxyx(stdscr, y_max, x_max);

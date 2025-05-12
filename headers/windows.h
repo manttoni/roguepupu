@@ -14,6 +14,7 @@ typedef struct s_winset
 	int x;
 }	t_winset;
 
+WINDOW *my_newwin(t_winset winset);
 void refresh_window(WINDOW *window);
 void print_log(char *str);
 void init_windows();

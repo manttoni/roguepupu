@@ -33,7 +33,7 @@ int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 
             if (x == vx && y == vy)
                 return 1; // Reached the target
-			if (cell->terrain && cell->terrain->ch == '#') {
+			if (cell->terrain && strchr("#|-", cell->terrain->ch)) {
                 return 0; // Blocked
             }
         }
