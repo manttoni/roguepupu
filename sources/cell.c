@@ -4,6 +4,7 @@
 #include "../headers/file_reader.h"
 #include "../headers/area.h"
 
+// can eye see cell? using Bresenhams algorithm
 int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 {
 	if (eye == view_cell)

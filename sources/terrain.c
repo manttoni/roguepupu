@@ -6,6 +6,7 @@ t_terrain *new_terrain(char ch)
 {
 	t_terrain *terrain = my_calloc(sizeof(t_terrain));
 	terrain->ch = ch;
-	terrain->color = COLOR_WHITE;
+	if (ch == '^')
+		terrain->burning = 10;
 	return terrain;
 }

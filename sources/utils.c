@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include "../headers/file_reader.h"
 #include "../headers/area.h"
+#include "../headers/windows.h"
 
 void *my_calloc(size_t size)
 {
@@ -35,6 +36,7 @@ void end_ncurses(int exit_value)
         mvprintw(0,0,"%s", log);
         getch();
     }
+	delete_windows();
 	endwin();
 	exit(exit_value);
 }
