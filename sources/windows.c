@@ -11,6 +11,7 @@ void refresh_window(WINDOW *window)
 
 void print_log(char *str)
 {
+	logger(str);
 	wprintw(log_win, "  %s\n", str);
 	refresh_window(log_win);
 }
@@ -34,6 +35,10 @@ static void init_log_win(t_winset logset)
 	log_win = my_newwin(logset);
 	scrollok(log_win, TRUE);
 	wmove(log_win, 1, 0);
+	init_pair(3, COLOR_RED, COLOR_BLACK);
+	wattron(log_win, COLOR_PAIR(3) | A_REVERSE);  // Turn on reverse video for everything
+	print_log("Should be reversed!");
+	wattroff(log_win, COLOR_PAIR(3) | A_REVERSE);  // Turn off reverse video
 	refresh_window(log_win);
 }
 

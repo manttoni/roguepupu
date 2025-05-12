@@ -6,7 +6,7 @@ t_terrain *new_terrain(char ch)
 {
 	t_terrain *terrain = my_calloc(sizeof(t_terrain));
 	terrain->ch = ch;
-	if (ch == '^')
-		terrain->burning = 10;
+	if (ch == '0')
+		terrain->is_locked = 1;
 	return terrain;
 }

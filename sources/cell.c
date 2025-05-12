@@ -33,7 +33,7 @@ int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 
             if (x == vx && y == vy)
                 return 1; // Reached the target
-			if (cell->terrain && strchr("#|-", cell->terrain->ch)) {
+			if (cell->terrain && strchr("#O0", cell->terrain->ch)) {
                 return 0; // Blocked
             }
         }
@@ -49,9 +49,20 @@ int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 t_cell new_cell(char ch)
 {
 	t_cell cell;
+	cell.highlight = 0;
 	cell.creature = NULL;
 	cell.terrain = new_terrain(ch);
 	return cell;
+}
+
+t_cell **get_neighbors(t_area *area, t_cell *cell)
+{
+	t_cell **neighbors = my_calloc(4 * sizeof(*neighbors));
+	neighbors[0] = neighbor(UP, area, cell);
+	neighbors[1] = neighbor(RIGHT, area, cell);
+	neighbors[2] = neighbor(DOWN, area, cell);
+	neighbors[3] = neighbor(LEFT, area, cell);
+	return neighbors;
 }
 
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell)
@@ -64,7 +75,7 @@ t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell)
 				return NULL;
 			return &area->cells[index - area->width];
 		case DOWN:
-			if (index + area->width >= area->height * area->width)
+			if (index + area->width >= AREA(area))
 				return NULL;
 			return &area->cells[index + area->width];
 		case LEFT:

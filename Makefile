@@ -1,7 +1,7 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Wextra -Werror -g -DNCURSES_WIDECHAR
-LFLAGS := -lncursesw  # Make sure to use ncursesw
+CFLAGS := -Wall -Wextra -Werror -g
+LFLAGS := -lncurses
 
 # Directories
 SRC_DIR := sources

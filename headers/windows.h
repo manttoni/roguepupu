@@ -6,6 +6,9 @@
 extern WINDOW *map_win;
 extern WINDOW *log_win;
 
+#define REVERSE 1
+#define SELECTED 2
+
 typedef struct s_winset
 {
 	int height;

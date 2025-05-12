@@ -8,9 +8,9 @@
 
 typedef struct s_cell
 {
-	t_terrain	*terrain; // ground, walls, obstacles...
-	t_creature	*creature; // player, goblin, spider...
-	// can have traps, doors, chests, light sources...
+	int			highlight;
+	t_terrain	*terrain; // ground, wall, door...
+	t_creature	*creature; // player
 }	t_cell;
 
 typedef enum
@@ -23,6 +23,7 @@ typedef enum
 
 void print_cell(t_cell cell);
 t_cell new_cell(char ch);
+t_cell **get_neighbors(t_area *area, t_cell *cell);
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell);
 int is_visible(t_area *area, t_cell *eye, t_cell *target);
 

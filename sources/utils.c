@@ -20,10 +20,13 @@ void init_ncurses()
 {
 	initscr();
 	curs_set(0);
+	if (!has_colors())
+		end_ncurses(1);
 	start_color();
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
+	init_pair(SELECTED, COLOR_RED, COLOR_BLACK);
     logger("ncurses initialized");
 	refresh();
 }

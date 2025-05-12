@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "utils.h"
+#include "area.h"
 
 // used for storing the current state of the game
 typedef struct s_game
@@ -10,6 +11,7 @@ typedef struct s_game
 	t_area	*area;
 }	t_game;
 
+void draw(t_area *area);
 void start(t_game *game);
 t_game *new_game(t_area *area);
 
