@@ -16,7 +16,6 @@ e_action get_player_action(int input)
 		case KEY_RIGHT:
 			return MOVE_RIGHT;
 		case 'i':
-			print_log("Interacting");
 			return INTERACT;
 		default:
 			return NONE;

@@ -8,7 +8,7 @@
 
 WINDOW *map_win = NULL;
 WINDOW *log_win = NULL;
-
+WINDOW *leg_win = NULL;
 
 int main(void)
 {

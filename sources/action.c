@@ -43,10 +43,6 @@ void interact(t_area *area)
 		return;
 	}
 
-	print_log("Interactable objects highlighted");
-	print_log("Select with arrow keys");
-	print_log("Esc to cancel");
-
 	while (1)
 	{
 		draw_area(area);
@@ -117,3 +113,4 @@ void act(t_area *area, t_cell *cell, t_creature *creature)
 			break;
 	}
 }
+
