@@ -20,7 +20,7 @@ void add_creature(t_area *area, t_creature *creature, int index)
 	area->cells[index].creature = creature;
 }
 
-void populate(t_area *area, char *raw)
+static void populate(t_area *area, char *raw)
 {
 	t_cell *cell = area->cells;
 	for (int i = 0; i < (area->width + 1) * area->height; ++i)

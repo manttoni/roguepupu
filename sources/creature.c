@@ -13,31 +13,25 @@ t_creature *new_creature(char ch)
 	return creature;
 }
 
-
-
 void move_creature(t_cell *dst, t_cell *src)
 {
 	if (dst == NULL)
 		return;
 	if (dst->terrain->ch == '#')
-	{
-		print_log("Wall hit");
 		return;
-	}
 	if (dst->terrain->ch == '0')
 	{
 		print_log("Door is locked");
 		return;
 	}
 	if (dst->terrain->ch == 'O')
-		open_door(dst->terrain);
+	{
+		print_log("Door is closed");
+		return;
+	}
 	if (dst->creature != NULL)
 		return;
 	dst->creature = src->creature;
 	src->creature = NULL;
-	print_log("Character moved");
 }
-
-
-
 

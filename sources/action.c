@@ -4,10 +4,11 @@
 #include "../headers/creature.h"
 #include "../headers/game.h"
 #include "../headers/windows.h"
+#include "../headers/draw.h"
 
 #define INTERACTABLE "O0"
 
-int select_next(t_cell **cells, int len, int selected)
+static int select_next(t_cell **cells, int len, int selected)
 {
 	if (selected >= 0)
 		cells[selected]->highlight &= ~SELECTED;
@@ -37,7 +38,10 @@ void interact(t_area *area)
 
 	int selected = select_next(neighbors, 4, -1);
 	if (selected < 0)
+	{
+		print_log("Nothing to interact with");
 		return;
+	}
 
 	print_log("Interactable objects highlighted");
 	print_log("Select with arrow keys");
@@ -45,13 +49,17 @@ void interact(t_area *area)
 
 	while (1)
 	{
-		draw(area);
+		draw_area(area);
 		int input = getch();
 		if (input == 27)
 			break;
 		if (input == KEY_ENTER || input == '\n')
 		{
-			unlock_door(neighbors[selected]->terrain);
+			t_terrain *selected_terrain = neighbors[selected]->terrain;
+			if (selected_terrain->ch == '0')
+				unlock_door(selected_terrain);
+			else if (selected_terrain->ch == 'O')
+				open_door(selected_terrain);
 			break;
 		}
 		selected = select_next(neighbors, 4, selected);
@@ -71,7 +79,7 @@ void interact(t_area *area)
 	}
 	for (int i = 0; i < 4; ++i)
 		neighbors[i]->highlight = 0;
-	draw(area);
+	draw_area(area);
 }
 
 void open_door(t_terrain *door)
