@@ -64,7 +64,7 @@ void handle_segfault(int sig)
 }
 
 /* LINKED LIST STUFF */
-t_node *init_node(void *data)
+t_node *new_node(void *data)
 {
 	t_node *node = my_calloc(sizeof(t_node));
 	node->data = data;

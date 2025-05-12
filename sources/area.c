@@ -2,6 +2,9 @@
 #include "../headers/utils.h"
 #include <string.h>
 
+#define VISIBLE 1
+#define NEIGHBOR 2
+
 t_node *get_creatures(t_area *area)
 {
 	t_node *creatures = NULL;
@@ -10,7 +13,7 @@ t_node *get_creatures(t_area *area)
 	{
 		t_creature *creature = cells[i].creature;
 		if (creature != NULL)
-			add_node_last(&creatures, init_node(creature));
+			add_node_last(&creatures, new_node(creature));
 	}
 	return creatures;
 }
@@ -47,6 +50,12 @@ int get_player_index(t_area *area)
 	return -1;
 }
 
+t_cell *get_player_cell(t_area *area)
+{
+	int i = get_player_index(area);
+	return &area->cells[i];
+}
+
 t_creature *get_player(t_area *area)
 {
 	int i = get_player_index(area);
@@ -66,3 +75,22 @@ t_area *new_area(char *file)
 	populate(area, raw);
 	return area;
 }
+
+t_node *get_interactables(t_area *area, int flags)
+{
+	t_cell *player_cell = get_player_cell(area);
+	t_node *interactables = NULL;
+	for (int i = 0; i < AREA(area); ++i)
+	{
+		t_cell *cell = &area->cells[i];
+		if (flags & VISIBLE && !is_visible(area, player_cell, cell))
+			continue;
+		if (flags & NEIGHBOR && !is_neighbor(area, player_cell, cell))
+			continue;
+		if (strchr("O0", cell->terrain->ch) == NULL)
+			continue;
+		add_node_last(&interactables, new_node(cell));
+	}
+	return interactables;
+}
+

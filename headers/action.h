@@ -18,6 +18,7 @@ typedef enum
 	MOVE_LEFT,
 	MOVE_RIGHT,
 	INTERACT,
+	EXAMINE,
 	NONE
 }	e_action;
 

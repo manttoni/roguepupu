@@ -17,6 +17,8 @@ e_action get_player_action(int input)
 			return MOVE_RIGHT;
 		case 'i':
 			return INTERACT;
+		case 'e':
+			return EXAMINE;
 		default:
 			return NONE;
 	}

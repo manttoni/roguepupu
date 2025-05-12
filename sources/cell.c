@@ -4,6 +4,24 @@
 #include "../headers/file_reader.h"
 #include "../headers/area.h"
 
+char *cell_string(t_cell *cell)
+{
+	if (cell->creature == NULL)
+		return terrain_string(cell->terrain);
+	return NULL;
+}
+
+int is_neighbor(t_area *area, t_cell *cell, t_cell *other)
+{
+	int diff = cell - other;
+	diff = abs(diff);
+	if (diff == area->width)
+		return 1;
+	if (diff == 1 && (cell - area->cells) / area->width == (other - area->cells) / area->width)
+		return 1;
+	return 0;
+}
+
 // can eye see cell? using Bresenhams algorithm
 int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 {

@@ -21,7 +21,7 @@ typedef struct s_node
 	struct s_node	*next;
 }	t_node;
 
-t_node *init_node(void *data);
+t_node *new_node(void *data);
 void add_node_last(t_node **list, t_node *add);
 void remove_node(t_node **list, t_node *remove);
 void list_clear(t_node **list);

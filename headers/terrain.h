@@ -8,5 +8,6 @@ typedef struct s_terrain
 }	t_terrain;
 
 t_terrain *new_terrain(char ch);
+char *terrain_string(t_terrain *terrain);
 
 #endif
