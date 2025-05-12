@@ -1,0 +1,9 @@
+a.out
+*.o
+*.swp
+*.log
+roguepupu
+*.a
+logs/
+build/
+
