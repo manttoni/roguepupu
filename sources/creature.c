@@ -1,6 +1,7 @@
 #include "../headers/creature.h"
 #include "../headers/utils.h"
 #include "../headers/cell.h"
+#include "../headers/windows.h"
 
 t_creature *new_creature(char ch)
 {
@@ -21,19 +22,18 @@ void attack(t_cell *dst, t_cell *src)
 
 void move_creature(t_cell *dst, t_cell *src)
 {
-	logger("Moving creature");
-	logger("Destination ch is \'%c\'", dst->terrain->ch);
 	if (dst == NULL)
 		return;
-	logger("dst is not null");
 	if (dst->terrain->ch == '#')
+	{
+		print_log("Wall hit");
 		return;
-	logger("dst is not blocking");
+	}
 	if (dst->creature != NULL)
 		return;
-	logger("there is no creature at dst");
 	dst->creature = src->creature;
 	src->creature = NULL;
+	print_log("Character moved");
 }
 
 void act(t_area *area, t_cell *cell, t_creature *creature)

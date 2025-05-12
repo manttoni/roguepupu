@@ -2,7 +2,7 @@
 #define AREA_H
 
 #define AREA(area) ((area)->width * (area)->height)
-#define HOUSE "maps/house.txt"
+#define DUNGEON "maps/dungeon.txt"
 
 #include "cell.h"
 

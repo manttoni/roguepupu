@@ -17,7 +17,7 @@ int main(void)
 
 	init_ncurses();
 	init_windows();
-	t_game *game = new_game(new_area(HOUSE));
+	t_game *game = new_game(new_area(DUNGEON));
 	start(game);
 	delete_windows();
 	end_ncurses(0);

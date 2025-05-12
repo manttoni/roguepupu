@@ -26,7 +26,6 @@ void draw(t_game *game)
 	int x_draw = x_center - x_player;
 
 	werase(map_win);
-	box(map_win, 0, 0);
 	for (int i = 0; i < AREA(game->area); ++i)
 	{
 		t_cell *cell = &area->cells[i];
@@ -40,12 +39,13 @@ void draw(t_game *game)
 			x_draw -= area->width;
 		}
 	}
+	refresh_window(map_win);
 	wrefresh(map_win);
 }
 
 void start(t_game *game)
 {
-	getch();
+	print_log("Game started!");
 	while(1)
 	{
 		t_creature *player = get_player(game->area);

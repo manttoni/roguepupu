@@ -25,6 +25,7 @@ void init_ncurses()
 	cbreak();
 	keypad(stdscr, TRUE);
     logger("ncurses initialized");
+	refresh();
 }
 
 void end_ncurses(int exit_value)
