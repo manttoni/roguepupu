@@ -26,6 +26,8 @@ void start(t_game *game)
 			continue;
 		act(area, cell, player);
 		player->action = NONE;
+		usleep(100000);
+		flushinp(); // empty input buffer
 	}
 }
 
