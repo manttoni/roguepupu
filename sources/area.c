@@ -81,7 +81,6 @@ t_node *get_interactables(t_area *area, int flags)
 			continue;
 		if (!is_interactable(cell))
 			continue;
-		print_log("adding");
 		add_node_last(&list, new_node(cell));
 	}
 	return list;

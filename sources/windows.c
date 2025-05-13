@@ -19,12 +19,14 @@ void print_legend(void)
 	wprintw(leg_win, "  @ is player\n");
 	wprintw(leg_win, " Controls:\n");
 	wprintw(leg_win, "  Arrows move\n");
+	wprintw(leg_win, "  e is examine\n");
+	wprintw(leg_win, "  u is unlock\n");
+	wprintw(leg_win, "  o is open\n");
 	wprintw(leg_win, " Scanning:\n");
-	wprintw(leg_win, "  i interact | e examine\n");
-	wprintw(leg_win, "    Arrows select object\n");
-	wprintw(leg_win, "    enter confirms selected object\n");
-	wprintw(leg_win, "    esc cancels interaction\n");
-	wprintw(leg_win, "  esc exit\n");
+	wprintw(leg_win, "  Arrows select object\n");
+	wprintw(leg_win, "  enter confirms selected object\n");
+	wprintw(leg_win, "  esc cancels interaction\n");
+	wprintw(leg_win, " esc exit\n");
 }
 
 void print_log(char *str)
