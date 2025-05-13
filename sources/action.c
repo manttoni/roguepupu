@@ -121,7 +121,13 @@ static int player_unlock(t_area *area)
 
 static int player_attack(t_area *area)
 {
-	(void) area;
+	t_cell *defender_cell = scan(area, PLAYER_MELEE_ATTACK);
+	if (defender_cell == NULL)
+		return 0;
+
+	t_creature *player = get_player(area);
+	int damage = throw(player->weapon.damage);
+	print_log("%s attacks %s dealing %d damage", player->name, defender_cell->creature->name, damage);
 	return 0;
 }
 

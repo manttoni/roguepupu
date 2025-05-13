@@ -2,14 +2,26 @@
 #include "../headers/utils.h"
 #include "../headers/cell.h"
 #include "../headers/windows.h"
+#include "../headers/weapon.h"
 
 t_creature *new_creature(char ch)
 {
 	t_creature *creature = my_calloc(sizeof(t_creature));
 	creature->ch = ch;
-	creature->color = COLOR_WHITE;
 	creature->action = NONE;
-	logger("New creature created: %c", ch);
+	switch (ch)
+	{
+		case 'd':
+			creature->name = "Combat practice dummy";
+			break;
+		case '@':
+			creature->name = "Rabdin";
+			creature->weapon = (t_weapon){"Sword", (t_dice){1, 8}};
+			break;
+		default:
+			creature->name = "Bob the bug";
+			break;
+	}
 	return creature;
 }
 

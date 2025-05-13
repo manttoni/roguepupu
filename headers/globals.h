@@ -5,6 +5,7 @@
 #include "area.h"
 
 #define INTERACTABLE_TERRAIN "O0"
+#define ENEMY_CREATURES "qwertyuiopasdfghjklzxcvbnm"
 
 /* For scanning */
 #define VISIBLE 1
@@ -16,8 +17,8 @@
 #define PLAYER_EXAMINE (VISIBLE)
 #define PLAYER_OPEN (NEIGHBOR | UNLOCKED)
 #define PLAYER_UNLOCK (NEIGHBOR | LOCKED)
-#define PLAYER_MELEE_ATTACK (NEIGHBOR & ENEMY)
-#define PLAYER_RANGED_ATTACK (VISIBLE & ENEMY)
+#define PLAYER_MELEE_ATTACK (NEIGHBOR | ENEMY)
+#define PLAYER_RANGED_ATTACK (VISIBLE | ENEMY)
 
 /* Keys */
 #define ESCAPE 27

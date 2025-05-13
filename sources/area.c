@@ -79,6 +79,8 @@ t_node *get_interactables(t_area *area, int flags)
 			continue;
 		if (flags & UNLOCKED && is_locked(cell))
 			continue;
+		if (flags & ENEMY && !is_enemy(cell))
+			continue;
 		if (!is_interactable(cell))
 			continue;
 		add_node_last(&list, new_node(cell));

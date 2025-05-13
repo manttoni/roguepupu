@@ -2,15 +2,17 @@
 #define CREATURE_H
 
 #include "../headers/action.h"
+#include "../headers/weapon.h"
 
 typedef struct s_area t_area;
 typedef struct s_cell t_cell;
 
 typedef struct s_creature
 {
+	char			*name;
+	t_weapon		weapon;
 	unsigned char	ch; // what does it look like?
-	short			color; // fg color for color_pair
-	e_action		action; // what is this creature going to do next
+	e_action		action; // next action or some AI logic thing
 }	t_creature;
 
 t_creature *new_creature(char ch);

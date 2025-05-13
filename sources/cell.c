@@ -9,7 +9,14 @@ char *cell_string(t_cell *cell)
 {
 	if (cell->creature == NULL)
 		return terrain_string(cell->terrain);
-	return NULL;
+	return cell->creature->name;
+}
+
+int is_enemy(t_cell *cell)
+{
+	if (cell->creature == NULL)
+		return 0;
+	return strchr(ENEMY_CREATURES, cell->creature->ch) != NULL;
 }
 
 int is_locked(t_cell *cell)
@@ -31,12 +38,12 @@ int is_interactable(t_cell *cell)
 
 int is_neighbor(t_area *area, t_cell *cell, t_cell *other)
 {
-	int diff = cell - other;
-	diff = abs(diff);
-	if (diff == area->width)
-		return 1;
-	if (diff == 1 && (cell - area->cells) / area->width == (other - area->cells) / area->width)
-		return 1;
+	for (int i = UP; i <= UPLEFT; ++i)
+	{
+		t_cell *n = neighbor(i, area, cell);
+		if (n == other)
+			return 1;
+	}
 	return 0;
 }
 
@@ -91,16 +98,6 @@ t_cell new_cell(char ch)
 	return cell;
 }
 
-t_cell **get_neighbors(t_area *area, t_cell *cell)
-{
-	t_cell **neighbors = my_calloc(4 * sizeof(*neighbors));
-	neighbors[0] = neighbor(UP, area, cell);
-	neighbors[1] = neighbor(RIGHT, area, cell);
-	neighbors[2] = neighbor(DOWN, area, cell);
-	neighbors[3] = neighbor(LEFT, area, cell);
-	return neighbors;
-}
-
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell)
 {
 	int index = cell - area->cells;
@@ -122,6 +119,22 @@ t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell)
 			if (index % area->width == area->width - 1)
 				return NULL;
 			return &area->cells[index + 1];
+		case UPLEFT:
+			if (index - area->width - 1 < 0 || index % area->width == 0)
+				return NULL;
+			return &area->cells[index - area->width - 1];
+		case UPRIGHT:
+			if (index - area->width + 1 < 0 || (index + 1) % area->width == 0)
+				return NULL;
+			return &area->cells[index - area->width + 1];
+		case DOWNLEFT:
+			if (index + area->width - 1 >= AREA(area) || index % area->width == 0)
+				return NULL;
+			return &area->cells[index + area->width - 1];
+		case DOWNRIGHT:
+			if (index + area->width + 1 >= AREA(area) || (index + 1) % area->width == 0)
+				return NULL;
+			return &area->cells[index + area->width + 1];
 		default:
 			return NULL;
 	}

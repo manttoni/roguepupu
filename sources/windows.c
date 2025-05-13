@@ -29,11 +29,17 @@ void print_legend(void)
 	wprintw(leg_win, " esc exit\n");
 }
 
-void print_log(char *str)
+void print_log(const char *format, ...)
 {
-	logger(str);
-	wprintw(log_win, "  %s\n", str);
+	va_list args;
+	va_start(args, format);
+
+	wprintw(log_win, "  ");
+	vw_printw(log_win, format, args);
+	wprintw(log_win, "\n");
+
 	refresh_window(log_win);
+	va_end(args);
 }
 
 WINDOW *my_newwin(t_winset winset)
