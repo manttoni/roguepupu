@@ -21,10 +21,12 @@ typedef enum
 	OPEN,
 	UNLOCK,
 	ATTACK,
+	CRAZY_GOBLIN,
 	NONE
 }	e_action;
 
-int player_act(t_area *area, t_cell *cell, t_creature *creature);
+int player_act(t_area *area);
+int enemy_act(t_area *area);
 void open_door(t_terrain *door);
 void unlock_door(t_terrain *door);
 

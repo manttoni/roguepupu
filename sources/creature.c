@@ -12,6 +12,11 @@ t_creature *new_creature(char ch)
 	creature->health = 10;
 	switch (ch)
 	{
+		case 'g':
+			creature->name = "Crazy Goblin";
+			creature->weapon = (t_weapon){"Wooden club", (t_dice){1, 4}};
+			creature->action = CRAZY_GOBLIN;
+			break;
 		case 'd':
 			creature->name = "Combat practice dummy";
 			break;

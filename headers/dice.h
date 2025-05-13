@@ -7,6 +7,6 @@ typedef struct s_dice
 	int sides;
 }	t_dice;
 
-int throw(t_dice dice);
+int throw_dice(t_dice dice);
 
 #endif

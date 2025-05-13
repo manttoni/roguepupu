@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-int throw(t_dice dice)
+int throw_dice(t_dice dice)
 {
 	srand(time(NULL));
 	unsigned int result = 0;
