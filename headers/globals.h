@@ -11,16 +11,17 @@
 #define NEIGHBOR 2
 #define ENEMY 4
 #define LOCKED 8
+#define UNLOCKED 16
 
 #define PLAYER_EXAMINE (VISIBLE)
-#define PLAYER_OPEN (NEIGHBOR & ~LOCKED)
-#define PLAYER_UNLOCK (NEIGHBOR & LOCKED)
+#define PLAYER_OPEN (NEIGHBOR | UNLOCKED)
+#define PLAYER_UNLOCK (NEIGHBOR | LOCKED)
 #define PLAYER_MELEE_ATTACK (NEIGHBOR & ENEMY)
 #define PLAYER_RANGED_ATTACK (VISIBLE & ENEMY)
 
 /* Keys */
 #define ESCAPE 27
-#define ENTER (KEY_ENTER || '\n')
+#define ENTER '\n'
 
 /* Calculations */
 #define AREA(area) ((area)->width * (area)->height)

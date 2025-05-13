@@ -9,7 +9,10 @@ void logger(const char *format, ...)
 {
     FILE *logfile = fopen("logs/debug.log", "a");
     if (logfile == NULL)
+	{
         end_ncurses(errno);
+		exit(errno);
+	}
 
     va_list args;
     va_start(args, format);

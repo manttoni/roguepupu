@@ -77,7 +77,7 @@ t_node *get_interactables(t_area *area, int flags)
 			continue;
 		if (flags & LOCKED && !is_locked(cell))
 			continue;
-		if (flags & ~LOCKED && is_locked(cell))
+		if (flags & UNLOCKED && is_locked(cell))
 			continue;
 		if (!is_interactable(cell))
 			continue;
