@@ -9,8 +9,8 @@
 typedef struct s_cell
 {
 	int			highlight; // highlight info as bits
-	t_terrain	*terrain; // ground, wall, door...
-	t_creature	*creature; // player
+	t_terrain	*terrain; // ground, wall, door, corpse...
+	t_creature	*creature; // when dies, becomes terrain ('C')
 }	t_cell;
 
 typedef enum

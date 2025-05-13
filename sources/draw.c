@@ -10,7 +10,11 @@ void draw_cell(int y, int x, t_cell *cell)
 		wattron(map_win, A_REVERSE);
 	if (cell->highlight & SELECTED)
 		wattron(map_win, COLOR_PAIR(SELECTED));
-	unsigned char ch = cell->creature == NULL ? cell->terrain->ch : cell->creature->ch;
+	unsigned char ch;
+	if (cell->creature == NULL || cell->creature->health == 0)
+		ch = cell->terrain->ch;
+	else
+		ch = cell->creature->ch;
 	waddch(map_win, ch);
 	wattroff(map_win, COLOR_PAIR(SELECTED) | A_REVERSE);
 }

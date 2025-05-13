@@ -9,6 +9,7 @@ t_creature *new_creature(char ch)
 	t_creature *creature = my_calloc(sizeof(t_creature));
 	creature->ch = ch;
 	creature->action = NONE;
+	creature->health = 10;
 	switch (ch)
 	{
 		case 'd':

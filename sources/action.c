@@ -128,6 +128,17 @@ static int player_attack(t_area *area)
 	t_creature *player = get_player(area);
 	int damage = throw(player->weapon.damage);
 	print_log("%s attacks %s dealing %d damage", player->name, defender_cell->creature->name, damage);
+
+	t_creature *defender = defender_cell->creature;
+	if (damage >= defender->health)
+	{
+		damage = defender->health;
+		print_log("%s dies", defender->name);
+		defender_cell->terrain->ch = 'C';
+		free(defender);
+		defender_cell->creature = NULL;
+	}
+	defender->health -= damage;
 	return 0;
 }
 
