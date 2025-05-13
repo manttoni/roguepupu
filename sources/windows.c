@@ -22,6 +22,7 @@ void print_legend(void)
 	wprintw(leg_win, "  e is examine\n");
 	wprintw(leg_win, "  u is unlock\n");
 	wprintw(leg_win, "  o is open\n");
+	wprintw(leg_win, "  a is attack\n");
 	wprintw(leg_win, " Scanning:\n");
 	wprintw(leg_win, "  Arrows select object\n");
 	wprintw(leg_win, "  enter confirms selected object\n");
