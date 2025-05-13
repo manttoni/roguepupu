@@ -3,6 +3,7 @@
 #include "../headers/cell.h"
 #include "../headers/file_reader.h"
 #include "../headers/area.h"
+#include "../headers/globals.h"
 
 char *cell_string(t_cell *cell)
 {

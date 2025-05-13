@@ -1,5 +1,6 @@
 #include "../headers/draw.h"
 #include "../headers/windows.h"
+#include "../headers/globals.h"
 #include <ncurses.h>
 
 void draw_cell(int y, int x, t_cell *cell)

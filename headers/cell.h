@@ -6,9 +6,6 @@
 #include "creature.h"
 #include "terrain.h"
 
-#define REVERSE 1 // basic highlight
-#define SELECTED 2 // selected highlighted thing
-
 typedef struct s_cell
 {
 	int			highlight; // highlight info as bits

@@ -1,11 +1,6 @@
 #ifndef AREA_H
 #define AREA_H
 
-#define AREA(area) ((area)->width * (area)->height)
-
-/* MAPS */
-#define DUNGEON "maps/dungeon.txt"
-
 #include "cell.h"
 
 typedef struct s_node t_node;

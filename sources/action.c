@@ -5,11 +5,7 @@
 #include "../headers/game.h"
 #include "../headers/windows.h"
 #include "../headers/draw.h"
-
-#define INTERACTABLE "O0"
-#define VISIBLE 1
-#define NEIGHBOR 2
-#define ESCAPE 27
+#include "../headers/globals.h"
 
 void open_door(t_terrain *door)
 {

@@ -3,6 +3,7 @@
 #include "../headers/file_reader.h"
 #include "../headers/area.h"
 #include "../headers/windows.h"
+#include "../headers/globals.h"
 
 void *my_calloc(size_t size)
 {

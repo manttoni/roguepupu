@@ -5,6 +5,7 @@
 #include "../headers/utils.h"
 #include "../headers/game.h"
 #include "../headers/windows.h"
+#include "../headers/globals.h"
 
 WINDOW *map_win = NULL;
 WINDOW *log_win = NULL;

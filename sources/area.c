@@ -1,9 +1,7 @@
 #include "../headers/area.h"
 #include "../headers/utils.h"
+#include "../headers/globals.h"
 #include <string.h>
-
-#define VISIBLE 1
-#define NEIGHBOR 2
 
 t_node *get_creatures(t_area *area)
 {
