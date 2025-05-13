@@ -29,6 +29,7 @@ void start(t_game *game)
 		player_act(area);
 		player->action = NONE;
 		usleep(100000);
+		draw_area(area);
 		enemy_act(area);
 		flushinp(); // empty input buffer
 	}

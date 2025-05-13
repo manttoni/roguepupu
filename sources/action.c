@@ -191,7 +191,10 @@ void crazy_goblin_act(t_area *area, t_cell *cell)
 	if (!is_visible(area, cell, player_cell))
 		return;
 	if (is_neighbor(area, cell, player_cell))
+	{
+		usleep(100000);
 		attack(cell->creature, player_cell);
+	}
 }
 
 int enemy_act(t_area *area)
