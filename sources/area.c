@@ -1,20 +1,8 @@
 #include "../headers/area.h"
 #include "../headers/utils.h"
 #include "../headers/globals.h"
+#include "../headers/windows.h"
 #include <string.h>
-
-t_node *get_creatures(t_area *area)
-{
-	t_node *creatures = NULL;
-	t_cell *cells = area->cells;
-	for (int i = 0; i < AREA(area); ++i)
-	{
-		t_creature *creature = cells[i].creature;
-		if (creature != NULL)
-			add_node_last(&creatures, new_node(creature));
-	}
-	return creatures;
-}
 
 void add_creature(t_area *area, t_creature *creature, int index)
 {
@@ -76,19 +64,25 @@ t_area *new_area(char *file)
 
 t_node *get_interactables(t_area *area, int flags)
 {
-	t_cell *player_cell = get_player_cell(area);
-	t_node *interactables = NULL;
+	int pi = get_player_index(area);
+	t_cell *pc = &area->cells[pi];
+
+	t_node *list = NULL;
 	for (int i = 0; i < AREA(area); ++i)
 	{
 		t_cell *cell = &area->cells[i];
-		if (flags & VISIBLE && !is_visible(area, player_cell, cell))
+		if (flags & VISIBLE && !is_visible(area, pc, cell))
 			continue;
-		if (flags & NEIGHBOR && !is_neighbor(area, player_cell, cell))
+		if (flags & NEIGHBOR && !is_neighbor(area, pc, cell))
 			continue;
-		if (strchr("O0", cell->terrain->ch) == NULL)
+		if (flags & LOCKED && !is_locked(cell))
 			continue;
-		add_node_last(&interactables, new_node(cell));
+		if (flags & ~LOCKED && is_locked(cell))
+			continue;
+		if (!is_interactable(cell))
+			continue;
+		print_log("adding");
+		add_node_last(&list, new_node(cell));
 	}
-	return interactables;
+	return list;
 }
-

@@ -12,6 +12,23 @@ char *cell_string(t_cell *cell)
 	return NULL;
 }
 
+int is_locked(t_cell *cell)
+{
+	t_terrain *terrain = cell->terrain;
+	if (terrain->ch == '0')
+		return 1;
+	return 0;
+}
+
+int is_interactable(t_cell *cell)
+{
+	if (cell->creature != NULL && cell->creature->ch != '@')
+		return 1;
+	if (strchr(INTERACTABLE_TERRAIN, cell->terrain->ch) != NULL)
+		return 1;
+	return 0;
+}
+
 int is_neighbor(t_area *area, t_cell *cell, t_cell *other)
 {
 	int diff = cell - other;

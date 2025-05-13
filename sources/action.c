@@ -19,91 +19,135 @@ void unlock_door(t_terrain *door)
 	door->ch = 'O';
 }
 
-t_node *select_next(t_node *list, t_node *selected)
+void clear_highlights(t_node *list)
 {
-	if (list == NULL)
-		return NULL;
-	if (selected == NULL)
+	while (list)
 	{
-		((t_cell*)(list->data))->highlight |= SELECTED;
-		return list;
+		t_cell *cell = (t_cell *) list->data;
+		cell->highlight = 0;
+		list = list->next;
 	}
-	((t_cell*)(selected->data))->highlight &= ~SELECTED;
-	if (selected->next == NULL)
-		selected = list;
-	else
-		selected = selected->next;
-	((t_cell*)(selected->data))->highlight |= SELECTED;
-	return selected;
 }
 
-void scan(t_area *area, int flags)
+/* Select a cell from list of cells */
+t_cell *select_cell(t_node *list, t_area *area)
 {
-	t_node *interactables = get_interactables(area, flags);
-	t_node *ptr = interactables;
-	if (interactables == NULL)
-		print_log("Cant see anything interactable");
-	while (interactables != NULL)
+	t_node *selected_node = list;
+	while (1)
 	{
-		((t_cell*)(interactables->data))->highlight |= REVERSE;
-		interactables = interactables->next;
-	}
-	interactables = ptr;
-	t_node *selected = select_next(interactables, NULL);
-	while (selected != NULL)
-	{
+		t_cell *selected = (t_cell *) selected_node->data;
+		selected->highlight |= SELECTED;
+		// draw area, highlights are showing
 		draw_area(area);
+
+		// esc quits, enter returns selected, other keys select next
 		int input = getch();
-		if (input == ESCAPE)
-			break;
-		if (input == KEY_ENTER || input == '\n')
+		switch (input)
 		{
-			if (flags & VISIBLE)
-				print_log(cell_string(selected->data));
-			else if (flags & NEIGHBOR)
-			{
-				t_terrain *t = ((t_cell*)(selected->data))->terrain;
-				if (t->ch == 'O')
-					open_door(t);
-				else if (t->ch == '0')
-					unlock_door(t);
-			}
-			break;
+			case ESCAPE:
+				clear_highlights(list);
+				return NULL;
+			case ENTER:
+				clear_highlights(list);
+				return selected;
+			default:
+				selected->highlight &= ~SELECTED;
+				selected_node = selected_node->next;
+				if (selected_node == NULL)
+					selected_node = list;
+				break;
 		}
-		selected = select_next(interactables, selected);
 	}
+	return NULL;
+}
+
+/* Scan surroundings, highlight cells, return a selected cell */
+t_cell *scan(t_area *area, int flags)
+{
+	// get list
+	t_node *list = get_interactables(area, flags);
+	if (list == NULL)
+	{
+		print_log("Nothing to see here");
+		return NULL;
+	}
+	t_node *ptr = list;
+
+	// highlight interactables with REVERSE
 	while (ptr != NULL)
 	{
-		((t_cell*)(ptr->data))->highlight = 0;
+		t_cell *cell = (t_cell *) ptr->data;
+		cell->highlight |= REVERSE;
 		ptr = ptr->next;
 	}
-	draw_area(area);
+	return select_cell(list, area);
 }
 
-void act(t_area *area, t_cell *cell, t_creature *creature)
+/* Scan surroundings within vision */
+static int player_examine(t_area *area)
+{
+	t_cell *examine_cell = scan(area, PLAYER_EXAMINE);
+	if (examine_cell == NULL) // esc pressed
+		return 0;
+
+	// enter pressed
+	print_log(cell_string(examine_cell));
+	return 0; // 0 AP
+}
+
+static int player_open(t_area *area)
+{
+	t_cell *closed_cell = scan(area, PLAYER_OPEN);
+	if (closed_cell == NULL)
+		return 0;
+
+	t_terrain *closed = closed_cell->terrain;
+	if (closed->ch == 'O')
+		open_door(closed);
+	return 1; // 1 AP for now
+}
+
+static int player_unlock(t_area *area)
+{
+	t_cell *locked_cell = scan(area, PLAYER_UNLOCK);
+	if (locked_cell == NULL)
+		return 0;
+
+	t_terrain *locked = locked_cell->terrain;
+	if (locked->ch == '0')
+		unlock_door(locked);
+	return 2;
+}
+
+static int player_attack(t_area *area)
+{
+	(void) area;
+	return 0;
+}
+
+/* Return some int, will probably be AP cost of action or something later */
+int player_act(t_area *area, t_cell *cell, t_creature *creature)
 {
 	switch(creature->action)
 	{
 		case MOVE_UP:
-			move_creature(neighbor(UP, area, cell), cell);
-			break;
+			return move_creature(neighbor(UP, area, cell), cell);
 		case MOVE_DOWN:
-			move_creature(neighbor(DOWN, area, cell), cell);
-			break;
+			return move_creature(neighbor(DOWN, area, cell), cell);
 		case MOVE_LEFT:
-			move_creature(neighbor(LEFT, area, cell), cell);
-			break;
+			return move_creature(neighbor(LEFT, area, cell), cell);
 		case MOVE_RIGHT:
-			move_creature(neighbor(RIGHT, area, cell), cell);
-			break;
-		case INTERACT:
-			scan(area, NEIGHBOR);
-			break;
+			return move_creature(neighbor(RIGHT, area, cell), cell);
 		case EXAMINE:
-			scan(area, VISIBLE);
-			break;
+			return player_examine(area);
+		case OPEN:
+			return player_open(area);
+		case UNLOCK:
+			return player_unlock(area);
+		case ATTACK:
+			return player_attack(area);
 		default:
-			break;
+			return 0;
 	}
 }
 

@@ -15,10 +15,14 @@ e_action get_player_action(int input)
 			return MOVE_LEFT;
 		case KEY_RIGHT:
 			return MOVE_RIGHT;
-		case 'i':
-			return INTERACT;
 		case 'e':
 			return EXAMINE;
+		case 'o':
+			return OPEN;
+		case 'u':
+			return UNLOCK;
+		case 'a':
+			return ATTACK;
 		default:
 			return NONE;
 	}

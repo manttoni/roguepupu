@@ -24,7 +24,7 @@ void start(t_game *game)
 		player->action = get_player_action(input);
 		if (player->action == NONE)
 			continue;
-		act(area, cell, player);
+		player_act(area, cell, player);
 		player->action = NONE;
 		usleep(100000);
 		flushinp(); // empty input buffer
@@ -36,7 +36,6 @@ void enter_area(t_game *game, t_area *area, t_coord entry_point)
 	game->area = area;
 	add_creature(area, new_creature('@'), entry_point.y * area->width + entry_point.x);
 	list_clear(&game->creatures);
-	game->creatures = get_creatures(area);
 }
 
 t_game *new_game(t_area *start_area)

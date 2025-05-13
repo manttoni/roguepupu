@@ -14,6 +14,6 @@ typedef struct s_creature
 }	t_creature;
 
 t_creature *new_creature(char ch);
-void move_creature(t_cell *dest, t_cell *src);
+int move_creature(t_cell *dest, t_cell *src);
 
 #endif

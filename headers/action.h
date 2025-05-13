@@ -17,12 +17,14 @@ typedef enum
 	MOVE_DOWN,
 	MOVE_LEFT,
 	MOVE_RIGHT,
-	INTERACT,
 	EXAMINE,
+	OPEN,
+	UNLOCK,
+	ATTACK,
 	NONE
 }	e_action;
 
-void act(t_area *area, t_cell *cell, t_creature *creature);
+int player_act(t_area *area, t_cell *cell, t_creature *creature);
 void open_door(t_terrain *door);
 void unlock_door(t_terrain *door);
 
