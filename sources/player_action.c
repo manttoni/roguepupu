@@ -153,7 +153,37 @@ int player_act(t_area *area)
 			return player_unlock(area);
 		case ATTACK:
 			return player_attack(area);
+		case PASS:
+			print_log("%s does nothing", player->name);
+			return 0;
 		default:
 			return 0;
+	}
+}
+
+e_action get_player_action(int input)
+{
+	switch(input)
+	{
+		case KEY_UP:
+			return MOVE_UP;
+		case KEY_DOWN:
+			return MOVE_DOWN;
+		case KEY_LEFT:
+			return MOVE_LEFT;
+		case KEY_RIGHT:
+			return MOVE_RIGHT;
+		case 'e':
+			return EXAMINE;
+		case 'o':
+			return OPEN;
+		case 'u':
+			return UNLOCK;
+		case 'a':
+			return ATTACK;
+		case ' ':
+			return PASS;
+		default:
+			return NONE;
 	}
 }
