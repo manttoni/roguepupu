@@ -28,6 +28,6 @@ void open_door(t_terrain *door);
 void unlock_door(t_terrain *door);
 void attack(t_creature *attacker, t_cell *defender_cell);
 int enemy_act(t_area *area);
-int player_act(t_area *area);
+int player_act(t_area *area, e_action action);
 
 #endif

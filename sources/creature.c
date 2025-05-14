@@ -9,7 +9,6 @@ t_creature *new_creature(char ch)
 {
 	t_creature *creature = my_calloc(sizeof(t_creature));
 	creature->ch = ch;
-	creature->action = NONE;
 	creature->health = 10;
 	creature->max_health = 10;
 	switch (ch)
@@ -17,10 +16,7 @@ t_creature *new_creature(char ch)
 		case 'g':
 			creature->name = "Crazy Goblin";
 			creature->weapon = (t_weapon){"Wooden club", (t_dice){1, 4}};
-			creature->action = CRAZY_GOBLIN;
-			break;
-		case 'd':
-			creature->name = "Combat practice dummy";
+			creature->ai = CRAZY_GOBLIN;
 			break;
 		case '@':
 			creature->name = "Rabdin";

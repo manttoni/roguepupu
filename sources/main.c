@@ -13,7 +13,7 @@ WINDOW *leg_win = NULL;
 
 int main(void)
 {
-    fclose((fopen("logs/debug.log", "w")));
+	fclose((fopen("logs/debug.log", "w")));
 	signal(SIGSEGV, handle_segfault);
 
 	init_ncurses();

@@ -9,10 +9,11 @@ typedef struct s_cell t_cell;
 
 typedef struct s_creature
 {
+	char		ch; // what does it look like?
+	short		color;
 	char		*name;
 	t_weapon	weapon;
-	char		ch; // what does it look like?
-	e_action	action; // next action or some AI logic thing
+	int			ai;
 	int			health;
 	int			max_health;
 }	t_creature;

@@ -8,7 +8,6 @@
 void start(t_game *game)
 {
 	print_log("Game started!");
-	t_creature *player = get_player(game->area);
 	t_area *area = game->area;
 	while(1)
 	{
@@ -22,13 +21,10 @@ void start(t_game *game)
 				break;
 			continue;
 		}
-		// get a valid player action
-		player->action = get_player_action(input);
-		if (player->action == NONE)
+		e_action player_action = get_player_action(input);
+		if (player_action == NONE) // invalid input
 			continue;
-		player_act(area);
-		player->action = NONE;
-		usleep(100000);
+		player_act(area, player_action);
 		draw_area(area);
 		enemy_act(area);
 		flushinp(); // empty input buffer

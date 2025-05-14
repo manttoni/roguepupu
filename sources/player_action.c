@@ -129,13 +129,13 @@ static int player_attack(t_area *area)
 }
 
 /* Return some int, will probably be AP cost of action or something later */
-int player_act(t_area *area)
+int player_act(t_area *area, e_action action)
 {
 	int pi = get_player_index(area);
 	t_cell *cell = &area->cells[pi];
 	t_creature *player = cell->creature;
 
-	switch(player->action)
+	switch(action)
 	{
 		case MOVE_UP:
 			return move_creature(neighbor(UP, area, cell), cell);

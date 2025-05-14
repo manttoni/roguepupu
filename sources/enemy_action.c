@@ -50,21 +50,27 @@ void pursue(t_area *area, t_cell *cell)
 int enemy_act(t_area *area)
 {
 	t_node *enemies = get_interactables(area, ENEMY);
-
+	t_cell *player_cell = get_player_cell(area);
 	while (enemies != NULL)
 	{
 		t_cell *cell = (t_cell *) enemies->data;
 		t_creature *enemy = cell->creature;
 
-		if (enemy->action & FLEE && enemy->health < enemy->max_health / 2)
-			flee(area, cell);
-		else if (is_neighbor(area, cell, get_player_cell(area)))
-			attack(enemy, get_player_cell(area));
-		else if (enemy->action & PURSUE && is_visible(area, cell, get_player_cell(area)))
-			pursue(area, cell);
-		else if (enemy->action & WANDER)
-			wander(area, cell);
-
+		// idle actions
+		if (!is_visible(area, cell, player_cell))
+		{
+			if (enemy->ai & WANDER)
+				wander(area, cell);
+		}
+		else // combat actions
+		{
+			if (enemy->ai & FLEE && enemy->health < enemy->max_health / 2)
+				flee(area, cell);
+			else if (is_neighbor(area, cell, get_player_cell(area)))
+				attack(enemy, get_player_cell(area));
+			else if (enemy->ai & PURSUE && is_visible(area, cell, get_player_cell(area)))
+				pursue(area, cell);
+		}
 		enemies = enemies->next;
 	}
 	return 0;

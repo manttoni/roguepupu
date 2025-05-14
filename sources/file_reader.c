@@ -7,20 +7,20 @@
 
 void logger(const char *format, ...)
 {
-    FILE *logfile = fopen("logs/debug.log", "a");
-    if (logfile == NULL)
+	FILE *logfile = fopen("logs/debug.log", "a");
+	if (logfile == NULL)
 	{
-        end_ncurses(errno);
+		end_ncurses(errno);
 		exit(errno);
 	}
 
-    va_list args;
-    va_start(args, format);
-    vfprintf(logfile, format, args);
-    fprintf(logfile, "\n");
-    va_end(args);
+	va_list args;
+	va_start(args, format);
+	vfprintf(logfile, format, args);
+	fprintf(logfile, "\n");
+	va_end(args);
 
-    fclose(logfile);
+	fclose(logfile);
 }
 
 char *read_file(char *file)
