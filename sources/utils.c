@@ -4,6 +4,7 @@
 #include "../headers/area.h"
 #include "../headers/windows.h"
 #include "../headers/globals.h"
+#include "../headers/color.h"
 
 int min(int a, int b)
 {
@@ -31,11 +32,6 @@ void *my_calloc(size_t size)
 	return mem;
 }
 
-void init_colors()
-{
-	init_pair(SELECTED, COLOR_RED, COLOR_BLACK);
-
-}
 void init_ncurses()
 {
 	initscr();
@@ -43,11 +39,12 @@ void init_ncurses()
 	if (!has_colors() || !can_change_color())
 		end_ncurses(1);
 	start_color();
+	use_default_colors();
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
-	init_colors();
-    logger("ncurses initialized");
+	init_extended_pair(SELECTED_HIGHLIGHT, COLOR_RED, COLOR_BLACK);
+	logger("ncurses initialized");
 	refresh();
 }
 

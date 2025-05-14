@@ -60,12 +60,13 @@ int enemy_act(t_area *area)
 		t_creature *enemy = cell->creature;
 
 		if (enemy->bleeding > 0 && enemy->health > 0)
-			bleed(enemy);
+			change_color(&cell->terrain->color, bleed(enemy) / 2, 0, 0);
 
 		if (enemy->health <= 0)
 		{
 			free(cell->terrain);
 			cell->terrain = new_terrain('C');
+			cell->terrain->color = color_id((t_color){min(5, enemy->bleeding / 2), 0, 0});
 			free(cell->creature);
 			cell->creature = NULL;
 		}

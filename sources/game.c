@@ -8,6 +8,8 @@
 void start(t_game *game)
 {
 	print_log("Game started!");
+	print_log("Color pairs: %d", COLOR_PAIRS);
+	print_log("pair initialized: id: %d, red: %d, black: %d", SELECTED_HIGHLIGHT, COLOR_RED, COLOR_BLACK);
 	t_area *area = game->area;
 	while(1)
 	{

@@ -11,31 +11,11 @@ void attack(t_creature *attacker, t_cell *defender_cell)
 {
 	int damage = throw_dice(attacker->weapon.damage);
 	t_creature *defender = defender_cell->creature;
-	char *damage_type;
-
-	switch (attacker->weapon.damage_type)
-	{
-		case SLASHING:
-			damage_type = "slashing";
-			break;
-		case BLUNT:
-			damage_type = "blunt";
-			break;
-		default:
-			damage_type = "";
-			break;
-	}
 
 	print_log("%s attacks %s with a %s", attacker->name, defender->name, attacker->weapon.name);
 
-	if (take_damage(defender, damage, damage_type) == FATAL)
+	if (take_damage(defender, damage, attacker->weapon.damage_type) == FATAL)
 		return;
-
-	if (attacker->weapon.damage_type == SLASHING && damage / 2 > 0)
-	{
-		print_log("%s starts bleeding", defender->name);
-		defender->bleeding += damage / 2;
-	}
 }
 
 int move_creature(t_cell *dst, t_cell *src)

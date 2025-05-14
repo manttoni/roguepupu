@@ -7,6 +7,7 @@ t_terrain *new_terrain(char ch)
 {
 	t_terrain *terrain = my_calloc(sizeof(t_terrain));
 	terrain->ch = ch;
+	terrain->color = color_id((t_color){0,0,0});
 	switch (ch)
 	{
 		case '#':

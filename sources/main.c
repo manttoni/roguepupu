@@ -1,6 +1,7 @@
 #include <signal.h>
 #include <ncurses.h>
 #include <stdlib.h>
+#include <time.h>
 #include "../headers/area.h"
 #include "../headers/utils.h"
 #include "../headers/game.h"
@@ -15,7 +16,7 @@ int main(void)
 {
 	fclose((fopen("logs/debug.log", "w")));
 	signal(SIGSEGV, handle_segfault);
-
+	srand(time(NULL));
 	init_ncurses();
 	init_windows();
 	t_game *game = new_game(new_area(DUNGEON));

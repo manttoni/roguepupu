@@ -1,6 +1,8 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
+#include "color.h"
+
 typedef struct s_terrain
 {
 	char	*name;

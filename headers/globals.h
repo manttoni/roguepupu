@@ -42,6 +42,10 @@
 #define REVERSE 1 // highlight stuff in scnning mode
 #define SELECTED 2 // selected highlighted thing
 
+/* Colors */
+#define PAIR_ID(fg, bg) ((fg) * 256 + (bg))
+#define SELECTED_HIGHLIGHT 1//(PAIR_ID(COLOR_RED, COLOR_BLACK))
+
 /* Damage related */
 #define FATAL 1
 

@@ -6,7 +6,8 @@
 typedef enum
 {
 	SLASHING,
-	BLUNT
+	BLUNT,
+	BLEEDING
 }	e_damage_type;
 
 typedef struct s_weapon
