@@ -39,7 +39,6 @@ void enter_area(t_game *game, t_area *area, t_coord entry_point)
 {
 	game->area = area;
 	add_creature(area, new_creature('@'), entry_point.y * area->width + entry_point.x);
-	add_creature(area, new_creature('d'), 19 * area->width + 10);
 	add_creature(area, new_creature('g'), 21 * area->width + 10);
 	add_creature(area, new_creature('g'), 21 * area->width + 8);
 	list_clear(&game->creatures);

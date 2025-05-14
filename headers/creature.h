@@ -14,6 +14,7 @@ typedef struct s_creature
 	char		ch; // what does it look like?
 	e_action	action; // next action or some AI logic thing
 	int			health;
+	int			max_health;
 }	t_creature;
 
 t_creature *new_creature(char ch);

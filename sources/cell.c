@@ -38,9 +38,10 @@ int is_interactable(t_cell *cell)
 
 int is_neighbor(t_area *area, t_cell *cell, t_cell *other)
 {
-	for (int i = UP; i <= UPLEFT; ++i)
+	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
+	for (int i = 0; i <= 8; ++i)
 	{
-		t_cell *n = neighbor(i, area, cell);
+		t_cell *n = neighbor(dirs[i], area, cell);
 		if (n == other)
 			return 1;
 	}

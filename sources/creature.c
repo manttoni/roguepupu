@@ -3,6 +3,7 @@
 #include "../headers/cell.h"
 #include "../headers/windows.h"
 #include "../headers/weapon.h"
+#include "../headers/globals.h"
 
 t_creature *new_creature(char ch)
 {
@@ -10,6 +11,7 @@ t_creature *new_creature(char ch)
 	creature->ch = ch;
 	creature->action = NONE;
 	creature->health = 10;
+	creature->max_health = 10;
 	switch (ch)
 	{
 		case 'g':
@@ -31,26 +33,5 @@ t_creature *new_creature(char ch)
 	return creature;
 }
 
-int move_creature(t_cell *dst, t_cell *src)
-{
-	if (dst == NULL)
-		return 0;
-	if (dst->terrain->ch == '#')
-		return 0;
-	if (dst->terrain->ch == '0')
-	{
-		print_log("Door is locked");
-		return 0;
-	}
-	if (dst->terrain->ch == 'O')
-	{
-		print_log("Door is closed");
-		return 0;
-	}
-	if (dst->creature != NULL)
-		return 0;
-	dst->creature = src->creature;
-	src->creature = NULL;
-	return 1;
-}
+
 

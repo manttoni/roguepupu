@@ -21,7 +21,6 @@ typedef enum
 	OPEN,
 	UNLOCK,
 	ATTACK,
-	CRAZY_GOBLIN,
 	NONE
 }	e_action;
 

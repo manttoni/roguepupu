@@ -33,3 +33,26 @@ void attack(t_creature *attacker, t_cell *defender_cell)
 	return;
 }
 
+int move_creature(t_cell *dst, t_cell *src)
+{
+	if (dst == NULL)
+		return 0;
+	if (dst->terrain->ch == '#')
+		return 0;
+	if (dst->terrain->ch == '0')
+	{
+		print_log("Door is locked");
+		return 0;
+	}
+	if (dst->terrain->ch == 'O')
+	{
+		print_log("Door is closed");
+		return 0;
+	}
+	if (dst->creature != NULL)
+		return 0;
+	dst->creature = src->creature;
+	src->creature = NULL;
+	return 1;
+}
+

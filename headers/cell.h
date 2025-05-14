@@ -13,11 +13,13 @@ typedef struct s_cell
 	t_creature	*creature; // when dies, becomes terrain ('C')
 }	t_cell;
 
+/* directions value is also how much i would change with that movement
+ * opposite directions are also each others negatives */
 typedef enum
 {
-	UPLEFT = 7,		UP = 0,		UPRIGHT = 1,
-	LEFT = 6,       			RIGHT = 2,
-	DOWNLEFT = 5, 	DOWN = 4, 	DOWNRIGHT = 3
+	UPLEFT=		-5,	UP=		-4,	UPRIGHT=	-3,
+	LEFT=		-1,       		RIGHT=		1,
+	DOWNLEFT=	3,	DOWN=	4, 	DOWNRIGHT=	5
 }	e_direction;
 
 t_cell new_cell(char ch);
