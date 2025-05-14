@@ -7,7 +7,6 @@
 
 void flee(t_area *area, t_cell *cell)
 {
-	t_creature *creature = cell->creature;
 	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
 	t_cell *player_cell = get_player_cell(area);
 	t_cell *best_flee = cell;
@@ -20,7 +19,6 @@ void flee(t_area *area, t_cell *cell)
 			best_flee = n;
 	}
 	move_creature(best_flee, cell);
-	print_log("%s flees for its life", creature->name);
 }
 
 void pursue(t_area *area, t_cell *cell)
@@ -53,6 +51,7 @@ void wander(t_area *area, t_cell *cell)
 
 int enemy_act(t_area *area)
 {
+	logger("enemies acting");
 	t_node *enemies = get_interactables(area, ENEMY);
 	t_cell *player_cell = get_player_cell(area);
 	while (enemies != NULL)
@@ -60,13 +59,22 @@ int enemy_act(t_area *area)
 		t_cell *cell = (t_cell *) enemies->data;
 		t_creature *enemy = cell->creature;
 
-		// idle actions
-		if (!is_visible(area, cell, player_cell))
+		if (enemy->bleeding > 0 && enemy->health > 0)
+			bleed(enemy);
+
+		if (enemy->health <= 0)
+		{
+			free(cell->terrain);
+			cell->terrain = new_terrain('C');
+			free(cell->creature);
+			cell->creature = NULL;
+		}
+		else if (!is_visible(area, cell, player_cell))
 		{
 			if (enemy->ai & WANDER)
 				wander(area, cell);
 		}
-		else // combat actions
+		else
 		{
 			if (enemy->ai & FLEE && enemy->health < enemy->max_health / 2)
 				flee(area, cell);
@@ -75,6 +83,7 @@ int enemy_act(t_area *area)
 			else if (enemy->ai & PURSUE && is_visible(area, cell, get_player_cell(area)))
 				pursue(area, cell);
 		}
+
 		enemies = enemies->next;
 	}
 	return 0;

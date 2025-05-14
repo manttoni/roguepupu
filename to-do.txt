@@ -1,0 +1,23 @@
+weapon:
+	damage type
+		sharp
+			bleeding
+		blunt
+			stun
+			knockback
+
+creature:
+	enemy colors
+	creature status
+		bleeding does dot
+		stun skips turn
+	creature vision range
+
+terrain:
+	door D and locked status not known until try to open
+
+area:
+	put creatures straight into map and add . terrain where they spawn
+
+action:
+	shouldnt be able to "open" goblins. redo get_interactables

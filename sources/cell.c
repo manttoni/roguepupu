@@ -20,7 +20,7 @@ int mandis(t_area *area, t_cell *a, t_cell *b)
 char *cell_string(t_cell *cell)
 {
 	if (cell->creature == NULL)
-		return terrain_string(cell->terrain);
+		return cell->terrain->name;
 	return cell->creature->name;
 }
 

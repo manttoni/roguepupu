@@ -42,5 +42,7 @@
 #define REVERSE 1 // highlight stuff in scnning mode
 #define SELECTED 2 // selected highlighted thing
 
+/* Damage related */
+#define FATAL 1
 
 #endif

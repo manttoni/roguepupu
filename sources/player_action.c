@@ -135,6 +135,10 @@ int player_act(t_area *area, e_action action)
 	t_cell *cell = &area->cells[pi];
 	t_creature *player = cell->creature;
 
+	// damage over time
+	if (player->bleeding > 0)
+		bleed(player);
+
 	switch(action)
 	{
 		case MOVE_UPLEFT:

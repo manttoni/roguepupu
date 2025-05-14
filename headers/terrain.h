@@ -3,8 +3,10 @@
 
 typedef struct s_terrain
 {
-	unsigned char	ch; // what it looks like on map
-	int				is_locked;
+	char	*name;
+	char	ch; // what it looks like on map
+	short	color;
+	int		is_locked;
 }	t_terrain;
 
 t_terrain *new_terrain(char ch);

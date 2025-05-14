@@ -5,6 +5,20 @@
 #include "../headers/windows.h"
 #include "../headers/globals.h"
 
+int min(int a, int b)
+{
+	if (a < b)
+		return a;
+	return b;
+}
+
+int max(int a, int b)
+{
+	if (a > b)
+		return a;
+	return b;
+}
+
 void *my_calloc(size_t size)
 {
 	void *mem = malloc(size);
@@ -17,26 +31,33 @@ void *my_calloc(size_t size)
 	return mem;
 }
 
+void init_colors()
+{
+	init_pair(SELECTED, COLOR_RED, COLOR_BLACK);
+
+}
 void init_ncurses()
 {
 	initscr();
 	curs_set(0);
-	if (!has_colors())
+	if (!has_colors() || !can_change_color())
 		end_ncurses(1);
 	start_color();
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
-	init_pair(SELECTED, COLOR_RED, COLOR_BLACK);
+	init_colors();
     logger("ncurses initialized");
 	refresh();
 }
 
 void end_ncurses(int exit_value)
 {
-	clear();
 	if (exit_value != 0)
 	{
+		print_log("Error occurred. Press any key to see log.");
+		getch();
+		clear();
 		char *log = read_file("logs/debug.log");
 		mvprintw(0,0,"%s", log);
 		getch();

@@ -3,7 +3,6 @@
 
 #include "../headers/action.h"
 #include "../headers/weapon.h"
-
 typedef struct s_area t_area;
 typedef struct s_cell t_cell;
 
@@ -16,8 +15,12 @@ typedef struct s_creature
 	int			ai;
 	int			health;
 	int			max_health;
+	int			bleeding; // bleeding does damage equal to remaining turns
 }	t_creature;
 
+int bleed(t_creature *creature);
+int take_damage(t_creature *creature, int damage, char *damage_type);
+void perish(t_creature *creature);
 t_creature *new_creature(char ch);
 int move_creature(t_cell *dest, t_cell *src);
 

@@ -1,22 +1,26 @@
 #include "../headers/draw.h"
 #include "../headers/windows.h"
 #include "../headers/globals.h"
+#include "../headers/file_reader.h"
 #include <ncurses.h>
 
 void draw_cell(int y, int x, t_cell *cell)
 {
 	wmove(map_win, y, x);
+
+	// cell highlights
 	if (cell->highlight & REVERSE)
 		wattron(map_win, A_REVERSE);
 	if (cell->highlight & SELECTED)
 		wattron(map_win, COLOR_PAIR(SELECTED));
-	unsigned char ch;
-	if (cell->creature == NULL || cell->creature->health == 0)
-		ch = cell->terrain->ch;
-	else
-		ch = cell->creature->ch;
+
+	char ch = cell->creature == NULL ? cell->terrain->ch : cell->creature->ch;
 	waddch(map_win, ch);
-	wattroff(map_win, COLOR_PAIR(SELECTED) | A_REVERSE);
+
+	if (cell->highlight & REVERSE)
+		wattroff(map_win, A_REVERSE);
+	if (cell->highlight & SELECTED)
+		wattroff(map_win, COLOR_PAIR(SELECTED));
 }
 
 void draw_area(t_area *area)
