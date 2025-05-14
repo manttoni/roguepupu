@@ -25,9 +25,10 @@ typedef enum
 	NONE
 }	e_action;
 
-int player_act(t_area *area);
-int enemy_act(t_area *area);
 void open_door(t_terrain *door);
 void unlock_door(t_terrain *door);
+void attack(t_creature *attacker, t_cell *defender_cell);
+int enemy_act(t_area *area);
+int player_act(t_area *area);
 
 #endif
