@@ -24,6 +24,15 @@ char *cell_string(t_cell *cell)
 	return cell->creature->name;
 }
 
+int is_blocked(t_cell *cell)
+{
+	if (strchr(BLOCKING_TERRAIN, cell->terrain->ch) != NULL)
+		return 1;
+	if (cell->creature != NULL)
+		return 1;
+	return 0;
+}
+
 int is_enemy(t_cell *cell)
 {
 	if (cell->creature == NULL)

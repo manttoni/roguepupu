@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include "area.h"
 
+#define BLOCKING_TERRAIN "0O#"
 #define INTERACTABLE_TERRAIN "O0"
 #define ENEMY_CREATURES "qwertyuiopasdfghjklzxcvbnm"
 

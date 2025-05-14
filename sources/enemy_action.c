@@ -7,18 +7,20 @@
 
 void flee(t_area *area, t_cell *cell)
 {
+	t_creature *creature = cell->creature;
 	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
 	t_cell *player_cell = get_player_cell(area);
 	t_cell *best_flee = cell;
 	for (int i = 0; i < 8; ++i)
 	{
 		t_cell *n = neighbor(dirs[i], area, cell);
-		if (n == NULL)
+		if (n == NULL || is_blocked(n))
 			continue;
 		if (mandis(area, n, player_cell) > mandis(area, best_flee, player_cell))
 			best_flee = n;
 	}
 	move_creature(best_flee, cell);
+	print_log("%s flees for its life", creature->name);
 }
 
 void pursue(t_area *area, t_cell *cell)
