@@ -137,6 +137,14 @@ int player_act(t_area *area, e_action action)
 
 	switch(action)
 	{
+		case MOVE_UPLEFT:
+			return move_creature(neighbor(UPLEFT, area, cell), cell);
+		case MOVE_UPRIGHT:
+			return move_creature(neighbor(UPRIGHT, area, cell), cell);
+		case MOVE_DOWNLEFT:
+			return move_creature(neighbor(DOWNLEFT, area, cell), cell);
+		case MOVE_DOWNRIGHT:
+			return move_creature(neighbor(DOWNRIGHT, area, cell), cell);
 		case MOVE_UP:
 			return move_creature(neighbor(UP, area, cell), cell);
 		case MOVE_DOWN:
@@ -165,12 +173,24 @@ e_action get_player_action(int input)
 {
 	switch(input)
 	{
+		case '7':
+			return MOVE_UPLEFT;
+		case '9':
+			return MOVE_UPRIGHT;
+		case '1':
+			return MOVE_DOWNLEFT;
+		case '3':
+			return MOVE_DOWNRIGHT;
+		case '8':
 		case KEY_UP:
 			return MOVE_UP;
+		case '2':
 		case KEY_DOWN:
 			return MOVE_DOWN;
+		case '4':
 		case KEY_LEFT:
 			return MOVE_LEFT;
+		case '6':
 		case KEY_RIGHT:
 			return MOVE_RIGHT;
 		case 'e':

@@ -41,7 +41,8 @@ void pursue(t_area *area, t_cell *cell)
 		}
 	}
 	if (move_creature(best_pursue, cell) == 0)
-		move_creature(second_best, cell);
+		if (move_creature(second_best, cell) == 0)
+			move_creature(neighbor(dirs[rand() % 8], area, cell), cell);
 }
 
 void wander(t_area *area, t_cell *cell)

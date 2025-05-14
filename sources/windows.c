@@ -19,6 +19,7 @@ void print_legend(void)
 	wprintw(leg_win, "  @ is player\n");
 	wprintw(leg_win, " Controls:\n");
 	wprintw(leg_win, "  Arrows move\n");
+	wprintw(leg_win, "  numpad diagonal move\n");
 	wprintw(leg_win, "  e is examine\n");
 	wprintw(leg_win, "  u is unlock\n");
 	wprintw(leg_win, "  o is open\n");

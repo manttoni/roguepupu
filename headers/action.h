@@ -13,6 +13,10 @@ typedef struct s_creature t_creature;
 typedef enum
 {
 	PASS,
+	MOVE_UPLEFT,
+	MOVE_UPRIGHT,
+	MOVE_DOWNLEFT,
+	MOVE_DOWNRIGHT,
 	MOVE_UP,
 	MOVE_DOWN,
 	MOVE_LEFT,
