@@ -17,11 +17,17 @@ typedef struct s_cell
  * opposite directions are also each others negatives */
 typedef enum
 {
-	UPLEFT=		-5,	UP=		-4,	UPRIGHT=	-3,
-	LEFT=		-1,       		RIGHT=		1,
-	DOWNLEFT=	3,	DOWN=	4, 	DOWNRIGHT=	5
+	UPLEFT,
+	UP,
+	UPRIGHT,
+	LEFT,
+	RIGHT,
+	DOWNLEFT,
+	DOWN,
+	DOWNRIGHT
 }	e_direction;
 
+int mandis(t_area *area, t_cell *a, t_cell *b);
 t_cell new_cell(char ch);
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell);
 int is_locked(t_cell *cell);
