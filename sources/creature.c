@@ -2,9 +2,33 @@
 #include "../headers/utils.h"
 #include "../headers/cell.h"
 #include "../headers/windows.h"
-#include "../headers/weapon.h"
 #include "../headers/globals.h"
 #include "../headers/interface.h"
+
+void equip(t_creature *creature, t_item *item)
+{
+	print_log("%s equips %s", creature->name, item->name);
+	switch (item->class)
+	{
+		case WEAPON:
+			creature->weapon = item;
+			break;
+		default:
+			break;
+	}
+}
+
+void add_item(t_creature *creature, t_item *item)
+{
+	add_node_last(&creature->inventory, new_node(item));
+	if (creature->weapon == NULL && item->class == WEAPON)
+		equip(creature, item);
+}
+
+int is_enemy(t_creature *creature)
+{
+	return creature != NULL && strchr(ENEMY_CHARS, creature->ch) != NULL;
+}
 
 void perish(t_creature *creature, e_damage_type damage_type)
 {
@@ -81,9 +105,11 @@ int take_damage(t_creature *creature, int damage, e_damage_type damage_type)
 
 
 
-t_creature *new_creature(char ch)
+t_creature *new_creature(char ch, int area_level)
 {
-	logger("new_creature(%c)", ch);
+	(void)area_level;
+	if (strchr(CREATURE_CHARS, ch) == NULL)
+		return NULL;
 	t_creature *creature = my_calloc(sizeof(t_creature));
 	creature->ch = ch;
 	creature->health = 20;
@@ -93,13 +119,13 @@ t_creature *new_creature(char ch)
 	{
 		case 'g':
 			creature->name = "Crazy Goblin";
-			creature->weapon = (t_weapon){"Wooden club", (t_dice){1, 4}, BLUNT};
+			creature->weapon = new_item('W', 1);
 			creature->ai = CRAZY_GOBLIN;
 			creature->color = COLOR_GREEN;
 			break;
 		case '@':
 			creature->name = "Rabdin";
-			creature->weapon = (t_weapon){"Sword", (t_dice){1, 8}, SLASHING};
+			creature->color = COLOR_BLUE;
 			break;
 		default:
 			creature->name = "Bob the bug";

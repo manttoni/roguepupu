@@ -7,16 +7,25 @@
 #include "../headers/action.h"
 #include "../headers/status.h"
 
-void open_door(t_terrain *door)
+void open_door(t_cell *door_cell)
 {
+	t_terrain *door = door_cell->terrain;
+	if (door_cell->mech->lock > 0)
+	{
+		print_log("Door is locked");
+		return;
+	}
 	print_log("Door opened");
-	door->ch = '.';
+	free(door);
+	door_cell->terrain = new_terrain('.', 0);
+	if (door_cell->mech->trap > 0)
+		print_log("Trap sprung!");
 }
 
-void unlock_door(t_terrain *door)
+void unlock_door(t_cell *door_cell)
 {
 	print_log("Door unlocked");
-	door->ch = 'O';
+	door_cell->mech->lock = 0;
 }
 
 void clear_highlights(t_node *list)
@@ -101,9 +110,8 @@ static int player_open(t_area *area)
 	if (closed_cell == NULL)
 		return 0;
 
-	t_terrain *closed = closed_cell->terrain;
-	if (closed->ch == 'O')
-		open_door(closed);
+	if (closed_cell->terrain->ch == 'D')
+		open_door(closed_cell);
 	return 1; // 1 AP for now
 }
 
@@ -113,9 +121,8 @@ static int player_unlock(t_area *area)
 	if (locked_cell == NULL)
 		return 0;
 
-	t_terrain *locked = locked_cell->terrain;
-	if (locked->ch == '0')
-		unlock_door(locked);
+	if (locked_cell->terrain->ch == 'D')
+		unlock_door(locked_cell);
 	return 2;
 }
 
@@ -127,6 +134,17 @@ static int player_attack(t_area *area)
 
 	t_creature *player = get_player(area);
 	attack(player, defender_cell);
+	return 0;
+}
+
+static int player_pick_up(t_area *area)
+{
+	t_cell *item_cell = scan(area, NEIGHBOR | ITEM);
+	if (item_cell == NULL)
+		return 0;
+
+	pick_up(get_player(area), item_cell);
+	item_cell->item = NULL;
 	return 0;
 }
 
@@ -166,6 +184,8 @@ int player_act(t_area *area, e_action action)
 			return player_unlock(area);
 		case ATTACK:
 			return player_attack(area);
+		case PICK_UP:
+			return player_pick_up(area);
 		case PASS:
 			print_log("%s does nothing", player->name);
 			return 0;
@@ -176,6 +196,7 @@ int player_act(t_area *area, e_action action)
 
 e_action get_player_action(int input)
 {
+	logger("Key pressed: %c", input);
 	switch(input)
 	{
 		case '7':
@@ -206,6 +227,8 @@ e_action get_player_action(int input)
 			return UNLOCK;
 		case 'a':
 			return ATTACK;
+		case 'p':
+			return PICK_UP;
 		case ' ':
 			return PASS;
 		default:

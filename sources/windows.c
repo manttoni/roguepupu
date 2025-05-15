@@ -24,6 +24,7 @@ void print_legend(void)
 	wprintw(leg_win, "  u is unlock\n");
 	wprintw(leg_win, "  o is open\n");
 	wprintw(leg_win, "  a is attack\n");
+	wprintw(leg_win, "  p is pick up\n");
 	wprintw(leg_win, "  SPACE is pass\n");
 	wprintw(leg_win, " Scanning:\n");
 	wprintw(leg_win, "  Arrows select object\n");
@@ -44,6 +45,7 @@ void print_log(const char *format, ...)
 
 	refresh_window(log_win);
 	va_end(args);
+	usleep(100000);
 }
 
 WINDOW *my_newwin(t_winset winset)

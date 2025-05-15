@@ -6,16 +6,24 @@
 #include "../headers/windows.h"
 #include "../headers/draw.h"
 #include "../headers/globals.h"
+#include "../headers/dice.h"
+
+void pick_up(t_creature *picker, t_cell *item_cell)
+{
+	add_item(picker, item_cell->item);
+	print_log("%s picked up %s", picker->name, item_cell->item->name);
+	item_cell->item = NULL;
+}
 
 void attack(t_creature *attacker, t_cell *defender_cell)
 {
 	logger("attack(%s, %s)", attacker->name, cell_string(defender_cell));
-	int damage = throw_dice(attacker->weapon.damage);
+	int damage = throw_dice(attacker->weapon->damage);
 	t_creature *defender = defender_cell->creature;
 
-	print_log("%s attacks %s with a %s", attacker->name, defender->name, attacker->weapon.name);
+	print_log("%s attacks %s with a %s", attacker->name, defender->name, attacker->weapon->name);
 
-	if (take_damage(defender, damage, attacker->weapon.damage_type) == FATAL)
+	if (take_damage(defender, damage, attacker->weapon->damage_type) == FATAL)
 		return;
 }
 

@@ -28,7 +28,7 @@ void update_stat_win(t_area *area)
 
 	logger("update_stat_win got interactables");
 	print_creature_status(get_player(area));
-
+	logger("player printed");
 	while (enemies != NULL)
 	{
 		t_cell *enemy_cell = (t_cell *) enemies->data;

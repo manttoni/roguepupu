@@ -6,6 +6,20 @@
 #include "../headers/globals.h"
 #include <math.h>
 
+char cell_char(t_cell *cell)
+{
+	// priority order is creature > item > terrain > mech
+	if (cell->creature != NULL)
+		return cell->creature->ch;
+	if (cell->item != NULL)
+		return cell->item->ch;
+	if (cell->terrain != NULL)
+		return cell->terrain->ch;
+	if (cell->mech != NULL)
+		return cell->mech->ch;
+	return '?';
+}
+
 /* Real distance between cells */
 double distance(t_area *area, t_cell *a, t_cell *b)
 {
@@ -33,9 +47,15 @@ int mandis(t_area *area, t_cell *a, t_cell *b)
 
 char *cell_string(t_cell *cell)
 {
-	if (cell->creature == NULL)
+	if (cell->creature != NULL)
+		return cell->creature->name;
+	if (cell->item != NULL)
+		return cell->item->name;
+	if (cell->terrain != NULL)
 		return cell->terrain->name;
-	return cell->creature->name;
+	if (cell->mech != NULL)
+		return cell->mech->name;
+	return NULL;
 }
 
 int is_blocked(t_cell *cell)
@@ -47,26 +67,15 @@ int is_blocked(t_cell *cell)
 	return 0;
 }
 
-int is_enemy(t_cell *cell)
-{
-	if (cell->creature == NULL)
-		return 0;
-	return strchr(ENEMY_CREATURES, cell->creature->ch) != NULL;
-}
-
-int is_locked(t_cell *cell)
-{
-	t_terrain *terrain = cell->terrain;
-	if (terrain->ch == '0')
-		return 1;
-	return 0;
-}
-
 int is_interactable(t_cell *cell)
 {
-	if (cell->creature != NULL && cell->creature->ch != '@')
+	if (cell->creature != NULL)
 		return 1;
-	if (strchr(INTERACTABLE_TERRAIN, cell->terrain->ch) != NULL)
+	if (cell->item != NULL)
+		return 1;
+	if (cell->terrain != NULL && strchr(INTERACTABLE_TERRAIN, cell->terrain->ch) != NULL)
+		return 1;
+	if (cell->mech != NULL && strchr(INTERACTABLE_MECH, cell->mech->ch) != NULL)
 		return 1;
 	return 0;
 }
@@ -112,7 +121,7 @@ int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 
 			if (x == vx && y == vy)
 				return 1; // Reached the target
-			if (cell->terrain && strchr("#O0", cell->terrain->ch)) {
+			if (cell->terrain && strchr("#D", cell->terrain->ch)) {
 				return 0; // Blocked
 			}
 		}
@@ -125,21 +134,14 @@ int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 	return 1; // Fallback, though unreachable
 }
 
-t_cell new_cell(char ch)
+t_cell new_cell(char terrain, char mech, char item, char creature, int area_level)
 {
 	t_cell cell;
-	cell.highlight = 0;
-	if (strchr(CREATURES, ch) != NULL)
-	{
-		cell.terrain = new_terrain('.');
-		cell.creature = new_creature(ch);
-		logger("%s spawned", cell.creature->name);
-	}
-	else
-	{
-		cell.terrain = new_terrain(ch);
-		cell.creature = NULL;
-	}
+	memset(&cell, 0, sizeof(t_cell));
+	cell.terrain = new_terrain(terrain, area_level);
+	cell.mech = new_mech(mech, area_level);
+	cell.item = new_item(item, area_level);
+	cell.creature = new_creature(creature, area_level);
 	return cell;
 }
 

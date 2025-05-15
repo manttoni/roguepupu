@@ -1,7 +1,6 @@
 #include "../headers/cell.h"
 #include "../headers/creature.h"
 #include "../headers/windows.h"
-#include "../headers/weapon.h"
 #include "../headers/globals.h"
 #include "../headers/status.h"
 

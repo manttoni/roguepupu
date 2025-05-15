@@ -70,7 +70,7 @@ int enemy_act(t_area *area)
 		if (enemy->health <= 0)
 		{
 			free(cell->terrain);
-			cell->terrain = new_terrain('C');
+			cell->terrain = new_terrain('R', 0);
 			free(cell->creature);
 			cell->creature = NULL;
 		}

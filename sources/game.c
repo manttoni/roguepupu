@@ -12,7 +12,6 @@ void start(t_game *game)
 	t_area *area = game->area;
 	while(1)
 	{
-		print_log("Start of turn");
 		update_stat_win(area);
 		logger("stat win updated");
 		draw_area(area);

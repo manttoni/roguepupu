@@ -4,21 +4,30 @@
 #include <ncurses.h>
 #include "area.h"
 
-#define BLOCKING_TERRAIN "0O#"
-#define INTERACTABLE_TERRAIN "O0"
-#define ENEMY_CREATURES "qwertyuiopasdfghjklzxcvbnm"
+#define BLOCKING_TERRAIN "DC#"
+#define INTERACTABLE_TERRAIN "DCR"
+#define INTERACTABLE_MECH "LTS"
+#define ENEMY_CHARS "qwertyuiopasdfghjklzxcvbnm"
 #define PLAYER_CHAR "@"
-#define CREATURES (ENEMY_CREATURES PLAYER_CHAR)
+
+#define CLOSED_CHARS "DCR"
+
+#define CREATURE_CHARS (ENEMY_CHARS PLAYER_CHAR)
+#define ITEM_CHARS "W"
+#define MECH_CHARS "LTS"
+#define TERRAIN_CHARS "#.DCR"
 
 /* For scanning */
 #define VISIBLE 1
 #define NEIGHBOR 2
 #define ENEMY 4
 #define LOCKED 8
-#define UNLOCKED 16
+#define CLOSED 16
+#define TRAPPED 32
+#define ITEM 64
 
 #define PLAYER_EXAMINE (VISIBLE)
-#define PLAYER_OPEN (NEIGHBOR | UNLOCKED)
+#define PLAYER_OPEN (NEIGHBOR | CLOSED)
 #define PLAYER_UNLOCK (NEIGHBOR | LOCKED)
 #define PLAYER_MELEE_ATTACK (NEIGHBOR | ENEMY)
 #define PLAYER_RANGED_ATTACK (VISIBLE | ENEMY)
@@ -38,7 +47,7 @@
 #define AREA(area) ((area)->width * (area)->height)
 
 /* Maps */
-#define DUNGEON "maps/dungeon.txt"
+#define DUNGEON "maps/dungeon.json"
 
 /* Highlights */
 #define REVERSE 1 // highlight stuff in scnning mode

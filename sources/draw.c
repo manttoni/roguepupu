@@ -33,7 +33,6 @@ short pair_id(t_cell *cell)
 
 void draw_cell(int y, int x, t_cell *cell)
 {
-	logger("Drawing cell");
 	wmove(map_win, y, x);
 
 	// cell highlights
@@ -43,10 +42,10 @@ void draw_cell(int y, int x, t_cell *cell)
 		wattron(map_win, COLOR_PAIR(SELECTED_HIGHLIGHT));
 	else
 		wattron(map_win, COLOR_PAIR(pair_id(cell)));
-	logger("cell highlighted");
-	char ch = cell->creature == NULL ? cell->terrain->ch : cell->creature->ch;
+
+	char ch = cell_char(cell);
 	waddch(map_win, ch);
-	logger("cell drawn");
+
 	if (cell->highlight & REVERSE)
 		wattroff(map_win, A_REVERSE);
 	if (cell->highlight & SELECTED)

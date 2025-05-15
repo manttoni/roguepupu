@@ -1,12 +1,16 @@
 #ifndef AREA_H
 #define AREA_H
 
-#include "cell.h"
+//#include "cell.h"
+//#include "creature.h"
 
+typedef struct s_cell t_cell;
 typedef struct s_node t_node;
+typedef struct s_creature t_creature;
 
 typedef struct s_area
 {
+	int		level;
     char    *name;
 	int		height;
 	int		width;

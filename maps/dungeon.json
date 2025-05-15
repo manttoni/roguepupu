@@ -1,11 +1,9 @@
 {
 	"level": 1,
 	"name": "Dungeon",
-	"U": "previous_level.json",
-	"B": "next_level.json",
 	"terrain": [
 		"##########",
-		"#UB..#.C.#",
+		"#....#.C.#",
 		"#....#...#",
 		"#....D...#",
 		"#....#...#",

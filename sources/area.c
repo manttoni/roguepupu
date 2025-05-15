@@ -1,25 +1,10 @@
 #include "../headers/area.h"
+#include "../headers/cell.h"
 #include "../headers/utils.h"
 #include "../headers/globals.h"
 #include "../headers/windows.h"
+#include "../headers/mech.h"
 #include <string.h>
-
-void add_creature(t_area *area, t_creature *creature, int index)
-{
-	area->cells[index].creature = creature;
-}
-
-static void populate(t_area *area, char *raw)
-{
-	t_cell *cell = area->cells;
-	for (int i = 0; i < (area->width + 1) * area->height; ++i)
-	{
-		if (raw[i] == '\n')
-			continue;
-		*cell = new_cell(raw[i]);
-		cell++;
-	}
-}
 
 int get_player_index(t_area *area)
 {
@@ -28,10 +13,6 @@ int get_player_index(t_area *area)
 		t_cell *c = &area->cells[i];
 		if (c->creature == NULL)
 			continue;
-		logger("cell: %p", c);
-		logger("%s", cell_string(c));
-		logger("creature: %p", c->creature);
-		logger("%c", c->creature->ch);
 		if (c->creature->ch == '@')
 			return i;
 	}
@@ -53,20 +34,6 @@ t_creature *get_player(t_area *area)
 	return c->creature;
 }
 
-t_area *new_area(char *file)
-{
-	logger("new_area(%s)", file);
-	t_area *area = my_calloc(sizeof(t_area));
-	char *raw = read_file(file);
-	area->height = count_char(raw, '\n');
-	area->width = strchr(raw, '\n') - raw;
-	area->name = file;
-	size_t size = area->height * area->width + 1;
-	area->cells = my_calloc(size * sizeof(t_cell));
-	populate(area, raw);
-	return area;
-}
-
 t_node *get_interactables(t_area *area, int flags)
 {
 	logger("get_interactables(%s, %d)", area->name, flags);
@@ -77,18 +44,25 @@ t_node *get_interactables(t_area *area, int flags)
 	for (int i = 0; i < AREA(area); ++i)
 	{
 		t_cell *cell = &area->cells[i];
+
+		if (flags & CLOSED && !is_closed(cell->terrain))
+			continue;
+
+		if (flags & LOCKED && !is_locked(cell->mech))
+			continue;
+		if (flags & TRAPPED && !is_trapped(cell->mech))
+			continue;
+
+		if (flags & ENEMY && !is_enemy(cell->creature))
+			continue;
+
 		if (flags & VISIBLE && !is_visible(area, pc, cell))
 			continue;
 		if (flags & NEIGHBOR && !is_neighbor(area, pc, cell))
 			continue;
-		if (flags & LOCKED && !is_locked(cell))
-			continue;
-		if (flags & UNLOCKED && is_locked(cell))
-			continue;
-		if (flags & ENEMY && !is_enemy(cell))
-			continue;
 		if (!is_interactable(cell))
 			continue;
+
 		add_node_last(&list, new_node(cell));
 	}
 	return list;

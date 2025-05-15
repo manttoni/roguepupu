@@ -11,7 +11,8 @@ typedef struct s_terrain
 	int		is_locked;
 }	t_terrain;
 
-t_terrain *new_terrain(char ch);
+int is_closed(t_terrain *terrain);
+t_terrain *new_terrain(char ch, int area_level);
 char *terrain_string(t_terrain *terrain);
 
 #endif

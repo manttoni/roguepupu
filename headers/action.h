@@ -12,6 +12,7 @@ typedef struct s_creature t_creature;
 
 typedef enum
 {
+	PICK_UP,
 	PASS,
 	MOVE_UPLEFT,
 	MOVE_UPRIGHT,
@@ -28,8 +29,9 @@ typedef enum
 	NONE
 }	e_action;
 
-void open_door(t_terrain *door);
-void unlock_door(t_terrain *door);
+void pick_up(t_creature *picker, t_cell *item_cell);
+void open_door(t_cell *door_cell);
+void unlock_door(t_cell *door_cell);
 void attack(t_creature *attacker, t_cell *defender_cell);
 int enemy_act(t_area *area);
 int player_act(t_area *area, e_action action);
