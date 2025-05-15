@@ -4,6 +4,7 @@
 #include "../headers/player.h"
 #include "../headers/draw.h"
 #include "../headers/globals.h"
+#include "../headers/interface.h"
 
 void start(t_game *game)
 {
@@ -14,6 +15,7 @@ void start(t_game *game)
 	while(1)
 	{
 		draw_area(area);
+		update_stat_win(area);
 
 		int input = getch();
 		if (input == ESCAPE)

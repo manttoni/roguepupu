@@ -1,7 +1,6 @@
 #ifndef CREATURE_H
 #define CREATURE_H
 
-#include "action.h"
 #include "weapon.h"
 #include "color.h"
 
@@ -18,11 +17,11 @@ typedef struct s_creature
 	int			health;
 	int			max_health;
 	int			bleeding; // bleeding does damage equal to remaining turns
+	int			stunned;
 }	t_creature;
 
-int bleed(t_creature *creature);
 int take_damage(t_creature *creature, int damage, e_damage_type damage_type);
-void perish(t_creature *creature);
+void perish(t_creature *creature, e_damage_type damage_type);
 t_creature *new_creature(char ch);
 int move_creature(t_cell *dest, t_cell *src);
 

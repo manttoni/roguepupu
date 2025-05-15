@@ -3,6 +3,8 @@
 #include "../headers/globals.h"
 #include "../headers/utils.h"
 #include "../headers/windows.h"
+#include "../headers/creature.h"
+#include "../headers/status.h"
 #include <unistd.h>
 
 void flee(t_area *area, t_cell *cell)
@@ -59,14 +61,16 @@ int enemy_act(t_area *area)
 		t_cell *cell = (t_cell *) enemies->data;
 		t_creature *enemy = cell->creature;
 
-		if (enemy->bleeding > 0 && enemy->health > 0)
-			change_color(&cell->terrain->color, bleed(enemy) / 2, 0, 0);
+		if (apply_status_effects(cell) == STUN)
+		{
+			enemies = enemies->next;
+			continue;
+		}
 
 		if (enemy->health <= 0)
 		{
 			free(cell->terrain);
 			cell->terrain = new_terrain('C');
-			cell->terrain->color = color_id((t_color){min(5, enemy->bleeding / 2), 0, 0});
 			free(cell->creature);
 			cell->creature = NULL;
 		}
@@ -77,7 +81,7 @@ int enemy_act(t_area *area)
 		}
 		else
 		{
-			if (enemy->ai & FLEE && enemy->health < enemy->max_health / 2)
+			if (enemy->ai & FLEE && enemy->health < enemy->max_health / 4)
 				flee(area, cell);
 			else if (is_neighbor(area, cell, get_player_cell(area)))
 				attack(enemy, get_player_cell(area));

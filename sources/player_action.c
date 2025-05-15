@@ -4,6 +4,8 @@
 #include "../headers/globals.h"
 #include "../headers/windows.h"
 #include "../headers/draw.h"
+#include "../headers/action.h"
+#include "../headers/status.h"
 
 void open_door(t_terrain *door)
 {
@@ -135,9 +137,8 @@ int player_act(t_area *area, e_action action)
 	t_cell *cell = &area->cells[pi];
 	t_creature *player = cell->creature;
 
-	// damage over time
-	if (player->bleeding > 0)
-		bleed(player);
+	if (apply_status_effects(cell) == STUN)
+		return 0;
 
 	switch(action)
 	{

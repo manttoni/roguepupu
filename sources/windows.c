@@ -82,22 +82,36 @@ static void init_map_win(t_winset mapset)
 	refresh_window(map_win);
 }
 
+static void init_stat_win(t_winset statset)
+{
+	stat_win = my_newwin(statset);
+	scrollok(stat_win, TRUE);
+	wmove(stat_win, 1, 0);
+	refresh_window(stat_win);
+}
+
 void init_windows(void)
 {
 	// winsets values are relative to stdcr size
-	t_winset logset, mapset, legset;
+	t_winset logset, mapset, legset, statset;
+
+	// status window
+	statset.height = 100;
+	statset.width = 25;
+	statset.y = 0;
+	statset.x = 0;
 
 	// log window
 	logset.height = 25; // 25 % of total size
-	logset.width = 75;
+	logset.width = 50;
 	logset.y = 75; // 75 % of scr is above this
-	logset.x = 0; // left side of stdscr
+	logset.x = 25; // left side of stdscr
 
 	// map window
 	mapset.height = 75;
-	mapset.width = 75;
+	mapset.width = 50;
 	mapset.y = 0; // top of stdscr
-	mapset.x = 0;
+	mapset.x = 25;
 
 	// legend window
 	legset.height = 100;
@@ -105,6 +119,7 @@ void init_windows(void)
 	legset.y = 0;
 	legset.x = 75;
 
+	init_stat_win(statset);
 	init_log_win(logset);
 	init_map_win(mapset);
 	init_leg_win(legset);

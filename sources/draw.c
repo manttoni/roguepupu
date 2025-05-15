@@ -8,7 +8,7 @@
 short pair_id(t_cell *cell)
 {
 	static int pairs[256];
-	static int next_free = 2;
+	static int next_free = 3;
 	short creature = cell->creature == NULL ? COLOR_WHITE : cell->creature->color;
 	short terrain = cell->terrain->color;
 	creature = min(255, creature);

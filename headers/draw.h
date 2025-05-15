@@ -6,5 +6,6 @@
 
 void draw_cell(int y, int x, t_cell *cell);
 void draw_area(t_area *area);
+short pair_id(t_cell *cell);
 
 #endif

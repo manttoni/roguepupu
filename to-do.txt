@@ -5,7 +5,6 @@ weapon:
 			knockback
 
 creature:
-	enemy colors
 	creature status
 		stun skips turn
 	creature vision range

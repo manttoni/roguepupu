@@ -48,5 +48,6 @@
 
 /* Damage related */
 #define FATAL 1
+#define STUN 2
 
 #endif
