@@ -1,7 +1,7 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Wextra -Werror -fanalyzer
-LFLAGS := -lncursesw
+CFLAGS := -Wall -Wextra -Werror -fanalyzer -g
+LFLAGS := -lncursesw -lm
 
 # Directories
 SRC_DIR := sources

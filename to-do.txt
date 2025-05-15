@@ -1,19 +1,23 @@
 weapon:
 	damage type
 		blunt
-			stun
 			knockback
 
 creature:
-	creature status
-		stun skips turn
 	creature vision range
-
-terrain:
-	door D and locked status not known until try to open
-
-area:
-	put creatures straight into map and add . terrain where they spawn
 
 action:
 	shouldnt be able to "open" goblins. redo get_interactables
+
+color:
+	pair_id could take easily take  two colors instead of a cell to have colors on other windows too
+
+area files in layers in json
+	terrain
+		floor, wall, door, stairs
+	creatures
+		enemies, NPC, player
+	mechanisms
+		lock, trap, switch
+	items
+		chest, weapons, keys

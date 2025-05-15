@@ -9,14 +9,14 @@
 void start(t_game *game)
 {
 	print_log("Game started!");
-	print_log("Color pairs: %d", COLOR_PAIRS);
-	print_log("pair initialized: id: %d, red: %d, black: %d", SELECTED_HIGHLIGHT, COLOR_RED, COLOR_BLACK);
 	t_area *area = game->area;
 	while(1)
 	{
-		draw_area(area);
+		print_log("Start of turn");
 		update_stat_win(area);
-
+		logger("stat win updated");
+		draw_area(area);
+		logger("area drawn");
 		int input = getch();
 		if (input == ESCAPE)
 		{
@@ -35,17 +35,17 @@ void start(t_game *game)
 	}
 }
 
-void enter_area(t_game *game, t_area *area, t_coord entry_point)
+void enter_area(t_game *game, t_area *area, t_coord entry)
 {
+	print_log("Entered area: %s", area->name);
+	(void)entry;
 	game->area = area;
-	add_creature(area, new_creature('@'), entry_point.y * area->width + entry_point.x);
-	add_creature(area, new_creature('g'), 21 * area->width + 10);
-	add_creature(area, new_creature('g'), 21 * area->width + 8);
 	list_clear(&game->creatures);
 }
 
 t_game *new_game(t_area *start_area)
 {
+	print_log("New game");
 	t_game *game = my_calloc(sizeof(t_game));
 	enter_area(game, start_area, (t_coord){1, 1});
 	return game;

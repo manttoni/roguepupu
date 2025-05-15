@@ -28,6 +28,10 @@ int get_player_index(t_area *area)
 		t_cell *c = &area->cells[i];
 		if (c->creature == NULL)
 			continue;
+		logger("cell: %p", c);
+		logger("%s", cell_string(c));
+		logger("creature: %p", c->creature);
+		logger("%c", c->creature->ch);
 		if (c->creature->ch == '@')
 			return i;
 	}
@@ -51,6 +55,7 @@ t_creature *get_player(t_area *area)
 
 t_area *new_area(char *file)
 {
+	logger("new_area(%s)", file);
 	t_area *area = my_calloc(sizeof(t_area));
 	char *raw = read_file(file);
 	area->height = count_char(raw, '\n');
@@ -64,6 +69,7 @@ t_area *new_area(char *file)
 
 t_node *get_interactables(t_area *area, int flags)
 {
+	logger("get_interactables(%s, %d)", area->name, flags);
 	int pi = get_player_index(area);
 	t_cell *pc = &area->cells[pi];
 

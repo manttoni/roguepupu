@@ -83,6 +83,7 @@ int take_damage(t_creature *creature, int damage, e_damage_type damage_type)
 
 t_creature *new_creature(char ch)
 {
+	logger("new_creature(%c)", ch);
 	t_creature *creature = my_calloc(sizeof(t_creature));
 	creature->ch = ch;
 	creature->health = 20;

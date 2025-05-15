@@ -17,7 +17,7 @@ void flee(t_area *area, t_cell *cell)
 		t_cell *n = neighbor(dirs[i], area, cell);
 		if (n == NULL || is_blocked(n))
 			continue;
-		if (mandis(area, n, player_cell) >= mandis(area, best_flee, player_cell))
+		if (distance(area, n, player_cell) >= distance(area, best_flee, player_cell))
 			best_flee = n;
 	}
 	move_creature(best_flee, cell);
@@ -34,7 +34,7 @@ void pursue(t_area *area, t_cell *cell)
 		t_cell *n = neighbor(dirs[i], area, cell);
 		if (n == NULL)
 			continue;
-		if (mandis(area, n, player_cell) <= mandis(area, best_pursue, player_cell))
+		if (distance(area, n, player_cell) <= distance(area, best_pursue, player_cell))
 		{
 			second_best = best_pursue;
 			best_pursue = n;

@@ -27,6 +27,7 @@ typedef enum
 	DOWNRIGHT
 }	e_direction;
 
+double distance(t_area *area, t_cell *a, t_cell *b);
 int mandis(t_area *area, t_cell *a, t_cell *b);
 t_cell new_cell(char ch);
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell);

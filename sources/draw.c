@@ -33,6 +33,7 @@ short pair_id(t_cell *cell)
 
 void draw_cell(int y, int x, t_cell *cell)
 {
+	logger("Drawing cell");
 	wmove(map_win, y, x);
 
 	// cell highlights
@@ -42,10 +43,10 @@ void draw_cell(int y, int x, t_cell *cell)
 		wattron(map_win, COLOR_PAIR(SELECTED_HIGHLIGHT));
 	else
 		wattron(map_win, COLOR_PAIR(pair_id(cell)));
-
+	logger("cell highlighted");
 	char ch = cell->creature == NULL ? cell->terrain->ch : cell->creature->ch;
 	waddch(map_win, ch);
-
+	logger("cell drawn");
 	if (cell->highlight & REVERSE)
 		wattroff(map_win, A_REVERSE);
 	if (cell->highlight & SELECTED)
@@ -56,15 +57,18 @@ void draw_cell(int y, int x, t_cell *cell)
 
 void draw_area(t_area *area)
 {
+	logger("Drawing area");
 	int y_max, x_max;
 	getmaxyx(map_win, y_max, x_max);
 	int y_center = y_max / 2;
 	int x_center = x_max / 2;
 
+	logger("got coords");
 	int player_index = get_player_index(area);
 	int y_player = player_index / area->width;
 	int x_player = player_index % area->width;
 
+	logger("got player index");
 	int y_draw = y_center - y_player;
 	int x_draw = x_center - x_player;
 

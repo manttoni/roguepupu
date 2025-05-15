@@ -26,6 +26,7 @@ void update_stat_win(t_area *area)
 	wmove(stat_win, 1, 0);
 	t_node *enemies = get_interactables(area, ENEMY | VISIBLE);
 
+	logger("update_stat_win got interactables");
 	print_creature_status(get_player(area));
 
 	while (enemies != NULL)

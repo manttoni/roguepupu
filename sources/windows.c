@@ -37,6 +37,7 @@ void print_log(const char *format, ...)
 	va_list args;
 	va_start(args, format);
 
+	logger(format, args);
 	wprintw(log_win, "  ");
 	vw_printw(log_win, format, args);
 	wprintw(log_win, "\n");

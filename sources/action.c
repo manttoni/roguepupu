@@ -9,6 +9,7 @@
 
 void attack(t_creature *attacker, t_cell *defender_cell)
 {
+	logger("attack(%s, %s)", attacker->name, cell_string(defender_cell));
 	int damage = throw_dice(attacker->weapon.damage);
 	t_creature *defender = defender_cell->creature;
 
@@ -20,6 +21,7 @@ void attack(t_creature *attacker, t_cell *defender_cell)
 
 int move_creature(t_cell *dst, t_cell *src)
 {
+	logger("move_creature(%s, %s)", cell_string(dst), cell_string(src));
 	if (dst == NULL)
 		return 0;
 	if (is_blocked(dst))

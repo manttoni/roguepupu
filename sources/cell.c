@@ -4,6 +4,20 @@
 #include "../headers/file_reader.h"
 #include "../headers/area.h"
 #include "../headers/globals.h"
+#include <math.h>
+
+/* Real distance between cells */
+double distance(t_area *area, t_cell *a, t_cell *b)
+{
+	int ida = a - area->cells;
+	int idb = b - area->cells;
+	int x_a = ida % area->width;
+	int y_a = ida / area->width;
+	int x_b = idb % area->width;
+	int y_b = idb / area->width;
+	return hypot(x_a - x_b, y_a - y_b);
+}
+
 
 /* manhattan distance between 2 cells */
 int mandis(t_area *area, t_cell *a, t_cell *b)
@@ -115,8 +129,17 @@ t_cell new_cell(char ch)
 {
 	t_cell cell;
 	cell.highlight = 0;
-	cell.creature = NULL;
-	cell.terrain = new_terrain(ch);
+	if (strchr(CREATURES, ch) != NULL)
+	{
+		cell.terrain = new_terrain('.');
+		cell.creature = new_creature(ch);
+		logger("%s spawned", cell.creature->name);
+	}
+	else
+	{
+		cell.terrain = new_terrain(ch);
+		cell.creature = NULL;
+	}
 	return cell;
 }
 
