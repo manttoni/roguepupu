@@ -2,8 +2,8 @@
 #include "../headers/utils.h"
 #include "../headers/cell.h"
 #include "../headers/globals.h"
-#include "../headers/windows.h"
 #include "../headers/draw.h"
+#include "../headers/interface.h"
 #include "../headers/action.h"
 #include "../headers/status.h"
 

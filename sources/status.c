@@ -1,7 +1,7 @@
 #include "../headers/cell.h"
 #include "../headers/creature.h"
-#include "../headers/windows.h"
 #include "../headers/globals.h"
+#include "../headers/interface.h"
 #include "../headers/status.h"
 
 int apply_status_effects(t_cell *cell)

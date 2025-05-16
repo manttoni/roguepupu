@@ -3,8 +3,8 @@
 #include "../headers/area.h"
 #include "../headers/creature.h"
 #include "../headers/game.h"
-#include "../headers/windows.h"
 #include "../headers/draw.h"
+#include "../headers/interface.h"
 #include "../headers/globals.h"
 #include "../headers/dice.h"
 

@@ -18,7 +18,6 @@ typedef struct s_winset
 
 WINDOW *my_newwin(t_winset winset);
 void refresh_window(WINDOW *window);
-void print_log(const char *format, ...);
 void init_windows();
 void delete_windows();
 

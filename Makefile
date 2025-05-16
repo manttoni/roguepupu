@@ -20,6 +20,7 @@ all: $(BIN)
 # Link object files into binary
 $(BIN): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
+	@mkdir -p logs
 
 # Compile source files into object files
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c

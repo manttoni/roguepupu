@@ -2,8 +2,8 @@
 #include <ncurses.h>
 #include "../headers/file_reader.h"
 #include "../headers/area.h"
-#include "../headers/windows.h"
 #include "../headers/globals.h"
+#include "../headers/interface.h"
 #include "../headers/color.h"
 
 int min(int a, int b)
