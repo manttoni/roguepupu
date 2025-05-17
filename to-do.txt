@@ -1,23 +1,12 @@
 weapon:
-	damage type
-		blunt
-			knockback
+	knockback
 
 creature:
 	creature vision range
 
-action:
-	shouldnt be able to "open" goblins. redo get_interactables
-
 color:
 	pair_id could take easily take  two colors instead of a cell to have colors on other windows too
 
-area files in layers in json
-	terrain
-		floor, wall, door, stairs
-	creatures
-		enemies, NPC, player
-	mechanisms
-		lock, trap, switch
-	items
-		chest, weapons, keys
+round events
+	player bleeding
+		happens at weird tim

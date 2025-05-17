@@ -52,11 +52,7 @@ void end_ncurses(int exit_value)
 {
 	if (exit_value != 0)
 	{
-		print_log("Error occurred. Press any key to see log.");
-		getch();
-		clear();
-		char *log = read_file("logs/debug.log");
-		mvprintw(0,0,"%s", log);
+		print_log("Error occurred. Press any key to continue. Read log/debug.log.");
 		getch();
 	}
 	endwin();

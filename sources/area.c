@@ -45,17 +45,25 @@ t_node *get_interactables(t_area *area, int flags)
 	{
 		t_cell *cell = &area->cells[i];
 
+		// terrain checks
 		if (flags & CLOSED && !is_closed(cell->terrain))
 			continue;
 
+		// mech checks
 		if (flags & LOCKED && !is_locked(cell->mech))
 			continue;
 		if (flags & TRAPPED && !is_trapped(cell->mech))
 			continue;
 
+		// creature checks
 		if (flags & ENEMY && !is_enemy(cell->creature))
 			continue;
 
+		// item checks
+		if (flags & ITEM && cell->item == NULL)
+			continue;
+
+		// cell checks
 		if (flags & VISIBLE && !is_visible(area, pc, cell))
 			continue;
 		if (flags & NEIGHBOR && !is_neighbor(area, pc, cell))

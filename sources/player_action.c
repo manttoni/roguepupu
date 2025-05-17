@@ -41,15 +41,14 @@ void clear_highlights(t_node *list)
 /* Select a cell from list of cells */
 t_cell *select_cell(t_node *list, t_area *area)
 {
+	logger("Selecting cell from list where first is: %s", cell_string((t_cell *)list->data));
 	t_node *selected_node = list;
 	while (1)
 	{
 		t_cell *selected = (t_cell *) selected_node->data;
 		selected->highlight |= SELECTED;
-		// draw area, highlights are showing
 		draw_area(area);
 
-		// esc quits, enter returns selected, other keys select next
 		int input = getch();
 		switch (input)
 		{
@@ -73,6 +72,7 @@ t_cell *select_cell(t_node *list, t_area *area)
 /* Scan surroundings, highlight cells, return a selected cell */
 t_cell *scan(t_area *area, int flags)
 {
+	logger("Scanning area for %d", flags);
 	// get list
 	t_node *list = get_interactables(area, flags);
 	if (list == NULL)

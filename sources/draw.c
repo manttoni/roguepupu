@@ -62,12 +62,10 @@ void draw_area(t_area *area)
 	int y_center = y_max / 2;
 	int x_center = x_max / 2;
 
-	logger("got coords");
 	int player_index = get_player_index(area);
 	int y_player = player_index / area->width;
 	int x_player = player_index % area->width;
 
-	logger("got player index");
 	int y_draw = y_center - y_player;
 	int x_draw = x_center - x_player;
 
@@ -79,6 +77,7 @@ void draw_area(t_area *area)
 			if (is_visible(area, &area->cells[player_index], cell))
 				draw_cell(y_draw, x_draw, cell);
 		x_draw++;
+		logger("Cell drawn");
 		if ((i + 1) % area->width == 0)
 		{
 			y_draw++;
