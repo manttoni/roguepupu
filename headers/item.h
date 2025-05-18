@@ -4,7 +4,7 @@
 #include "die.h"
 
 #define WEAPON_TYPES (CATEGORY_WEAPON_END)
-#define SIMPLE_WEAPON_TYPES (SIMPLE_END - SIMPLE - 1)
+#define SIMPLE_WEAPON_TYPES (WEAPON_SIMPLE_END - WEAPON_SIMPLE - 1)
 
 #define POTION_TYPES (POTION_END - POTION - 1)
 
@@ -17,9 +17,9 @@ typedef enum
 typedef enum
 {
 	WEAPON,
-		SIMPLE,
+		WEAPON_SIMPLE,
 			CLUB, DAGGER, GREATCLUB, HANDAXE, JAVELIN, LIGHT_HAMMER, MACE, QUARTERSTAFF, SICKLE, SPEAR,
-		SIMPLE_END,
+		WEAPON_SIMPLE_END,
 	WEAPON_END,
 	POTION,
 		POTION_HEALING,
@@ -51,5 +51,6 @@ int add_dice(t_item *item);
 int is_weapon(t_item *item);
 int is_potion(t_item *item);
 t_item *new_random_item(char ch, int area_level);
+t_item *new_weapon(e_item_type type, e_item_rarity rarity);
 
 #endif

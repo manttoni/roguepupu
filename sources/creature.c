@@ -89,7 +89,6 @@ t_creature *new_creature(char ch, int area_level)
 			creature->faction = FACTION_GOBLIN;
 			break;
 		case '@':
-			creature->name = "Rabdin";
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
 			break;

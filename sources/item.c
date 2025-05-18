@@ -24,7 +24,7 @@ e_item_type randomize_type(char ch, int area_level)
 			switch (category)
 			{
 				case CATEGORY_WEAPON_SIMPLE:
-					return rand() % SIMPLE_WEAPON_TYPES + SIMPLE + 1;
+					return rand() % SIMPLE_WEAPON_TYPES + WEAPON_SIMPLE + 1;
 				default:
 					logger("randomize type error");
 					end_ncurses(1);
@@ -142,3 +142,17 @@ t_item *new_random_item(char ch, int area_level)
 	}
 	return item;
 }
+
+t_item *new_weapon(e_item_type type, e_item_rarity rarity)
+{
+	if (type <= WEAPON + 1 || type >= WEAPON_END || type == WEAPON_SIMPLE_END)
+		return NULL;
+	t_item *item = my_calloc(sizeof(*item));
+	item->ch = 'W';
+	item->type = type;
+	item->rarity = rarity;
+	set_weapon_stats(item);
+	item->color = get_item_color(item->rarity);
+	return item;
+}
+

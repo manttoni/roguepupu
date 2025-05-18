@@ -6,8 +6,8 @@
 
 typedef struct s_game
 {
-	t_node	*creatures;
-	t_area	*area;
+	t_area		*area;
+	t_creature *player;
 }	t_game;
 
 void draw(t_area *area);

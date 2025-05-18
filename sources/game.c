@@ -23,18 +23,80 @@ void start(t_game *game)
 	}
 }
 
-void enter_area(t_game *game, t_area *area, t_coord entry)
+void enter_area(t_game *game, t_area *area)
 {
 	print_log("Entered area: {red}%s{reset}", area->name);
-	(void)entry;
 	game->area = area;
-	list_clear(&game->creatures);
 }
 
-t_game *new_game(t_area *start_area)
+void character_creation(t_creature *player)
 {
-	print_log("New game");
-	t_game *game = my_calloc(sizeof(t_game));
-	enter_area(game, start_area, (t_coord){1, 1});
+	t_winset cc_set;
+	cc_set.height = 25;
+	cc_set.width = 25;
+	cc_set.y = (100 - cc_set.height) / 2;
+	cc_set.x = (100 - cc_set.width) / 2;
+	WINDOW *cc = my_newwin(cc_set);
+
+	wmove(cc, 1, 0);
+	echo();
+	nocbreak();
+	curs_set(1);
+
+	wprintw(cc, " Character Creation\n\n");
+	wprintw(cc, " Name: ");
+	refresh_window(cc);
+
+	player->name = my_calloc(20);
+	wgetnstr(cc, player->name, 19);
+	noecho();
+	curs_set(0);
+	cbreak();
+
+	wprintw(cc, " Select weapon with LEFT or RIGHT: ");
+	int y, x;
+	getyx(cc, y, x);
+	e_item_type type = WEAPON_SIMPLE + 1;
+	while (1)
+	{
+		t_item *weapon = new_weapon(type, COMMON);
+		wprintw(cc, "%s", weapon->name);
+		refresh_window(cc);
+
+		int input = getch();
+		if (input == ESCAPE)
+			end_ncurses(0);
+		if (input == ENTER)
+		{
+			player->weapon = weapon;
+			break;
+		}
+		if (input == KEY_LEFT)
+		{
+			type--;
+			if (type == WEAPON_SIMPLE)
+				type = WEAPON_SIMPLE_END - 1;
+		}
+		if (input == KEY_RIGHT)
+		{
+			type++;
+			if (type == WEAPON_SIMPLE_END)
+				type = WEAPON_SIMPLE + 1;
+		}
+		wmove(cc, y, x);
+		wprintw(cc, "                          ");
+		wmove(cc, y, x);
+		flushinp();
+	}
+}
+
+t_game *new_game(t_area *area)
+{
+	logger("New game");
+	t_game *game = my_calloc(sizeof(*game));
+	game->player = get_player(area);
+	logger("got player");
+	character_creation(game->player);
+	enter_area(game, area);
 	return game;
 }
