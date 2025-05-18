@@ -10,11 +10,12 @@
 
 typedef struct s_cell
 {
-	int			highlight; // highlight info as bits
+	chtype		highlight; // highlight info as bits using ncurses attributes
 	t_terrain	*terrain;
 	t_mech		*mech;
 	t_item		*item;
 	t_creature	*creature;
+	t_coord		last_draw; // could be useful
 }	t_cell;
 
 typedef enum

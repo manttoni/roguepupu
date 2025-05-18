@@ -7,6 +7,7 @@
 #include "interface.h"
 #include "globals.h"
 #include "die.h"
+#include "windows.h"
 
 int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
 {

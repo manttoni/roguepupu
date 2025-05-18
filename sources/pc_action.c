@@ -6,6 +6,7 @@
 #include "draw.h"
 #include "interface.h"
 #include "status.h"
+#include "windows.h"
 
 void pc_disarm_trap(t_creature *pc, t_cell *trapped_cell)
 {
@@ -31,7 +32,7 @@ t_cell *select_cell(t_node *list, t_area *area)
 	while (1)
 	{
 		t_cell *selected = (t_cell *) selected_node->data;
-		selected->highlight |= HIGHLIGHT_SELECTED;
+		selected->highlight |= A_BOLD;
 		draw_area(area);
 
 		int input = getch();
@@ -44,7 +45,7 @@ t_cell *select_cell(t_node *list, t_area *area)
 				clear_highlights(list);
 				return selected;
 			default:
-				selected->highlight &= ~HIGHLIGHT_SELECTED;
+				selected->highlight &= ~A_BOLD;
 				selected_node = selected_node->next;
 				if (selected_node == NULL)
 					selected_node = list;
@@ -71,7 +72,7 @@ t_cell *scan(t_area *area, int flags)
 	while (ptr != NULL)
 	{
 		t_cell *cell = (t_cell *) ptr->data;
-		cell->highlight |= HIGHLIGHT_REVERSE;
+		cell->highlight |= A_REVERSE;
 		ptr = ptr->next;
 	}
 	return select_cell(list, area);

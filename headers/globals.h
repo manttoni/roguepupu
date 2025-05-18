@@ -67,9 +67,8 @@
 
 /* Colors */
 // 0 is default colors
-#define COLOR_SELECTED 1
-#define COLOR_HEALTH 2
-#define NEXT_FREE 3
+#define COLOR_PAIR_RED 1
+#define NEXT_FREE 2
 
 /* Damage related */
 #define DAMAGE_FATAL 1

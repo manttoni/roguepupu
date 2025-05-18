@@ -11,8 +11,8 @@
 
 typedef struct s_coord
 {
-	int x;
 	int y;
+	int x;
 }	t_coord;
 
 /* LINKED LIST STUFF */

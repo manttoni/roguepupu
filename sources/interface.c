@@ -31,13 +31,8 @@ void print_legend(void)
 	wprintw(leg_win, " esc exit\n");
 }
 
-void print_log(char *format, ...)
+void print_win(WINDOW *win, char *format, va_list args)
 {
-	va_list args;
-	va_start(args, format);
-
-	wprintw(log_win, "  ");
-
 	char *ptr = format;
 	short color = 0;
 
@@ -46,9 +41,9 @@ void print_log(char *format, ...)
 		if (*ptr == '%')
 		{
 			if (ptr[1] == 'd')
-				wprintw(log_win, "%d", va_arg(args, int));
+				wprintw(win, "%d", va_arg(args, int));
 			else if (ptr[1] == 's')
-				wprintw(log_win, "%s", va_arg(args, char *));
+				wprintw(win, "%s", va_arg(args, char *));
 			else
 			{
 				logger("Printing some unimplemented types");
@@ -63,29 +58,35 @@ void print_log(char *format, ...)
 			if (strncmp("{red}", ptr, code_len) == 0)
 			{
 				color = COLOR_RED;
-				wattron(log_win, COLOR_PAIR(COLOR_RED));
+				wattron(win, COLOR_PAIR(COLOR_RED));
 			}
 			else if (strncmp("{green}", ptr, code_len) == 0)
 			{
 				color = COLOR_GREEN;
-				wattron(log_win, COLOR_PAIR(COLOR_GREEN));
+				wattron(win, COLOR_PAIR(COLOR_GREEN));
 			}
 			else if (strncmp("{reset}", ptr, code_len) == 0)
 			{
-				wattroff(log_win, COLOR_PAIR(color));
+				wattroff(win, COLOR_PAIR(color));
 				color = 0;
 			}
 			ptr += code_len;
 		}
 		else
 		{
-			wprintw(log_win, "%c", *ptr);
+			wprintw(win, "%c", *ptr);
 			ptr++;
 		}
 	}
+}
 
+void print_log(char *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	wprintw(log_win, "  ");
+	print_win(log_win, format, args);
 	wprintw(log_win, "\n");
-
 	refresh_window(log_win);
 	va_end(args);
 	usleep(100000);
@@ -98,9 +99,9 @@ void print_creature_status(t_creature *creature)
 	wprintw(stat_win, "  %s %c\n", creature->name, creature->ch);
 	wattroff(stat_win, COLOR_PAIR(pairid));
 
-	wattron(stat_win, COLOR_PAIR(COLOR_HEALTH));
+	wattron(stat_win, COLOR_PAIR(COLOR_PAIR_RED));
 	wprintw(stat_win, "  Health: %d/%d\n", creature->health, creature->max_health);
-	wattroff(stat_win, COLOR_PAIR(COLOR_HEALTH));
+	wattroff(stat_win, COLOR_PAIR(COLOR_PAIR_RED));
 	int x, y;
 	getmaxyx(stat_win, y, x);
 	(void) y;

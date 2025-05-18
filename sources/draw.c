@@ -5,6 +5,17 @@
 #include "../headers/color.h"
 #include <ncurses.h>
 
+void visual_effect(t_cell *cell, chtype effect)
+{
+	cell->highlight = effect;
+	draw_cell(cell->last_draw.y, cell->last_draw.x, cell);
+	refresh_window(map_win);
+	usleep(100000);
+	cell->highlight = 0;
+	draw_cell(cell->last_draw.y, cell->last_draw.x, cell);
+	refresh_window(map_win);
+}
+
 void cosmetic_effects(t_area *area)
 {
 	for (int i = 0; i < AREA(area); ++i)
@@ -23,26 +34,20 @@ void cosmetic_effects(t_area *area)
 
 void draw_cell(int y, int x, t_cell *cell)
 {
-	wmove(map_win, y, x);
+	cell->last_draw = (t_coord){y, x};
+	wmove(map_win, cell->last_draw.y, cell->last_draw.x);
 
 	short color_id = pair_id(cell_fg(cell), cell_bg(cell));
+	chtype highlight_color = cell->highlight & A_COLOR;
 
-	// cell highlights
-	if (cell->highlight & HIGHLIGHT_REVERSE)
-		wattron(map_win, A_REVERSE);
-	if (cell->highlight & HIGHLIGHT_SELECTED)
-		wattron(map_win, COLOR_PAIR(COLOR_SELECTED));
-	else
+	wattron(map_win, cell->highlight);
+	if (highlight_color == 0)
 		wattron(map_win, COLOR_PAIR(color_id));
 
-	char ch = cell_char(cell);
-	waddch(map_win, ch);
+	waddch(map_win, cell_char(cell));
 
-	if (cell->highlight & HIGHLIGHT_REVERSE)
-		wattroff(map_win, A_REVERSE);
-	if (cell->highlight & HIGHLIGHT_SELECTED)
-		wattroff(map_win, COLOR_PAIR(COLOR_SELECTED));
-	else
+	wattroff(map_win, cell->highlight);
+	if (highlight_color == 0)
 		wattroff(map_win, COLOR_PAIR(color_id));
 }
 

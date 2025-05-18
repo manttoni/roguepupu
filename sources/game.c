@@ -53,7 +53,7 @@ void character_creation(t_creature *player)
 	curs_set(0);
 	cbreak();
 
-	wprintw(cc, " Select weapon with LEFT or RIGHT: ");
+	print_win(cc, " Select weapon with {red}LEFT{reset} or {red}RIGHT{reset}: ");
 	int y, x;
 	getyx(cc, y, x);
 	e_item_type type = WEAPON_SIMPLE + 1;

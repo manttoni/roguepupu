@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "interface.h"
 #include "die.h"
+#include "draw.h"
 
 void equip(t_creature *creature, t_item *item)
 {
@@ -52,12 +53,14 @@ void perish(t_creature *creature, e_damage_type damage_type)
 
 int take_damage(t_cell *creature_cell, int damage, e_damage_type damage_type)
 {
+	if (damage > 0)
+		visual_effect(creature_cell, COLOR_PAIR(COLOR_PAIR_RED));
 	t_creature *creature = creature_cell->creature;
 	print_log("%s takes {red}%d{reset} %s damage", creature->name, damage, dmg_str(damage_type));
 	creature->health -= damage;
 
 	if (is_physical(damage_type))
-		creature->bleeding += damage / 2; // this is a cosmetic feature
+		creature->bleeding += damage / 4; // this is a cosmetic feature
 
 	if (creature->health <= 0)
 	{
