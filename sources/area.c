@@ -36,7 +36,6 @@ t_creature *get_player(t_area *area)
 
 t_node *get_interactables(t_area *area, int flags)
 {
-	logger("get_interactables(%s, %d)", area->name, flags);
 	int pi = get_player_index(area);
 	t_cell *pc = &area->cells[pi];
 
@@ -46,27 +45,27 @@ t_node *get_interactables(t_area *area, int flags)
 		t_cell *cell = &area->cells[i];
 
 		// terrain checks
-		if (flags & CLOSED && !is_closed(cell->terrain))
+		if (flags & SCAN_CLOSED && !is_closed(cell))
 			continue;
 
 		// mech checks
-		if (flags & LOCKED && !is_locked(cell->mech))
+		if (flags & SCAN_LOCKED && !is_locked(cell))
 			continue;
-		if (flags & TRAPPED && !is_trapped(cell->mech))
+		if (flags & SCAN_TRAPPED && !is_trapped(cell))
 			continue;
 
 		// creature checks
-		if (flags & ENEMY && !is_enemy(cell->creature))
+		if (flags & SCAN_ENEMY && !has_enemy(cell, get_player(area)))
 			continue;
 
 		// item checks
-		if (flags & ITEM && cell->item == NULL)
+		if (flags & SCAN_ITEM && !has_item(cell))
 			continue;
 
 		// cell checks
-		if (flags & VISIBLE && !is_visible(area, pc, cell))
+		if (flags & SCAN_VISIBLE && !is_visible(area, pc, cell))
 			continue;
-		if (flags & NEIGHBOR && !is_neighbor(area, pc, cell))
+		if (flags & SCAN_NEIGHBOR && !is_neighbor(area, pc, cell))
 			continue;
 		if (!is_interactable(cell))
 			continue;

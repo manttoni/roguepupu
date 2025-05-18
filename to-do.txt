@@ -1,6 +1,3 @@
-weapon:
-	knockback
-
 creature:
 	creature vision range
 
@@ -9,4 +6,10 @@ color:
 
 round events
 	player bleeding
-		happens at weird tim
+		happens at weird time
+
+creature spawning inside blocking terrain
+headers
+unlocking, opening shouldnt be only about doors
+organize functions to their right places
+all actions are always cell to cell. for example an action targeting a door has to remove the door D. attacker might hace difficult terrain etc

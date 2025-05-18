@@ -1,27 +1,22 @@
-#include "../headers/creature.h"
-#include "../headers/utils.h"
-#include "../headers/cell.h"
-#include "../headers/windows.h"
-#include "../headers/globals.h"
-#include "../headers/interface.h"
+#include "creature.h"
+#include "utils.h"
+#include "cell.h"
+#include "windows.h"
+#include "globals.h"
+#include "interface.h"
+#include "die.h"
 
 void equip(t_creature *creature, t_item *item)
 {
+	if (is_weapon(item))
+		creature->weapon = item;
 	print_log("%s equips %s", creature->name, item->name);
-	switch (item->class)
-	{
-		case WEAPON:
-			creature->weapon = item;
-			break;
-		default:
-			break;
-	}
 }
 
 void add_item(t_creature *creature, t_item *item)
 {
 	add_node_last(&creature->inventory, new_node(item));
-	if (creature->weapon == NULL && item->class == WEAPON)
+	if (creature->weapon == NULL && is_weapon(item))
 		equip(creature, item);
 }
 
@@ -37,11 +32,8 @@ void perish(t_creature *creature, e_damage_type damage_type)
 		case SLASHING:
 			print_log("%s gets cut to pieces", creature->name);
 			break;
-		case BLUNT:
+		case BLUDGEONING:
 			print_log("%s is crushed to death", creature->name);
-			break;
-		case BLEEDING:
-			print_log("%s bleeds to death", creature->name);
 			break;
 		default:
 			print_log("%s perishes", creature->name);
@@ -64,10 +56,8 @@ char *dmg_str(e_damage_type damage_type)
 	{
 		case SLASHING:
 			return "slashing";
-		case BLUNT:
-			return "blunt";
-		case BLEEDING:
-			return "bleeding";
+		case BLUDGEONING:
+			return "bludgeoning";
 		default:
 			return "";
 	}
@@ -78,32 +68,13 @@ int take_damage(t_creature *creature, int damage, e_damage_type damage_type)
 	print_log("%s takes %d %s damage", creature->name, damage, dmg_str(damage_type));
 	creature->health -= damage;
 
-	// apply statuses
-	switch (damage_type)
-	{
-		case SLASHING:
-			creature->bleeding += damage / 2;
-			if (creature->bleeding > 0)
-				print_log("%s gets a bleeding wound", creature->name);
-			break;
-		case BLUNT:
-			creature->stunned += damage;
-			if (creature->stunned > 0)
-				print_log("%s is hit with a stunning blow", creature->name);
-			break;
-		default:
-			break;
-	}
-
 	if (creature->health <= 0)
 	{
 		perish(creature, damage_type);
-		return FATAL;
+		return DAMAGE_FATAL;
 	}
-	return !FATAL;
+	return !DAMAGE_FATAL;
 }
-
-
 
 t_creature *new_creature(char ch, int area_level)
 {
@@ -119,13 +90,15 @@ t_creature *new_creature(char ch, int area_level)
 	{
 		case 'g':
 			creature->name = "Crazy Goblin";
-			creature->weapon = new_item('W', 1);
-			creature->ai = CRAZY_GOBLIN;
+			creature->weapon = new_random_item('W', 1);
+			creature->ai = AI_CRAZY_GOBLIN;
 			creature->color = COLOR_GREEN;
+			creature->faction = FACTION_GOBLIN;
 			break;
 		case '@':
 			creature->name = "Rabdin";
 			creature->color = COLOR_BLUE;
+			creature->faction = FACTION_PLAYER;
 			break;
 		default:
 			creature->name = "Bob the bug";

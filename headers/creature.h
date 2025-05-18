@@ -20,6 +20,7 @@ typedef struct s_creature
 	int			max_health;
 	int			bleeding; // bleeding does damage equal to remaining turns
 	int			stunned;
+	int			faction;
 }	t_creature;
 
 void add_item(t_creature *creature, t_item *item);

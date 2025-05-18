@@ -4,7 +4,6 @@
 #include "utils.h"
 #include "area.h"
 
-// used for storing the current state of the game
 typedef struct s_game
 {
 	t_node	*creatures;

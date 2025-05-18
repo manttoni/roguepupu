@@ -1,10 +1,10 @@
-#include "../headers/game.h"
-#include "../headers/area.h"
-#include "../headers/windows.h"
-#include "../headers/player.h"
-#include "../headers/draw.h"
-#include "../headers/globals.h"
-#include "../headers/interface.h"
+#include "game.h"
+#include "action.h"
+#include "area.h"
+#include "windows.h"
+#include "draw.h"
+#include "globals.h"
+#include "interface.h"
 
 void start(t_game *game)
 {
@@ -13,23 +13,10 @@ void start(t_game *game)
 	while(1)
 	{
 		update_stat_win(area);
-		logger("stat win updated");
 		draw_area(area);
-		logger("area drawn");
-		int input = getch();
-		if (input == ESCAPE)
-		{
-			print_log("Do you want to quit the game? ESC to confirm, any other to cancel.");
-			if (getch() == ESCAPE)
-				break;
-			continue;
-		}
-		e_action player_action = get_player_action(input);
-		if (player_action == NONE) // invalid input
-			continue;
-		player_act(area, player_action);
+		pc_act(area);
 		draw_area(area);
-		enemy_act(area);
+		npc_act(area);
 		flushinp(); // empty input buffer
 	}
 }

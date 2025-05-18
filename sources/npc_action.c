@@ -1,10 +1,11 @@
-#include "../headers/area.h"
-#include "../headers/action.h"
-#include "../headers/globals.h"
-#include "../headers/utils.h"
-#include "../headers/windows.h"
-#include "../headers/creature.h"
-#include "../headers/status.h"
+#include "action.h"
+#include "area.h"
+#include "globals.h"
+#include "utils.h"
+#include "windows.h"
+#include "creature.h"
+#include "status.h"
+#include "cell.h"
 #include <unistd.h>
 
 void flee(t_area *area, t_cell *cell)
@@ -20,7 +21,7 @@ void flee(t_area *area, t_cell *cell)
 		if (distance(area, n, player_cell) >= distance(area, best_flee, player_cell))
 			best_flee = n;
 	}
-	move_creature(best_flee, cell);
+	act_move(best_flee, cell);
 }
 
 void pursue(t_area *area, t_cell *cell)
@@ -40,32 +41,25 @@ void pursue(t_area *area, t_cell *cell)
 			best_pursue = n;
 		}
 	}
-	if (move_creature(best_pursue, cell) == 0)
-		if (move_creature(second_best, cell) == 0)
-			move_creature(neighbor(dirs[rand() % 8], area, cell), cell);
+	if (act_move(best_pursue, cell) == 0)
+		if (act_move(second_best, cell) == 0)
+			act_move(neighbor(dirs[rand() % 8], area, cell), cell);
 }
 
 void wander(t_area *area, t_cell *cell)
 {
 	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
-	while (move_creature(neighbor(dirs[rand() % 8], area, cell), cell) == 0);
+	while (act_move(neighbor(dirs[rand() % 8], area, cell), cell) == 0);
 }
 
-int enemy_act(t_area *area)
+int npc_act(t_area *area)
 {
-	logger("enemies acting");
-	t_node *enemies = get_interactables(area, ENEMY);
+	t_node *enemies = get_interactables(area, SCAN_ENEMY);
 	t_cell *player_cell = get_player_cell(area);
 	while (enemies != NULL)
 	{
 		t_cell *cell = (t_cell *) enemies->data;
 		t_creature *enemy = cell->creature;
-
-		if (apply_status_effects(cell) == STUN)
-		{
-			enemies = enemies->next;
-			continue;
-		}
 
 		if (enemy->health <= 0)
 		{
@@ -76,16 +70,16 @@ int enemy_act(t_area *area)
 		}
 		else if (!is_visible(area, cell, player_cell))
 		{
-			if (enemy->ai & WANDER)
+			if (enemy->ai & AI_WANDER)
 				wander(area, cell);
 		}
 		else
 		{
-			if (enemy->ai & FLEE && enemy->health < enemy->max_health / 4)
+			if (enemy->ai & AI_FLEE && enemy->health < enemy->max_health / 4)
 				flee(area, cell);
 			else if (is_neighbor(area, cell, get_player_cell(area)))
-				attack(enemy, get_player_cell(area));
-			else if (enemy->ai & PURSUE && is_visible(area, cell, get_player_cell(area)))
+				act_attack(cell, get_player_cell(area));
+			else if (enemy->ai & AI_PURSUE && is_visible(area, cell, get_player_cell(area)))
 				pursue(area, cell);
 		}
 

@@ -1,10 +1,25 @@
+#include "cell.h"
+#include "file_reader.h"
+#include "area.h"
+#include "globals.h"
+#include "item.h"
 #include <ncurses.h>
 #include <stdbool.h>
-#include "../headers/cell.h"
-#include "../headers/file_reader.h"
-#include "../headers/area.h"
-#include "../headers/globals.h"
 #include <math.h>
+
+short cell_fg(t_cell *cell)
+{
+	if (cell->creature != NULL)
+		return cell->creature->color;
+	if (cell->item != NULL)
+		return cell->item->color;
+	return COLOR_WHITE;
+}
+
+short cell_bg(t_cell *cell)
+{
+	return cell->terrain->color;
+}
 
 char cell_char(t_cell *cell)
 {
@@ -32,7 +47,6 @@ double distance(t_area *area, t_cell *a, t_cell *b)
 	return hypot(x_a - x_b, y_a - y_b);
 }
 
-
 /* manhattan distance between 2 cells */
 int mandis(t_area *area, t_cell *a, t_cell *b)
 {
@@ -58,9 +72,21 @@ char *cell_string(t_cell *cell)
 	return NULL;
 }
 
+int locked(t_cell *cell)
+{
+	if (cell->mech != NULL && cell->mech->lock > 0)
+		return 1;
+	return 0;
+}
+
+int is_closed(t_cell *cell)
+{
+	return cell->terrain != NULL && strchr(TERRAIN_CLOSED, cell->terrain->ch) != NULL;
+}
+
 int is_blocked(t_cell *cell)
 {
-	if (strchr(BLOCKING_TERRAIN, cell->terrain->ch) != NULL)
+	if (strchr(TERRAIN_BLOCKED, cell->terrain->ch) != NULL)
 		return 1;
 	if (cell->creature != NULL)
 		return 1;
@@ -73,17 +99,29 @@ int is_interactable(t_cell *cell)
 		return 1;
 	if (cell->item != NULL)
 		return 1;
-	if (cell->terrain != NULL && strchr(INTERACTABLE_TERRAIN, cell->terrain->ch) != NULL)
+	if (cell->terrain != NULL && strchr(TERRAIN_INTERACTABLE, cell->terrain->ch) != NULL)
 		return 1;
-	if (cell->mech != NULL && strchr(INTERACTABLE_MECH, cell->mech->ch) != NULL)
+	if (cell->mech != NULL && strchr(MECH_INTERACTABLE, cell->mech->ch) != NULL)
 		return 1;
 	return 0;
+}
+
+int has_item(t_cell *cell)
+{
+	return cell->item != NULL;
+}
+
+int has_enemy(t_cell *cell, t_creature *of_this_creature)
+{
+	if (cell->creature == NULL)
+		return 0;
+	return cell->creature->faction & ENEMY_FACTION(of_this_creature->faction);
 }
 
 int is_neighbor(t_area *area, t_cell *cell, t_cell *other)
 {
 	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
-	for (int i = 0; i <= 8; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
 		t_cell *n = neighbor(dirs[i], area, cell);
 		if (n == other)
@@ -140,7 +178,7 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 	memset(&cell, 0, sizeof(t_cell));
 	cell.terrain = new_terrain(terrain, area_level);
 	cell.mech = new_mech(mech, area_level);
-	cell.item = new_item(item, area_level);
+	cell.item = new_random_item(item, area_level);
 	cell.creature = new_creature(creature, area_level);
 	return cell;
 }

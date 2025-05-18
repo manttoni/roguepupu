@@ -1,0 +1,271 @@
+#include "action.h"
+#include "terrain.h"
+#include "utils.h"
+#include "cell.h"
+#include "globals.h"
+#include "draw.h"
+#include "interface.h"
+#include "status.h"
+
+void pc_disarm_trap(t_creature *pc, t_cell *trapped_cell)
+{
+	print_log("%s disarms a trap on %s", pc->name, trapped_cell->terrain->name);
+	trapped_cell->mech->trap = 0;
+}
+
+static void clear_highlights(t_node *list)
+{
+	while (list)
+	{
+		t_cell *cell = (t_cell *) list->data;
+		cell->highlight = 0;
+		list = list->next;
+	}
+}
+
+/* Select a cell from list of cells */
+t_cell *select_cell(t_node *list, t_area *area)
+{
+	logger("Selecting cell from list where first is: %s", cell_string((t_cell *)list->data));
+	t_node *selected_node = list;
+	while (1)
+	{
+		t_cell *selected = (t_cell *) selected_node->data;
+		selected->highlight |= HIGHLIGHT_SELECTED;
+		draw_area(area);
+
+		int input = getch();
+		switch (input)
+		{
+			case ESCAPE:
+				clear_highlights(list);
+				return NULL;
+			case ENTER:
+				clear_highlights(list);
+				return selected;
+			default:
+				selected->highlight &= ~HIGHLIGHT_SELECTED;
+				selected_node = selected_node->next;
+				if (selected_node == NULL)
+					selected_node = list;
+				break;
+		}
+	}
+	return NULL;
+}
+
+/* Scan surroundings, highlight cells, return a selected cell */
+t_cell *scan(t_area *area, int flags)
+{
+	logger("Scanning area for %d", flags);
+	// get list
+	t_node *list = get_interactables(area, flags);
+	if (list == NULL)
+	{
+		print_log("Nothing to see here");
+		return NULL;
+	}
+	t_node *ptr = list;
+
+	// highlight interactables with REVERSE
+	while (ptr != NULL)
+	{
+		t_cell *cell = (t_cell *) ptr->data;
+		cell->highlight |= HIGHLIGHT_REVERSE;
+		ptr = ptr->next;
+	}
+	return select_cell(list, area);
+}
+
+/* Scan surroundings within vision */
+int pc_examine(t_area *area)
+{
+	t_cell *examine_cell = scan(area, PLAYER_EXAMINE);
+	if (examine_cell == NULL) // esc pressed or nothing to examine
+		return 0;
+
+	// enter pressed
+	print_log(cell_string(examine_cell));
+	return 0;
+}
+
+static void pc_open_container(t_creature *pc, t_terrain *container)
+{
+	(void)pc;
+	(void)container;
+	// insert inventory ui code
+}
+
+static void pc_open_door(t_cell *door_cell)
+{
+	free(door_cell->terrain);
+	door_cell->terrain = new_terrain('.', 0);
+}
+
+int pc_open(t_area *area)
+{
+	t_cell *closed_cell = scan(area, PLAYER_OPEN);
+	if (closed_cell == NULL)
+		return 0;
+
+	t_terrain *closed = closed_cell->terrain;
+	if (closed_cell->mech != NULL && closed_cell->mech->lock > 0)
+	{
+		print_log("%s is locked", closed->name);
+		return 0;
+	}
+	print_log("%s opened", closed->name);
+	if (closed_cell->mech != NULL && closed_cell->mech->trap > 0)
+	{
+		print_log("Trap!");
+		return 0;
+	}
+	// Remains or Chest
+	if (strchr(TERRAIN_CONTAINER, closed->ch))
+		pc_open_container(get_player(area), closed);
+	// Door
+	else if (strchr(TERRAIN_DOOR, closed->ch))
+		pc_open_door(closed_cell);
+
+
+	return 1; // 1 AP for now
+}
+
+int pc_unlock(t_area *area)
+{
+	t_cell *locked_cell = scan(area, PLAYER_UNLOCK);
+	if (locked_cell == NULL)
+		return 0;
+
+	print_log("%s unlocks %s", get_player(area)->name, locked_cell->terrain);
+	locked_cell->mech->lock = 0; // for now just unlock everything without skill check
+
+	return 0;
+}
+
+int pc_attack(t_area *area)
+{
+	t_cell *defender_cell = scan(area, MELEE_ATTACK);
+	if (defender_cell == NULL)
+		return 0;
+
+	t_cell *player_cell = get_player_cell(area);
+	act_attack(player_cell, defender_cell);
+	return 0;
+}
+
+int pc_pick_up(t_area *area)
+{
+	t_cell *item_cell = scan(area, SCAN_NEIGHBOR | SCAN_ITEM);
+	if (item_cell == NULL)
+		return 0;
+
+	add_item(get_player(area), item_cell->item);
+	print_log("%s picked up %s", get_player(area)->name, item_cell->item->name);
+	item_cell->item = NULL;
+
+	return 0;
+}
+e_action get_player_action()
+{
+	int input = getch();
+	logger("Key pressed: %c", input);
+	if (input == ESCAPE)
+	{
+		print_log("Press ESC again to quit or C to cancel.");
+		while (1)
+		{
+			input = getch();
+			if (input == ESCAPE)
+				end_ncurses(0);
+			if (input == 'C')
+			{
+				print_log("Quit canceled");
+				input = getch();
+				break;
+			}
+		}
+	}
+	switch(input)
+	{
+		case '7':
+			return ACTION_MOVE_UPLEFT;
+		case '9':
+			return ACTION_MOVE_UPRIGHT;
+		case '1':
+			return ACTION_MOVE_DOWNLEFT;
+		case '3':
+			return ACTION_MOVE_DOWNRIGHT;
+		case '8':
+		case KEY_UP:
+			return ACTION_MOVE_UP;
+		case '2':
+		case KEY_DOWN:
+			return ACTION_MOVE_DOWN;
+		case '4':
+		case KEY_LEFT:
+			return ACTION_MOVE_LEFT;
+		case '6':
+		case KEY_RIGHT:
+			return ACTION_MOVE_RIGHT;
+		case 'e':
+			return ACTION_EXAMINE;
+		case 'o':
+			return ACTION_OPEN;
+		case 'u':
+			return ACTION_UNLOCK;
+		case 'a':
+			return ACTION_ATTACK;
+		case 'p':
+			return ACTION_PICK_UP;
+		case ' ':
+			return ACTION_PASS;
+		default:
+			return ACTION_NONE;
+	}
+}
+/* Return some int, will probably be AP cost of action or something later */
+int pc_act(t_area *area)
+{
+	int pi = get_player_index(area);
+	t_cell *cell = &area->cells[pi];
+	t_creature *player = cell->creature;
+	e_action action = get_player_action();
+
+	switch(action)
+	{
+		case ACTION_MOVE_UPLEFT:
+			return act_move(neighbor(UPLEFT, area, cell), cell);
+		case ACTION_MOVE_UPRIGHT:
+			return act_move(neighbor(UPRIGHT, area, cell), cell);
+		case ACTION_MOVE_DOWNLEFT:
+			return act_move(neighbor(DOWNLEFT, area, cell), cell);
+		case ACTION_MOVE_DOWNRIGHT:
+			return act_move(neighbor(DOWNRIGHT, area, cell), cell);
+		case ACTION_MOVE_UP:
+			return act_move(neighbor(UP, area, cell), cell);
+		case ACTION_MOVE_DOWN:
+			return act_move(neighbor(DOWN, area, cell), cell);
+		case ACTION_MOVE_LEFT:
+			return act_move(neighbor(LEFT, area, cell), cell);
+		case ACTION_MOVE_RIGHT:
+			return act_move(neighbor(RIGHT, area, cell), cell);
+		case ACTION_EXAMINE:
+			return pc_examine(area);
+		case ACTION_OPEN:
+			return pc_open(area);
+		case ACTION_UNLOCK:
+			return pc_unlock(area);
+		case ACTION_ATTACK:
+			return pc_attack(area);
+		case ACTION_PICK_UP:
+			return pc_pick_up(area);
+		case ACTION_PASS:
+			print_log("%s does nothing", player->name);
+			return 0;
+		default:
+			return 0;
+	}
+}
+
+

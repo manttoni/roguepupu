@@ -43,7 +43,7 @@ void init_ncurses()
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
-	init_extended_pair(SELECTED_HIGHLIGHT, COLOR_RED, COLOR_BLACK);
+	init_pair(COLOR_SELECTED, COLOR_RED, COLOR_BLACK);
 	logger("ncurses initialized");
 	refresh();
 }

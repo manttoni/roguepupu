@@ -1,6 +1,6 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Wextra -Werror -fanalyzer -g
+CFLAGS := -Wall -Wextra -Werror -fanalyzer -g -fsanitize=undefined -Iheaders
 LFLAGS := -lncursesw -lm
 
 # Directories

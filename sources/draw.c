@@ -5,53 +5,29 @@
 #include "../headers/color.h"
 #include <ncurses.h>
 
-short pair_id(t_cell *cell)
-{
-	static int pairs[256];
-	static int next_free = 3;
-	short creature = cell->creature == NULL ? COLOR_WHITE : cell->creature->color;
-	short terrain = cell->terrain->color;
-	creature = min(255, creature);
-	terrain = min(255, terrain);
-	short pair_id = 256 * creature + terrain;
-
-	if (pair_id >= COLOR_PAIRS)
-		return 0;
-
-	int i = 0;
-	for (; i < next_free; ++i)
-		if (pairs[i] == pair_id)
-			break;
-	if (i == next_free) // was not initialized yet
-	{
-		init_pair(i, creature, terrain);
-		pairs[i] = pair_id;
-		next_free++;
-	}
-	return i;
-}
-
 void draw_cell(int y, int x, t_cell *cell)
 {
 	wmove(map_win, y, x);
 
+	short color_id = pair_id(cell_fg(cell), cell_bg(cell));
+
 	// cell highlights
-	if (cell->highlight & REVERSE)
+	if (cell->highlight & HIGHLIGHT_REVERSE)
 		wattron(map_win, A_REVERSE);
-	if (cell->highlight & SELECTED)
-		wattron(map_win, COLOR_PAIR(SELECTED_HIGHLIGHT));
+	if (cell->highlight & HIGHLIGHT_SELECTED)
+		wattron(map_win, COLOR_PAIR(COLOR_SELECTED));
 	else
-		wattron(map_win, COLOR_PAIR(pair_id(cell)));
+		wattron(map_win, COLOR_PAIR(color_id));
 
 	char ch = cell_char(cell);
 	waddch(map_win, ch);
 
-	if (cell->highlight & REVERSE)
+	if (cell->highlight & HIGHLIGHT_REVERSE)
 		wattroff(map_win, A_REVERSE);
-	if (cell->highlight & SELECTED)
-		wattroff(map_win, COLOR_PAIR(SELECTED_HIGHLIGHT));
+	if (cell->highlight & HIGHLIGHT_SELECTED)
+		wattroff(map_win, COLOR_PAIR(COLOR_SELECTED));
 	else
-		wattroff(map_win, COLOR_PAIR(pair_id(cell)));
+		wattroff(map_win, COLOR_PAIR(color_id));
 }
 
 void draw_area(t_area *area)

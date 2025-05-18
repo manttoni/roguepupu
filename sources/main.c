@@ -23,7 +23,7 @@ int main(void)
 	srand(time(NULL));
 	init_ncurses();
 	init_windows();
-	t_game *game = new_game(parse_area(read_file(DUNGEON)));
+	t_game *game = new_game(parse_area(read_file(MAP_DUNGEON)));
 	start(game);
 	delete_windows();
 	end_ncurses(0);

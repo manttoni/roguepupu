@@ -3,11 +3,6 @@
 #include "../headers/globals.h"
 #include <ncurses.h>
 
-int is_closed(t_terrain *terrain)
-{
-	return terrain != NULL && strchr(CLOSED_CHARS, terrain->ch) != NULL;
-}
-
 t_terrain *new_terrain(char ch, int area_level)
 {
 	(void)area_level;

@@ -10,7 +10,5 @@ typedef struct s_mech
 }	t_mech;
 
 t_mech *new_mech(char ch, int area_level);
-int is_locked(t_mech *mech);
-int is_trapped(t_mech *mech);
 
 #endif

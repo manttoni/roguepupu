@@ -1,6 +1,30 @@
-#include "../headers/color.h"
-#include "../headers/utils.h"
+#include "color.h"
+#include "utils.h"
+#include <ncurses.h>
 
+short pair_id(short fg, short bg)
+{
+	static int pairs[256];
+	static int next_free = 3;
+	fg = min(255, fg);
+	bg = min(255, bg);
+	short pair_id = 256 * fg + bg;
+
+	if (pair_id >= COLOR_PAIRS)
+		return 0;
+
+	int i = 0;
+	for (; i < next_free; ++i)
+		if (pairs[i] == pair_id)
+			break;
+	if (i == next_free) // was not initialized yet
+	{
+		init_pair(i, fg, bg);
+		pairs[i] = pair_id;
+		next_free++;
+	}
+	return i;
+}
 short color_id(t_color color)
 {
 	return 16 + 36 * color.red + 6 * color.green + color.blue;
