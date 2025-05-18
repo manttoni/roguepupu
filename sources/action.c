@@ -16,7 +16,7 @@ int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
 
 	print_log("%s attacks %s with a %s", attacker->name, defender->name, attacker->weapon->name);
 	t_die *dice = attacker->weapon->dice;
-	while (dice != NULL)
+	while (dice->sides != 0)
 	{
 		take_damage(defender, throw_die(*dice), dice->type);
 		dice++;

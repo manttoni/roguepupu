@@ -53,7 +53,6 @@ void draw_area(t_area *area)
 			if (is_visible(area, &area->cells[player_index], cell))
 				draw_cell(y_draw, x_draw, cell);
 		x_draw++;
-		logger("Cell drawn");
 		if ((i + 1) % area->width == 0)
 		{
 			y_draw++;
