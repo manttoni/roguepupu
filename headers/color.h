@@ -8,6 +8,7 @@ typedef struct s_color
 	short blue;
 }	t_color;
 
+short get_red(short color);
 short pair_id(short id1, short id2);
 short color_id(t_color color);
 t_color convert(short id);

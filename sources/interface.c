@@ -31,13 +31,59 @@ void print_legend(void)
 	wprintw(leg_win, " esc exit\n");
 }
 
-void print_log(const char *format, ...)
+void print_log(char *format, ...)
 {
 	va_list args;
 	va_start(args, format);
 
 	wprintw(log_win, "  ");
-	vw_printw(log_win, format, args);
+
+	char *ptr = format;
+	short color = 0;
+
+	while (*ptr != '\0')
+	{
+		if (*ptr == '%')
+		{
+			if (ptr[1] == 'd')
+				wprintw(log_win, "%d", va_arg(args, int));
+			else if (ptr[1] == 's')
+				wprintw(log_win, "%s", va_arg(args, char *));
+			else
+			{
+				logger("Printing some unimplemented types");
+				end_ncurses(1);
+			}
+			ptr += 2;
+		}
+		else if (*ptr == '{' && strchr(ptr, '}') != NULL)
+		{
+			char *closing_bracket = strchr(ptr, '}');
+			int code_len = closing_bracket - ptr + 1;
+			if (strncmp("{red}", ptr, code_len) == 0)
+			{
+				color = COLOR_RED;
+				wattron(log_win, COLOR_PAIR(COLOR_RED));
+			}
+			else if (strncmp("{green}", ptr, code_len) == 0)
+			{
+				color = COLOR_GREEN;
+				wattron(log_win, COLOR_PAIR(COLOR_GREEN));
+			}
+			else if (strncmp("{reset}", ptr, code_len) == 0)
+			{
+				wattroff(log_win, COLOR_PAIR(color));
+				color = 0;
+			}
+			ptr += code_len;
+		}
+		else
+		{
+			wprintw(log_win, "%c", *ptr);
+			ptr++;
+		}
+	}
+
 	wprintw(log_win, "\n");
 
 	refresh_window(log_win);
@@ -47,10 +93,14 @@ void print_log(const char *format, ...)
 
 void print_creature_status(t_creature *creature)
 {
+	int pairid = pair_id(creature->color, COLOR_BLACK);
+	wattron(stat_win, COLOR_PAIR(pairid));
 	wprintw(stat_win, "  %s %c\n", creature->name, creature->ch);
+	wattroff(stat_win, COLOR_PAIR(pairid));
+
+	wattron(stat_win, COLOR_PAIR(COLOR_HEALTH));
 	wprintw(stat_win, "  Health: %d/%d\n", creature->health, creature->max_health);
-	wprintw(stat_win, "  Bleeding: %d\n", creature->bleeding);
-	wprintw(stat_win, "  Stun level: %d\n", creature->stunned);
+	wattroff(stat_win, COLOR_PAIR(COLOR_HEALTH));
 	int x, y;
 	getmaxyx(stat_win, y, x);
 	(void) y;

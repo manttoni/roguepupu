@@ -18,7 +18,7 @@ int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
 	t_die *dice = attacker->weapon->dice;
 	while (dice->sides != 0)
 	{
-		take_damage(defender, throw_die(*dice), dice->type);
+		take_damage(defender_cell, throw_die(*dice), dice->type);
 		dice++;
 	}
 	return 0;

@@ -5,6 +5,22 @@
 #include "../headers/color.h"
 #include <ncurses.h>
 
+void cosmetic_effects(t_area *area)
+{
+	for (int i = 0; i < AREA(area); ++i)
+	{
+		t_cell *cell = &area->cells[i];
+		t_creature *creature = cell->creature;
+		if (creature != NULL && creature->bleeding > 0)
+		{
+			creature->bleeding -= rand() % 2;
+			if(get_red(cell->terrain->color) < 5)
+				change_color(&cell->terrain->color, 1, 0, 0);
+		}
+	}
+	draw_area(area);
+}
+
 void draw_cell(int y, int x, t_cell *cell)
 {
 	wmove(map_win, y, x);

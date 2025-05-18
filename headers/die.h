@@ -27,5 +27,7 @@ typedef struct s_die
 
 int throw_die(t_die die);
 t_die *new_dice(e_damage_type type, char *die);
+char *dmg_str(e_damage_type damage_type);
+int is_physical(e_damage_type damage_type);
 
 #endif

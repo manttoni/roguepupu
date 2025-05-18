@@ -1,15 +1,13 @@
 creature:
 	creature vision range
 
-color:
-	pair_id could take easily take  two colors instead of a cell to have colors on other windows too
-
-round events
-	player bleeding
-		happens at weird time
-
-creature spawning inside blocking terrain
+creature spawning inside blocking terrain should be prevented.
 headers
-unlocking, opening shouldnt be only about doors
-organize functions to their right places
-all actions are always cell to cell. for example an action targeting a door has to remove the door D. attacker might hace difficult terrain etc
+
+character creation
+opening containers or player inventory
+log colors
+fancy health bar
+enemy flee and spotted log messages
+examining can show info in some window in a corner
+

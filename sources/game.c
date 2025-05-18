@@ -15,15 +15,17 @@ void start(t_game *game)
 		update_stat_win(area);
 		draw_area(area);
 		pc_act(area);
+		cosmetic_effects(area);
 		draw_area(area);
 		npc_act(area);
+		cosmetic_effects(area);
 		flushinp(); // empty input buffer
 	}
 }
 
 void enter_area(t_game *game, t_area *area, t_coord entry)
 {
-	print_log("Entered area: %s", area->name);
+	print_log("Entered area: {red}%s{reset}", area->name);
 	(void)entry;
 	game->area = area;
 	list_clear(&game->creatures);

@@ -44,6 +44,7 @@ void init_ncurses()
 	cbreak();
 	keypad(stdscr, TRUE);
 	init_pair(COLOR_SELECTED, COLOR_RED, COLOR_BLACK);
+	init_pair(COLOR_HEALTH, COLOR_RED, COLOR_BLACK);
 	logger("ncurses initialized");
 	refresh();
 }

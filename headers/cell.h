@@ -38,6 +38,7 @@ double distance(t_area *area, t_cell *a, t_cell *b);
 int mandis(t_area *area, t_cell *a, t_cell *b);
 
 t_cell new_cell(char terrain, char mech, char item, char creature, int area_level);
+t_cell *random_neighbor(t_area *area, t_cell *cell);
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell);
 
 int is_blocked(t_cell *cell);

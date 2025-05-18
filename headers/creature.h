@@ -18,13 +18,14 @@ typedef struct s_creature
 	int			ai;
 	int			health;
 	int			max_health;
-	int			bleeding; // bleeding does damage equal to remaining turns
+	int			bleeding; // a cosmetic feature
 	int			stunned;
 	int			faction;
+	int			behavior;
 }	t_creature;
 
 void add_item(t_creature *creature, t_item *item);
-int take_damage(t_creature *creature, int damage, e_damage_type damage_type);
+int take_damage(t_cell *creature_cell, int damage, e_damage_type damage_type);
 void perish(t_creature *creature, e_damage_type damage_type);
 t_creature *new_creature(char ch, int area_level);
 int move_creature(t_cell *dest, t_cell *src);

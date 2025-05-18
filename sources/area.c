@@ -1,9 +1,10 @@
-#include "../headers/area.h"
-#include "../headers/cell.h"
-#include "../headers/utils.h"
-#include "../headers/globals.h"
-#include "../headers/windows.h"
-#include "../headers/mech.h"
+#include "area.h"
+#include "cell.h"
+#include "utils.h"
+#include "globals.h"
+#include "windows.h"
+#include "mech.h"
+#include "interface.h"
 #include <string.h>
 
 int get_player_index(t_area *area)
@@ -69,6 +70,8 @@ t_node *get_interactables(t_area *area, int flags)
 			continue;
 		if (!is_interactable(cell))
 			continue;
+		if (flags & SCAN_LOCKED)
+			print_log("%s. is_locked: %d", cell_string(cell), is_locked(cell));
 
 		add_node_last(&list, new_node(cell));
 	}

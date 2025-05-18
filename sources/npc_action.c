@@ -6,11 +6,18 @@
 #include "creature.h"
 #include "status.h"
 #include "cell.h"
+#include "interface.h"
 #include <unistd.h>
+
+const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
 
 void flee(t_area *area, t_cell *cell)
 {
-	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
+	t_creature *npc = cell->creature;
+	if (npc->behavior != AI_FLEE)
+		print_log("%s flees for their life", npc->name);
+	npc->behavior = AI_FLEE;
+
 	t_cell *player_cell = get_player_cell(area);
 	t_cell *best_flee = cell;
 	for (int i = 0; i < 8; ++i)
@@ -26,7 +33,11 @@ void flee(t_area *area, t_cell *cell)
 
 void pursue(t_area *area, t_cell *cell)
 {
-	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
+	t_creature *npc = cell->creature;
+	if (npc->behavior != AI_PURSUE)
+		print_log("%s charges towards %s", npc->name, get_player(area)->name);
+	npc->behavior = AI_PURSUE;
+
 	t_cell *player_cell = get_player_cell(area);
 	t_cell *best_pursue = cell;
 	t_cell *second_best = cell;
@@ -48,7 +59,6 @@ void pursue(t_area *area, t_cell *cell)
 
 void wander(t_area *area, t_cell *cell)
 {
-	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
 	while (act_move(neighbor(dirs[rand() % 8], area, cell), cell) == 0);
 }
 
@@ -63,8 +73,10 @@ int npc_act(t_area *area)
 
 		if (enemy->health <= 0)
 		{
+			short color = cell->terrain->color;
 			free(cell->terrain);
 			cell->terrain = new_terrain('R', 0);
+			cell->terrain->color = color;
 			free(cell->creature);
 			cell->creature = NULL;
 		}

@@ -72,7 +72,14 @@ char *cell_string(t_cell *cell)
 	return NULL;
 }
 
-int locked(t_cell *cell)
+int is_trapped(t_cell *cell)
+{
+	if (cell->mech != NULL && cell->mech->trap > 1)
+		return 1;
+	return 0;
+}
+
+int is_locked(t_cell *cell)
 {
 	if (cell->mech != NULL && cell->mech->lock > 0)
 		return 1;
@@ -181,6 +188,12 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 	cell.item = new_random_item(item, area_level);
 	cell.creature = new_creature(creature, area_level);
 	return cell;
+}
+
+t_cell *random_neighbor(t_area *area, t_cell *cell)
+{
+	e_direction dir = rand() % 8;
+	return neighbor(dir, area, cell);
 }
 
 t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell)

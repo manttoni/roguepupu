@@ -1,11 +1,12 @@
 #include "color.h"
 #include "utils.h"
+#include "globals.h"
 #include <ncurses.h>
 
 short pair_id(short fg, short bg)
 {
 	static int pairs[256];
-	static int next_free = 3;
+	static int next_free = NEXT_FREE;
 	fg = min(255, fg);
 	bg = min(255, bg);
 	short pair_id = 256 * fg + bg;
@@ -25,6 +26,12 @@ short pair_id(short fg, short bg)
 	}
 	return i;
 }
+
+short get_red(short color)
+{
+	return convert(color).red;
+}
+
 short color_id(t_color color)
 {
 	return 16 + 36 * color.red + 6 * color.green + color.blue;

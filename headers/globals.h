@@ -44,6 +44,7 @@
 #define RANGED_ATTACK (SCAN_VISIBLE | SCAN_ENEMY)
 
 /* Enemy "AI" */
+#define AI_IDLE 0
 #define AI_WANDER 1
 #define AI_PURSUE 2
 #define AI_FLEE 4
@@ -65,7 +66,10 @@
 #define HIGHLIGHT_SELECTED 2 // selected highlighted thing
 
 /* Colors */
+// 0 is default colors
 #define COLOR_SELECTED 1
+#define COLOR_HEALTH 2
+#define NEXT_FREE 3
 
 /* Damage related */
 #define DAMAGE_FATAL 1
