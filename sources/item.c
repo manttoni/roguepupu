@@ -1,8 +1,17 @@
 #include "item.h"
 #include "utils.h"
 #include "globals.h"
+#include "color.h"
 #include <stdlib.h>
 #include <ncurses.h>
+
+char *item_string(t_item *item)
+{
+	int len = 15 + strlen(item->name);
+	char *buf = my_calloc(len + 1);
+	snprintf(buf, len + 1, "{%d}%s{reset}", item->color, item->name);
+	return buf;
+}
 
 int is_weapon(t_item *item)
 {
@@ -112,7 +121,7 @@ short get_item_color(e_item_rarity rarity)
 	switch (rarity)
 	{
 		case COMMON:
-			return COLOR_WHITE;
+			return color_id((t_color){3, 3, 3});
 		case UNCOMMON:
 			return COLOR_GREEN;
 		case RARE:

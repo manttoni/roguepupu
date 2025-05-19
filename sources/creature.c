@@ -7,11 +7,27 @@
 #include "die.h"
 #include "draw.h"
 
+char *creature_char(t_creature *creature)
+{
+	int len = 15 + 1;
+	char *buf = my_calloc(len + 1);
+	snprintf(buf, len + 1, "{%d}%c{reset}", creature->color, creature->ch);
+	return buf;
+}
+
+char *creature_string(t_creature *creature)
+{
+	int len = 15 + strlen(creature->name);
+	char *buf = my_calloc(len + 1);
+	snprintf(buf, len + 1, "{%d}%s{reset}", creature->color, creature->name);
+	return buf;
+}
+
 void equip(t_creature *creature, t_item *item)
 {
 	if (is_weapon(item))
 		creature->weapon = item;
-	print_log("%s equips %s", creature->name, item->name);
+	print_log("%s equips %s", creature_string(creature), item_string(item));
 }
 
 void add_item(t_creature *creature, t_item *item)
@@ -30,14 +46,8 @@ void perish(t_creature *creature, e_damage_type damage_type)
 {
 	switch (damage_type)
 	{
-		case SLASHING:
-			print_log("%s gets cut to pieces", creature->name);
-			break;
-		case BLUDGEONING:
-			print_log("%s is crushed to death", creature->name);
-			break;
 		default:
-			print_log("%s perishes", creature->name);
+			print_log("%s perishes", creature_string(creature));
 			break;
 	}
 	if (creature->ch == '@')
@@ -45,7 +55,7 @@ void perish(t_creature *creature, e_damage_type damage_type)
 		wmove(stat_win, 1, 0);
 		print_creature_status(creature);
 		refresh_window(stat_win);
-		print_log("Game over. Press esc to quit.");
+		print_log("{red}Game over. Press esc to quit.{reset}");
 		while (getch() != ESCAPE);
 		end_ncurses(0);
 	}
@@ -56,16 +66,16 @@ int take_damage(t_cell *creature_cell, int damage, e_damage_type damage_type)
 	if (damage > 0)
 		visual_effect(creature_cell, COLOR_PAIR(COLOR_PAIR_RED));
 	t_creature *creature = creature_cell->creature;
-	print_log("%s takes {red}%d{reset} %s damage", creature->name, damage, dmg_str(damage_type));
+	print_log("%s takes {red}%d{reset} %s damage", creature_string(creature), damage, dmg_str(damage_type));
 	creature->health -= damage;
 
 	if (is_physical(damage_type))
-		creature->bleeding += damage / 4; // this is a cosmetic feature
+		creature->bleeding += damage / 5; // this is a cosmetic feature
 
 	if (creature->health <= 0)
 	{
 		if (creature->bleeding > 0)
-			change_color(&creature_cell->terrain->color, 1, 0, 0);
+			change_color(&creature_cell->color, 1, 0, 0);
 		perish(creature, damage_type);
 		return DAMAGE_FATAL;
 	}

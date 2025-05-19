@@ -3,6 +3,7 @@
 #include "area.h"
 #include "globals.h"
 #include "item.h"
+#include "mech.h"
 #include <ncurses.h>
 #include <stdbool.h>
 #include <math.h>
@@ -13,12 +14,14 @@ short cell_fg(t_cell *cell)
 		return cell->creature->color;
 	if (cell->item != NULL)
 		return cell->item->color;
+	if (cell->terrain != NULL)
+		return cell->terrain->color;
 	return COLOR_WHITE;
 }
 
 short cell_bg(t_cell *cell)
 {
-	return cell->terrain->color;
+	return cell->color;
 }
 
 char cell_char(t_cell *cell)
@@ -62,13 +65,13 @@ int mandis(t_area *area, t_cell *a, t_cell *b)
 char *cell_string(t_cell *cell)
 {
 	if (cell->creature != NULL)
-		return cell->creature->name;
+		return creature_string(cell->creature);
 	if (cell->item != NULL)
-		return cell->item->name;
+		return item_string(cell->item);
 	if (cell->terrain != NULL)
-		return cell->terrain->name;
+		return terrain_string(cell->terrain);
 	if (cell->mech != NULL)
-		return cell->mech->name;
+		return mech_string(cell->mech);
 	return NULL;
 }
 
@@ -187,6 +190,7 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 	cell.mech = new_mech(mech, area_level);
 	cell.item = new_random_item(item, area_level);
 	cell.creature = new_creature(creature, area_level);
+	cell.color = color_id((t_color){0,0,0});
 	return cell;
 }
 

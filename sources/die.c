@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+
 int is_physical(e_damage_type damage_type)
 {
 	if (damage_type == SLASHING)

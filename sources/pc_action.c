@@ -10,7 +10,7 @@
 
 void pc_disarm_trap(t_creature *pc, t_cell *trapped_cell)
 {
-	print_log("%s disarms a trap on %s", pc->name, trapped_cell->terrain->name);
+	print_log("%s disarms a trap on %s", creature_string(pc), terrain_string(trapped_cell->terrain));
 	trapped_cell->mech->trap = 0;
 }
 
@@ -112,10 +112,10 @@ int pc_open(t_area *area)
 	t_terrain *closed = closed_cell->terrain;
 	if (closed_cell->mech != NULL && closed_cell->mech->lock > 0)
 	{
-		print_log("%s is locked", closed->name);
+		print_log("%s is locked", terrain_string(closed));
 		return 0;
 	}
-	print_log("%s opened", closed->name);
+	print_log("%s opened", terrain_string(closed));
 	if (closed_cell->mech != NULL && closed_cell->mech->trap > 0)
 	{
 		print_log("Trap!");
@@ -138,7 +138,7 @@ int pc_unlock(t_area *area)
 	if (locked_cell == NULL)
 		return 0;
 
-	print_log("%s unlocks %s", get_player(area)->name, locked_cell->terrain);
+	print_log("%s unlocks %s", creature_string(get_player(area)), terrain_string(locked_cell->terrain));
 	locked_cell->mech->lock = 0; // for now just unlock everything without skill check
 
 	return 0;
@@ -162,7 +162,7 @@ int pc_pick_up(t_area *area)
 		return 0;
 
 	add_item(get_player(area), item_cell->item);
-	print_log("%s picked up %s", get_player(area)->name, item_cell->item->name);
+	print_log("%s picked up %s", creature_string(get_player(area)), item_string(item_cell->item));
 	item_cell->item = NULL;
 
 	return 0;
@@ -173,15 +173,15 @@ e_action get_player_action()
 	logger("Key pressed: %c", input);
 	if (input == ESCAPE)
 	{
-		print_log("Press ESC again to quit or C to cancel.");
+		print_log("{red}Press ESC again to quit or C to cancel.{reset}");
 		while (1)
 		{
 			input = getch();
 			if (input == ESCAPE)
 				end_ncurses(0);
-			if (input == 'C')
+			if (input == 'c')
 			{
-				print_log("Quit canceled");
+				print_log("{green}Quit canceled{reset}");
 				input = getch();
 				break;
 			}

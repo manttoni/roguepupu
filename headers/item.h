@@ -47,6 +47,7 @@ typedef struct s_item
 	t_die			*dice; // these have how much and what type of dmg they do. or how much healing
 }	t_item;
 
+char *item_string(t_item *item);
 int add_dice(t_item *item);
 int is_weapon(t_item *item);
 int is_potion(t_item *item);

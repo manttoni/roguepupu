@@ -15,7 +15,8 @@ typedef struct s_cell
 	t_mech		*mech;
 	t_item		*item;
 	t_creature	*creature;
-	t_coord		last_draw; // could be useful
+	t_coord		last_draw;
+	short		color;
 }	t_cell;
 
 typedef enum

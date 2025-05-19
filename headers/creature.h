@@ -24,6 +24,8 @@ typedef struct s_creature
 	int			behavior;
 }	t_creature;
 
+char *creature_char(t_creature *creature);
+char *creature_string(t_creature *creature);
 void add_item(t_creature *creature, t_item *item);
 int take_damage(t_cell *creature_cell, int damage, e_damage_type damage_type);
 void perish(t_creature *creature, e_damage_type damage_type);

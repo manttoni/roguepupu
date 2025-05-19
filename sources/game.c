@@ -8,7 +8,7 @@
 
 void start(t_game *game)
 {
-	print_log("Game started!");
+	print_log("{green}Game started!{reset}");
 	t_area *area = game->area;
 	while(1)
 	{
@@ -53,7 +53,7 @@ void character_creation(t_creature *player)
 	curs_set(0);
 	cbreak();
 
-	print_win(cc, " Select weapon with {red}LEFT{reset} or {red}RIGHT{reset}: ");
+	print_win(cc, " Select weapon with {red}LEFT{reset} or {red}RIGHT{reset}: ", NULL);
 	int y, x;
 	getyx(cc, y, x);
 	e_item_type type = WEAPON_SIMPLE + 1;

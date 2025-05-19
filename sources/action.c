@@ -12,11 +12,11 @@
 int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
 {
 	t_creature *attacker = attacker_cell->creature;
-	logger("attack(%s, %s)", attacker->name, cell_string(defender_cell));
 	t_creature *defender = defender_cell->creature;
+	t_item *weapon = attacker->weapon;
 
-	print_log("%s attacks %s with a %s", attacker->name, defender->name, attacker->weapon->name);
-	t_die *dice = attacker->weapon->dice;
+	print_log("%s attacks %s with a %s", creature_string(attacker), creature_string(defender), item_string(weapon));
+	t_die *dice = weapon->dice;
 	while (dice->sides != 0)
 	{
 		take_damage(defender_cell, throw_die(*dice), dice->type);

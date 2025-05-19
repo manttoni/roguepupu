@@ -1,10 +1,11 @@
-#include "../headers/area.h"
-#include "../headers/windows.h"
-#include "../headers/creature.h"
-#include "../headers/cell.h"
-#include "../headers/draw.h"
-#include "../headers/globals.h"
-#include "../headers/utils.h"
+#include "interface.h"
+#include "area.h"
+#include "windows.h"
+#include "creature.h"
+#include "cell.h"
+#include "draw.h"
+#include "globals.h"
+#include "utils.h"
 #include <ncurses.h>
 
 void print_legend(void)
@@ -34,41 +35,42 @@ void print_legend(void)
 void print_win(WINDOW *win, char *format, va_list args)
 {
 	char *ptr = format;
+	int y, x;
+	getmaxyx(win, y, x);
+	(void) y;
+	char str[x];
+
+	if (args != NULL)
+	{
+		vsnprintf(str, x, format, args);
+		ptr = str;
+	}
+
 	short color = 0;
 
 	while (*ptr != '\0')
 	{
-		if (*ptr == '%')
-		{
-			if (ptr[1] == 'd')
-				wprintw(win, "%d", va_arg(args, int));
-			else if (ptr[1] == 's')
-				wprintw(win, "%s", va_arg(args, char *));
-			else
-			{
-				logger("Printing some unimplemented types");
-				end_ncurses(1);
-			}
-			ptr += 2;
-		}
-		else if (*ptr == '{' && strchr(ptr, '}') != NULL)
+		if (*ptr == '{' && strchr(ptr, '}') != NULL)
 		{
 			char *closing_bracket = strchr(ptr, '}');
 			int code_len = closing_bracket - ptr + 1;
+
 			if (strncmp("{red}", ptr, code_len) == 0)
 			{
-				color = COLOR_RED;
-				wattron(win, COLOR_PAIR(COLOR_RED));
+				color = pair_id(COLOR_RED, COLOR_BLACK);
+				wattron(win, COLOR_PAIR(color));
 			}
 			else if (strncmp("{green}", ptr, code_len) == 0)
 			{
-				color = COLOR_GREEN;
-				wattron(win, COLOR_PAIR(COLOR_GREEN));
+				color = pair_id(COLOR_GREEN, COLOR_BLACK);
+				wattron(win, COLOR_PAIR(color));
 			}
 			else if (strncmp("{reset}", ptr, code_len) == 0)
+				wattroff(win, A_ATTRIBUTES);
+			else
 			{
-				wattroff(win, COLOR_PAIR(color));
-				color = 0;
+				color = pair_id(atoi(ptr + 1), COLOR_BLACK);
+				wattron(win, COLOR_PAIR(color));
 			}
 			ptr += code_len;
 		}
@@ -92,12 +94,20 @@ void print_log(char *format, ...)
 	usleep(100000);
 }
 
+void print_stat(char *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	wprintw(stat_win, "  ");
+	print_win(stat_win, format, args);
+	wprintw(stat_win, "\n");
+	refresh_window(stat_win);
+	va_end(args);
+}
+
 void print_creature_status(t_creature *creature)
 {
-	int pairid = pair_id(creature->color, COLOR_BLACK);
-	wattron(stat_win, COLOR_PAIR(pairid));
-	wprintw(stat_win, "  %s %c\n", creature->name, creature->ch);
-	wattroff(stat_win, COLOR_PAIR(pairid));
+	print_stat("%s | %c", creature_string(creature), creature_char(creature));
 
 	wattron(stat_win, COLOR_PAIR(COLOR_PAIR_RED));
 	wprintw(stat_win, "  Health: %d/%d\n", creature->health, creature->max_health);

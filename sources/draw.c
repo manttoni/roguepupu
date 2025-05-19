@@ -24,9 +24,12 @@ void cosmetic_effects(t_area *area)
 		t_creature *creature = cell->creature;
 		if (creature != NULL && creature->bleeding > 0)
 		{
-			creature->bleeding -= rand() % 2;
-			if(get_red(cell->terrain->color) < 5)
-				change_color(&cell->terrain->color, 1, 0, 0);
+			if (rand() % 4 == 0)
+				creature->bleeding--;
+			t_cell *blood_cell = cell;
+			if (get_red(blood_cell->color) >= 5)
+				blood_cell = random_neighbor(area, cell);
+			change_color(&blood_cell->color, 1, 0, 0);
 		}
 	}
 	draw_area(area);

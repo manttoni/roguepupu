@@ -5,8 +5,8 @@
 #include "creature.h"
 #include <ncurses.h>
 
-void print_win(WINDOW *win, char *format, ...);
-void print_log(const char *format, ...);
+void print_win(WINDOW *win, char *format, va_list args);
+void print_log(char *format, ...);
 void print_creature_status(t_creature *creature);
 void update_stat_win(t_area *area);
 void print_legend();

@@ -10,6 +10,7 @@ typedef struct s_terrain
 	short	color;
 }	t_terrain;
 
+char *terrain_string(t_terrain *terrain);
 t_terrain *new_terrain(char ch, int area_level);
 
 #endif
