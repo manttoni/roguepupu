@@ -1,13 +1,17 @@
-creature:
-	creature vision range
-
-creature spawning inside blocking terrain should be prevented.
-headers
-
+creature attributes (strength etc)
+creature skills (athletics etc)
+combat d20 checks
+status effects
+traps
+character class
+character sheet
+special attacks
 character creation
-opening containers or player inventory
-log colors
-fancy health bar
-enemy flee and spotted log messages
-examining can show info in some window in a corner
+
+low prio / random stuff... aka do first:
+
+inventory system
+creature vision range
+examine window
+fog of war kind of thing where cells that were seen before are visible in some way
 

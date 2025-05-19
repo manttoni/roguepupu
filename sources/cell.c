@@ -186,10 +186,21 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 {
 	t_cell cell;
 	memset(&cell, 0, sizeof(t_cell));
+
 	cell.terrain = new_terrain(terrain, area_level);
 	cell.mech = new_mech(mech, area_level);
 	cell.item = new_random_item(item, area_level);
 	cell.creature = new_creature(creature, area_level);
+
+	if (strchr(TERRAIN_BLOCKED, terrain) != NULL)
+	{
+		if (cell.item != NULL || cell.creature != NULL)
+		{
+			logger("Item or creature spawned in bad place");
+			end_ncurses(1);
+		}
+	}
+
 	cell.color = color_id((t_color){0,0,0});
 	return cell;
 }

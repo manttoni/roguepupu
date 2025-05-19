@@ -3,7 +3,7 @@
 
 #include "file_reader.h"
 #include "area.h"
-
+#include "windows.h"
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
@@ -35,5 +35,7 @@ void init_ncurses();
 void end_ncurses(int exit_value);
 int count_char(char *str, char c);
 void handle_segfault(int sig);
+int win_width(WINDOW *win);
+int win_height(WINDOW *win);
 
 #endif

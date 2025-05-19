@@ -6,6 +6,22 @@
 #include "../headers/interface.h"
 #include "../headers/color.h"
 
+int win_width(WINDOW *win)
+{
+	int y, x;
+	getmaxyx(win, y, x);
+	(void) y;
+	return x;
+}
+
+int win_height(WINDOW *win)
+{
+	int y, x;
+	getmaxyx(win, y, x);
+	(void) x;
+	return y;
+}
+
 int min(int a, int b)
 {
 	if (a < b)

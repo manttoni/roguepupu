@@ -59,7 +59,7 @@ void character_creation(t_creature *player)
 	print_win(cc, " Select weapon with {red}LEFT{reset} or {red}RIGHT{reset}: ", NULL);
 	int y, x;
 	getyx(cc, y, x);
-	e_item_type type = WEAPON_SIMPLE + 1;
+	e_item_type type = SPEAR;
 	while (1)
 	{
 		t_item *weapon = new_weapon(type, COMMON);

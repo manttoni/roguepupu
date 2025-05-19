@@ -88,5 +88,5 @@ void draw_area(t_area *area)
 		}
 	}
 	refresh_window(map_win);
-	wrefresh(map_win);
+	//wrefresh(map_win);
 }

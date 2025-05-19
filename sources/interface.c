@@ -138,21 +138,33 @@ void print_stat(char *format, ...)
 	wprintw(stat_win, "  ");
 	print_win(stat_win, format, args);
 	wprintw(stat_win, "\n");
-	refresh_window(stat_win);
 	va_end(args);
 }
 
 void print_creature_status(t_creature *creature)
 {
+	// Print creature name
 	print_stat("%C", creature);
 
-	wattron(stat_win, COLOR_PAIR(COLOR_PAIR_RED));
-	wprintw(stat_win, "  Health: %d/%d\n", creature->health, creature->max_health);
-	wattroff(stat_win, COLOR_PAIR(COLOR_PAIR_RED));
-	int x, y;
-	getmaxyx(stat_win, y, x);
-	(void) y;
-	for (int i = 0; i < x; ++i)
+	// Print creature health bar
+	size_t x = win_width(stat_win);
+	size_t bar_width = x - 3;
+	char buf[x];
+	snprintf(buf, sizeof(buf), "Health: %d / %d", creature->health, creature->max_health);
+	wprintw(stat_win, "  ");
+	short pi = pair_id(COLOR_WHITE, color_id((t_color){1,0,0}));
+	wattron(stat_win, COLOR_PAIR(pi));
+	for (size_t i = 0; i < bar_width; ++i)
+	{
+		if ((double) i / (bar_width - 1) >= (double) creature->health / creature->max_health)
+			wattroff(stat_win, COLOR_PAIR(pi));
+		if (i < strlen(buf))
+			waddch(stat_win, buf[i]);
+		else
+			waddch(stat_win, ' ');
+	}
+
+	for (size_t i = 0; i < x; ++i)
 		wprintw(stat_win, "-");
 }
 
