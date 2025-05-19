@@ -10,15 +10,11 @@
 
 void free_mech(t_mech *mech)
 {
-	if (mech == NULL)
-		return;
 	free(mech);
 }
 
 void free_terrain(t_terrain *terrain)
 {
-	if (terrain == NULL)
-		return;
 	free(terrain);
 }
 

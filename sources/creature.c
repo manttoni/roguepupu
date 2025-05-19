@@ -54,12 +54,10 @@ int take_damage(t_cell *creature_cell, int damage, e_damage_type damage_type)
 	creature->health -= damage;
 
 	if (is_physical(damage_type))
-		creature->bleeding += damage / 5; // this is a cosmetic feature
+		creature->bleeding += damage / 4; // this is a cosmetic feature
 
 	if (creature->health <= 0)
 	{
-		if (creature->bleeding > 0)
-			change_color(&creature_cell->color, 1, 0, 0);
 		perish(creature, damage_type);
 		return DAMAGE_FATAL;
 	}
@@ -82,7 +80,7 @@ t_creature *new_creature(char ch, int area_level)
 			creature->name = "Crazy Goblin";
 			creature->weapon = new_random_item('W', 1);
 			creature->ai = AI_CRAZY_GOBLIN;
-			creature->color = COLOR_GREEN;
+			creature->color = color_id((t_color){0, 1, 0});
 			creature->faction = FACTION_GOBLIN;
 			break;
 		case '@':

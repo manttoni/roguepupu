@@ -31,6 +31,7 @@ void enter_area(t_game *game, t_area *area)
 	game->area = area;
 }
 
+// temporary version
 void character_creation(t_creature *player)
 {
 	t_winset cc_set;
