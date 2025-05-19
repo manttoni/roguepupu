@@ -24,6 +24,30 @@ WINDOW *my_newwin(t_winset winset)
 	return window;
 }
 
+WINDOW *my_subwin(WINDOW *win, t_winset winset)
+{
+	int y_max, x_max;
+	getmaxyx(win, y_max, x_max);
+	int height = 0.5 + (double)(y_max * winset.height) / 100;
+	int width = 0.5 + (double)(x_max * winset.width) / 100;
+	int y = 0.5 + (double)(y_max * winset.y) / 100;
+	int x = 0.5 + (double)(x_max * winset.x) / 100;
+	WINDOW *sub = subwin(win, height, width, y, x);
+	if (sub == NULL)
+		end_ncurses(errno);
+	return sub;
+}
+
+static void init_examine_win(void)
+{
+	examine_win = derwin(map_win, 3, win_width(map_win) - 2, 1, 1);
+	if (examine_win == NULL)
+	{
+		logger("Examine win fail");
+		end_ncurses(errno);
+	}
+}
+
 static void init_log_win(t_winset logset)
 {
 	log_win = my_newwin(logset);
@@ -88,6 +112,7 @@ void init_windows(void)
 	init_log_win(logset);
 	init_map_win(mapset);
 	init_leg_win(legset);
+	init_examine_win();
 }
 
 void delete_windows(void)

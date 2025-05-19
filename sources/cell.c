@@ -62,17 +62,17 @@ int mandis(t_area *area, t_cell *a, t_cell *b)
 	return abs(x_a - x_b) + abs(y_a - y_b);
 }
 
-char *cell_string(t_cell *cell)
+e_cell_type top_entity(t_cell *cell)
 {
 	if (cell->creature != NULL)
-		return cell->creature->name;
+		return CREATURE;
 	if (cell->item != NULL)
-		return cell->item->name;
+		return ITEM;
 	if (cell->terrain != NULL)
-		return cell->terrain->name;
+		return TERRAIN;
 	if (cell->mech != NULL)
-		return cell->mech->name;
-	return NULL;
+		return MECH;
+	return NONE;
 }
 
 int is_trapped(t_cell *cell)

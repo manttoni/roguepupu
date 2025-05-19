@@ -7,6 +7,7 @@ extern WINDOW *stat_win;
 extern WINDOW *map_win;
 extern WINDOW *log_win;
 extern WINDOW *leg_win;
+extern WINDOW *examine_win;
 
 typedef struct s_winset
 {

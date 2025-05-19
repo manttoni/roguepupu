@@ -13,8 +13,9 @@ void print_legend(void)
 	wprintw(leg_win, " Cells:\n");
 	wprintw(leg_win, "  . is floor\n");
 	wprintw(leg_win, "  # is wall\n");
-	wprintw(leg_win, "  O is door\n");
-	wprintw(leg_win, "  0 is locked door\n");
+	wprintw(leg_win, "  D is door\n");
+	wprintw(leg_win, "  R is remains\n");
+	wprintw(leg_win, "  W is weapon\n");
 	wprintw(leg_win, "  @ is player\n");
 	wprintw(leg_win, " Controls:\n");
 	wprintw(leg_win, "  Arrows move\n");
@@ -26,10 +27,10 @@ void print_legend(void)
 	wprintw(leg_win, "  p is pick up\n");
 	wprintw(leg_win, "  SPACE is pass\n");
 	wprintw(leg_win, " Scanning:\n");
-	wprintw(leg_win, "  Arrows select object\n");
+	wprintw(leg_win, "  any key selects next object\n");
 	wprintw(leg_win, "  enter confirms selected object\n");
-	wprintw(leg_win, "  esc cancels interaction\n");
-	wprintw(leg_win, " esc exit\n");
+	wprintw(leg_win, "  ESCAPE cancels interaction\n");
+	wprintw(leg_win, " ESCAPE exit\n");
 }
 
 /* Can be called directly if args == NULL.
@@ -117,6 +118,39 @@ void print_win(WINDOW *win, char *format, va_list args)
 			ptr++;
 		}
 	}
+}
+
+/* Sets the va_args which print_win() needs */
+static void print_win_va(WINDOW *win, char *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	print_win(win, format, args);
+	va_end(args);
+}
+
+void print_selected(t_cell *cell)
+{
+	werase(examine_win);
+	wmove(examine_win, 1, 2);
+	switch (top_entity(cell))
+	{
+		case CREATURE:
+			print_win_va(examine_win, "%C", cell->creature);
+			break;
+		case ITEM:
+			print_win_va(examine_win, "%I", cell->item);
+			break;
+		case TERRAIN:
+			print_win_va(examine_win, "%T", cell->terrain);
+			break;
+		case MECH:
+			print_win_va(examine_win, "%M", cell->mech);
+			break;
+		default:
+			break;
+	}
+	wrefresh(examine_win);
 }
 
 void print_log(char *format, ...)

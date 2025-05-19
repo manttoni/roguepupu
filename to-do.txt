@@ -12,6 +12,5 @@ low prio / random stuff... aka do first:
 
 inventory system
 creature vision range
-examine window
 fog of war kind of thing where cells that were seen before are visible in some way
 

@@ -14,6 +14,7 @@ WINDOW *stat_win = NULL;
 WINDOW *map_win = NULL;
 WINDOW *log_win = NULL;
 WINDOW *leg_win = NULL;
+WINDOW *examine_win = NULL;
 
 int main(void)
 {

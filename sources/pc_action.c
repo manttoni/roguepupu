@@ -34,6 +34,7 @@ t_cell *select_cell(t_node *list, t_area *area)
 		t_cell *selected = (t_cell *) selected_node->data;
 		selected->highlight |= A_BLINK;
 		draw_area(area);
+		print_selected(selected);
 
 		int input = getch();
 		switch (input)
@@ -87,7 +88,6 @@ int pc_examine(t_area *area)
 		return 0;
 
 	// enter pressed
-	print_log(cell_string(examine_cell));
 	return 0;
 }
 

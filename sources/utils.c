@@ -65,6 +65,7 @@ void init_ncurses()
 
 void end_ncurses(int exit_value)
 {
+	logger("exit_value: %d", exit_value);
 	if (exit_value != 0)
 	{
 		print_log("Error occurred. Press any key to continue. Read log/debug.log.");

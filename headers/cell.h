@@ -31,7 +31,16 @@ typedef enum
 	DOWNRIGHT
 }	e_direction;
 
-char *cell_string(t_cell *cell);
+typedef enum
+{
+	CREATURE,
+	ITEM,
+	TERRAIN,
+	MECH,
+	NONE
+}	e_cell_type;
+
+e_cell_type top_entity(t_cell *cell);
 char cell_char(t_cell *cell);
 short cell_fg(t_cell *cell);
 short cell_bg(t_cell *cell);
