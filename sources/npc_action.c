@@ -15,7 +15,7 @@ void flee(t_area *area, t_cell *cell)
 {
 	t_creature *npc = cell->creature;
 	if (npc->behavior != AI_FLEE)
-		print_log("%s flees for their life", creature_string(npc));
+		print_log("%C flees for their life", npc);
 	npc->behavior = AI_FLEE;
 
 	t_cell *player_cell = get_player_cell(area);
@@ -35,7 +35,7 @@ void pursue(t_area *area, t_cell *cell)
 {
 	t_creature *npc = cell->creature;
 	if (npc->behavior != AI_PURSUE)
-		print_log("%s charges towards %s", creature_string(npc), creature_string(get_player(area)));
+		print_log("%C charges towards %C", npc, get_player(area)); // <-- later they can attack f.e. the closest visible or smth
 	npc->behavior = AI_PURSUE;
 
 	t_cell *player_cell = get_player_cell(area);

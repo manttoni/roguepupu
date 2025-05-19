@@ -65,13 +65,13 @@ int mandis(t_area *area, t_cell *a, t_cell *b)
 char *cell_string(t_cell *cell)
 {
 	if (cell->creature != NULL)
-		return creature_string(cell->creature);
+		return cell->creature->name;
 	if (cell->item != NULL)
-		return item_string(cell->item);
+		return cell->item->name;
 	if (cell->terrain != NULL)
-		return terrain_string(cell->terrain);
+		return cell->terrain->name;
 	if (cell->mech != NULL)
-		return mech_string(cell->mech);
+		return cell->mech->name;
 	return NULL;
 }
 

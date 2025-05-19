@@ -5,14 +5,6 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
-char *item_string(t_item *item)
-{
-	int len = 15 + strlen(item->name);
-	char *buf = my_calloc(len + 1);
-	snprintf(buf, len + 1, "{%d}%s{reset}", item->color, item->name);
-	return buf;
-}
-
 int is_weapon(t_item *item)
 {
 	return item->type > WEAPON && item->type < WEAPON_END;

@@ -10,7 +10,7 @@
 
 void pc_disarm_trap(t_creature *pc, t_cell *trapped_cell)
 {
-	print_log("%s disarms a trap on %s", creature_string(pc), terrain_string(trapped_cell->terrain));
+	print_log("%C disarms a trap on %T", pc, trapped_cell->terrain);
 	trapped_cell->mech->trap = 0;
 }
 
@@ -27,7 +27,6 @@ static void clear_highlights(t_node *list)
 /* Select a cell from list of cells */
 t_cell *select_cell(t_node *list, t_area *area)
 {
-	logger("Selecting cell from list where first is: %s", cell_string((t_cell *)list->data));
 	t_node *selected_node = list;
 	while (1)
 	{
@@ -58,7 +57,6 @@ t_cell *select_cell(t_node *list, t_area *area)
 /* Scan surroundings, highlight cells, return a selected cell */
 t_cell *scan(t_area *area, int flags)
 {
-	logger("Scanning area for %d", flags);
 	// get list
 	t_node *list = get_interactables(area, flags);
 	if (list == NULL)
@@ -112,10 +110,10 @@ int pc_open(t_area *area)
 	t_terrain *closed = closed_cell->terrain;
 	if (closed_cell->mech != NULL && closed_cell->mech->lock > 0)
 	{
-		print_log("%s is locked", terrain_string(closed));
+		print_log("%T is locked", closed);
 		return 0;
 	}
-	print_log("%s opened", terrain_string(closed));
+	print_log("%T opened", closed);
 	if (closed_cell->mech != NULL && closed_cell->mech->trap > 0)
 	{
 		print_log("Trap!");
@@ -138,7 +136,7 @@ int pc_unlock(t_area *area)
 	if (locked_cell == NULL)
 		return 0;
 
-	print_log("%s unlocks %s", creature_string(get_player(area)), terrain_string(locked_cell->terrain));
+	print_log("%C unlocks %T", get_player(area), locked_cell->terrain);
 	locked_cell->mech->lock = 0; // for now just unlock everything without skill check
 
 	return 0;
@@ -162,7 +160,7 @@ int pc_pick_up(t_area *area)
 		return 0;
 
 	add_item(get_player(area), item_cell->item);
-	print_log("%s picked up %s", creature_string(get_player(area)), item_string(item_cell->item));
+	print_log("%C picked up %I", get_player(area), item_cell->item);
 	item_cell->item = NULL;
 
 	return 0;

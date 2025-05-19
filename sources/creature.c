@@ -7,27 +7,11 @@
 #include "die.h"
 #include "draw.h"
 
-char *creature_char(t_creature *creature)
-{
-	int len = 15 + 1;
-	char *buf = my_calloc(len + 1);
-	snprintf(buf, len + 1, "{%d}%c{reset}", creature->color, creature->ch);
-	return buf;
-}
-
-char *creature_string(t_creature *creature)
-{
-	int len = 15 + strlen(creature->name);
-	char *buf = my_calloc(len + 1);
-	snprintf(buf, len + 1, "{%d}%s{reset}", creature->color, creature->name);
-	return buf;
-}
-
 void equip(t_creature *creature, t_item *item)
 {
 	if (is_weapon(item))
 		creature->weapon = item;
-	print_log("%s equips %s", creature_string(creature), item_string(item));
+	print_log("%C equips %I", creature, item);
 }
 
 void add_item(t_creature *creature, t_item *item)
@@ -47,7 +31,7 @@ void perish(t_creature *creature, e_damage_type damage_type)
 	switch (damage_type)
 	{
 		default:
-			print_log("%s perishes", creature_string(creature));
+			print_log("%C perishes", creature);
 			break;
 	}
 	if (creature->ch == '@')
@@ -66,7 +50,7 @@ int take_damage(t_cell *creature_cell, int damage, e_damage_type damage_type)
 	if (damage > 0)
 		visual_effect(creature_cell, COLOR_PAIR(COLOR_PAIR_RED));
 	t_creature *creature = creature_cell->creature;
-	print_log("%s takes {red}%d{reset} %s damage", creature_string(creature), damage, dmg_str(damage_type));
+	print_log("%C takes {red}%d{reset} %s damage", creature, damage, dmg_str(damage_type));
 	creature->health -= damage;
 
 	if (is_physical(damage_type))

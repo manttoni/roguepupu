@@ -15,7 +15,7 @@ int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
 	t_creature *defender = defender_cell->creature;
 	t_item *weapon = attacker->weapon;
 
-	print_log("%s attacks %s with a %s", creature_string(attacker), creature_string(defender), item_string(weapon));
+	print_log("%C attacks %C with a %I", attacker, defender, weapon);
 	t_die *dice = weapon->dice;
 	while (dice->sides != 0)
 	{

@@ -3,14 +3,6 @@
 #include "../headers/globals.h"
 #include <ncurses.h>
 
-char *terrain_string(t_terrain *terrain)
-{
-	int len = 15 + strlen(terrain->name);
-	char *buf = my_calloc(len + 1);
-	snprintf(buf, len + 1, "{%d}%s{reset}", terrain->color, terrain->name);
-	return buf;
-}
-
 t_terrain *new_terrain(char ch, int area_level)
 {
 	(void)area_level;

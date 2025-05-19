@@ -32,25 +32,62 @@ void print_legend(void)
 	wprintw(leg_win, " esc exit\n");
 }
 
+/* Can be called directly if args == NULL.
+ * A better idea is to call this through another function
+ * Like print_log, you will get more control */
 void print_win(WINDOW *win, char *format, va_list args)
 {
 	char *ptr = format;
-	int y, x;
-	getmaxyx(win, y, x);
-	(void) y;
-	char str[x];
-
-	if (args != NULL)
-	{
-		vsnprintf(str, x, format, args);
-		ptr = str;
-	}
-
-	short color = 0;
 
 	while (*ptr != '\0')
 	{
-		if (*ptr == '{' && strchr(ptr, '}') != NULL)
+		short color = 0;
+		char *name = NULL;
+		if (*ptr == '%')
+		{
+			switch (ptr[1])
+			{
+				case 'd':
+					wprintw(win, "%d", va_arg(args, int));
+					break;
+				case 's':
+					wprintw(win, "%s", va_arg(args, char*));
+					break;
+				case '%':
+					wprintw(win, "%%");
+					break;
+				case 'C':
+					t_creature *creature = va_arg(args, t_creature*);
+					color = creature->color;
+					name = creature->name;
+					break;
+				case 'I':
+					t_item *item = va_arg(args, t_item*);
+					color = item->color;
+					name = item->name;
+					break;
+				case 'T':
+					t_terrain *terrain = va_arg(args, t_terrain*);
+					color = terrain->color;
+					name = terrain->name;
+					break;
+				case 'M':
+					t_mech *mech = va_arg(args, t_mech*);
+					color = mech->color;
+					name = mech->name;
+					break;
+			}
+			if (strchr("CITM", ptr[1]))
+			{
+				short pi = pair_id(color, COLOR_BLACK);
+				wattron(win, COLOR_PAIR(pi));
+				wprintw(win, "%s", name);
+				wattroff(win, COLOR_PAIR(pi));
+			}
+			ptr += 2;
+		}
+
+		else if (*ptr == '{' && strchr(ptr, '}') != NULL)
 		{
 			char *closing_bracket = strchr(ptr, '}');
 			int code_len = closing_bracket - ptr + 1;
@@ -107,7 +144,7 @@ void print_stat(char *format, ...)
 
 void print_creature_status(t_creature *creature)
 {
-	print_stat("%s | %c", creature_string(creature), creature_char(creature));
+	print_stat("%C", creature);
 
 	wattron(stat_win, COLOR_PAIR(COLOR_PAIR_RED));
 	wprintw(stat_win, "  Health: %d/%d\n", creature->health, creature->max_health);
