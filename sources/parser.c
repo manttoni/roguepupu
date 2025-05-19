@@ -32,7 +32,6 @@ t_area *parse_area(char *raw)
 		logger("Parsing error");
 		end_ncurses(errno);
 	}
-	logger("Name is %s", name->valuestring);
 
 	area->name = strdup(name->valuestring);
 	area->level = level->valueint;
@@ -69,5 +68,6 @@ t_area *parse_area(char *raw)
 
 	cJSON_Delete(json);
 
+	free(raw);
 	return area;
 }

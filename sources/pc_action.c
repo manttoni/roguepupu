@@ -1,4 +1,5 @@
 #include "action.h"
+#include "memory.h"
 #include "terrain.h"
 #include "utils.h"
 #include "cell.h"
@@ -66,14 +67,16 @@ t_cell *scan(t_area *area, int flags)
 	}
 	t_node *ptr = list;
 
-	// highlight interactables with REVERSE
+	// highlight interactables with A_REVERSE
 	while (ptr != NULL)
 	{
 		t_cell *cell = (t_cell *) ptr->data;
 		cell->highlight |= A_REVERSE;
 		ptr = ptr->next;
 	}
-	return select_cell(list, area);
+	t_cell *selected = select_cell(list, area);
+	list_clear(&list);
+	return selected;
 }
 
 /* Scan surroundings within vision */
@@ -97,7 +100,7 @@ static void pc_open_container(t_creature *pc, t_terrain *container)
 
 static void pc_open_door(t_cell *door_cell)
 {
-	free(door_cell->terrain);
+	free_terrain(door_cell->terrain);
 	door_cell->terrain = new_terrain('.', 0);
 }
 
@@ -165,26 +168,9 @@ int pc_pick_up(t_area *area)
 
 	return 0;
 }
-e_action get_player_action()
+e_action get_player_action(int input)
 {
-	int input = getch();
-	logger("Key pressed: %c", input);
-	if (input == ESCAPE)
-	{
-		print_log("{red}Press ESC again to quit or C to cancel.{reset}");
-		while (1)
-		{
-			input = getch();
-			if (input == ESCAPE)
-				end_ncurses(0);
-			if (input == 'c')
-			{
-				print_log("{green}Quit canceled{reset}");
-				input = getch();
-				break;
-			}
-		}
-	}
+
 	switch(input)
 	{
 		case '7':
@@ -229,7 +215,25 @@ int pc_act(t_area *area)
 	int pi = get_player_index(area);
 	t_cell *cell = &area->cells[pi];
 	t_creature *player = cell->creature;
-	e_action action = get_player_action();
+
+	int input = getch();
+	if (input == ESCAPE)
+	{
+		print_log("{red}Press ESC again to quit or C to cancel.{reset}");
+		while (1)
+		{
+			input = getch();
+			if (input == ESCAPE) // later this could open a menu to save game etc
+				return QUIT_GAME;
+			if (input == 'c')
+			{
+				print_log("{green}Quit canceled{reset}");
+				input = getch();
+				break;
+			}
+		}
+	}
+	e_action action = get_player_action(input);
 
 	switch(action)
 	{

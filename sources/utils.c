@@ -44,7 +44,6 @@ void init_ncurses()
 	cbreak();
 	keypad(stdscr, TRUE);
 	init_pair(COLOR_PAIR_RED, COLOR_RED, COLOR_BLACK);
-	logger("ncurses initialized");
 	refresh();
 }
 
@@ -87,6 +86,7 @@ t_node *new_node(void *data)
 
 void add_node_last(t_node **list, t_node *add)
 {
+	logger("add_node(%p)", add);
 	if (*list == NULL)
 	{
 		*list = add;
@@ -100,9 +100,11 @@ void add_node_last(t_node **list, t_node *add)
 
 void remove_node(t_node **list, t_node *remove)
 {
+	logger("remove_node(%p)", remove);
 	if (*list == remove)
 	{
 		*list = remove->next;
+		free(remove);
 		return;
 	}
 	t_node *prev = *list;

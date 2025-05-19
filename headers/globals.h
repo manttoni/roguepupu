@@ -4,6 +4,8 @@
 #include <ncurses.h>
 #include "area.h"
 
+#define QUIT_GAME 42
+
 #define TERRAIN_BLOCKED "DC#"
 #define TERRAIN_CLOSED "DCR"
 #define TERRAIN_DOOR "D"

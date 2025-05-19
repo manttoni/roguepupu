@@ -35,6 +35,5 @@ char *read_file(char *file)
 	if (read(fd, buf, len) < 0)
 		end_ncurses(errno);
 	close(fd);
-	logger("File %s read", file);
 	return buf;
 }

@@ -1,4 +1,5 @@
 #include "action.h"
+#include "memory.h"
 #include "area.h"
 #include "globals.h"
 #include "utils.h"
@@ -65,6 +66,7 @@ void wander(t_area *area, t_cell *cell)
 int npc_act(t_area *area)
 {
 	t_node *enemies = get_interactables(area, SCAN_ENEMY);
+	t_node *ptr = enemies;
 	t_cell *player_cell = get_player_cell(area);
 	while (enemies != NULL)
 	{
@@ -74,10 +76,10 @@ int npc_act(t_area *area)
 		if (enemy->health <= 0)
 		{
 			short color = cell->terrain->color;
-			free(cell->terrain);
+			free_terrain(cell->terrain);
 			cell->terrain = new_terrain('R', 0);
 			cell->terrain->color = color;
-			free(cell->creature);
+			free_creature(cell->creature);
 			cell->creature = NULL;
 		}
 		else if (!is_visible(area, cell, player_cell))
@@ -97,5 +99,6 @@ int npc_act(t_area *area)
 
 		enemies = enemies->next;
 	}
+	list_clear(&ptr);
 	return 0;
 }

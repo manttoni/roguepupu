@@ -1,4 +1,5 @@
 #include "game.h"
+#include "memory.h"
 #include "action.h"
 #include "area.h"
 #include "windows.h"
@@ -14,7 +15,8 @@ void start(t_game *game)
 	{
 		update_stat_win(area);
 		draw_area(area);
-		pc_act(area);
+		if (pc_act(area) == QUIT_GAME)
+			return;
 		cosmetic_effects(area);
 		draw_area(area);
 		npc_act(area);
@@ -65,7 +67,10 @@ void character_creation(t_creature *player)
 
 		int input = getch();
 		if (input == ESCAPE)
-			end_ncurses(0);
+		{
+			free_item(weapon);
+			return;
+		}
 		if (input == ENTER)
 		{
 			player->weapon = weapon;
@@ -87,15 +92,14 @@ void character_creation(t_creature *player)
 		wprintw(cc, "                          ");
 		wmove(cc, y, x);
 		flushinp();
+		free_item(weapon);
 	}
 }
 
 t_game *new_game(t_area *area)
 {
-	logger("New game");
 	t_game *game = my_calloc(sizeof(*game));
 	game->player = get_player(area);
-	logger("got player");
 	character_creation(game->player);
 	enter_area(game, area);
 	return game;

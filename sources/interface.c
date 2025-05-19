@@ -161,16 +161,15 @@ void update_stat_win(t_area *area)
 	werase(stat_win);
 	wmove(stat_win, 1, 0);
 	t_node *enemies = get_interactables(area, SCAN_ENEMY | SCAN_VISIBLE);
+	t_node *ptr = enemies;
 
-	logger("update_stat_win got interactables");
 	print_creature_status(get_player(area));
-	logger("player printed");
 	while (enemies != NULL)
 	{
 		t_cell *enemy_cell = (t_cell *) enemies->data;
 		print_creature_status(enemy_cell->creature);
 		enemies = enemies->next;
 	}
-
+	list_clear(&ptr);
 	refresh_window(stat_win);
 }

@@ -1,13 +1,14 @@
+#include "area.h"
+#include "memory.h"
+#include "utils.h"
+#include "game.h"
+#include "windows.h"
+#include "globals.h"
+#include "parser.h"
 #include <signal.h>
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>
-#include "../headers/area.h"
-#include "../headers/utils.h"
-#include "../headers/game.h"
-#include "../headers/windows.h"
-#include "../headers/globals.h"
-#include "../headers/parser.h"
 
 WINDOW *stat_win = NULL;
 WINDOW *map_win = NULL;
@@ -25,6 +26,7 @@ int main(void)
 	init_windows();
 	t_game *game = new_game(parse_area(read_file(MAP_DUNGEON)));
 	start(game);
+	free_game(game);
 	delete_windows();
 	end_ncurses(0);
 }

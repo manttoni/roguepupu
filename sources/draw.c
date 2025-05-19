@@ -56,7 +56,6 @@ void draw_cell(int y, int x, t_cell *cell)
 
 void draw_area(t_area *area)
 {
-	logger("Drawing area");
 	int y_max, x_max;
 	getmaxyx(map_win, y_max, x_max);
 	int y_center = y_max / 2;
