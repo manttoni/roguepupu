@@ -12,8 +12,7 @@ character creation
 
 low prio / random stuff... aka do first:
 
-potions
-dual wielding
+dual wielding and versatile
 
 * log window remake
 	print_win smart

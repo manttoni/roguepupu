@@ -39,27 +39,15 @@ char cell_char(t_cell *cell)
 }
 
 /* Real distance between cells */
-double distance(t_area *area, t_cell *a, t_cell *b)
+double distance(t_cell *a, t_cell *b)
 {
-	int ida = a - area->cells;
-	int idb = b - area->cells;
-	int x_a = ida % area->width;
-	int y_a = ida / area->width;
-	int x_b = idb % area->width;
-	int y_b = idb / area->width;
+	int ida = a - g_area->cells;
+	int idb = b - g_area->cells;
+	int x_a = ida % g_area->width;
+	int y_a = ida / g_area->width;
+	int x_b = idb % g_area->width;
+	int y_b = idb / g_area->width;
 	return hypot(x_a - x_b, y_a - y_b);
-}
-
-/* manhattan distance between 2 cells */
-int mandis(t_area *area, t_cell *a, t_cell *b)
-{
-	int ida = a - area->cells;
-	int idb = b - area->cells;
-	int x_a = ida % area->width;
-	int y_a = ida / area->width;
-	int x_b = idb % area->width;
-	int y_b = idb / area->width;
-	return abs(x_a - x_b) + abs(y_a - y_b);
 }
 
 e_cell_type top_entity(t_cell *cell)
@@ -128,12 +116,12 @@ int has_enemy(t_cell *cell, t_creature *of_this_creature)
 	return cell->creature->faction & ENEMY_FACTION(of_this_creature->faction);
 }
 
-int is_neighbor(t_area *area, t_cell *cell, t_cell *other)
+int is_neighbor(t_cell *cell, t_cell *other)
 {
 	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
 	for (int i = 0; i < 8; ++i)
 	{
-		t_cell *n = neighbor(dirs[i], area, cell);
+		t_cell *n = neighbor(dirs[i], cell);
 		if (n == other)
 			return 1;
 	}
@@ -141,14 +129,14 @@ int is_neighbor(t_area *area, t_cell *cell, t_cell *other)
 }
 
 // can eye see cell? using Bresenhams algorithm
-int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
+int is_visible(t_cell *eye, t_cell *view_cell)
 {
 	if (eye == view_cell)
 		return 1;
-	int w = area->width, h = area->height;
+	int w = g_area->width, h = g_area->height;
 
-	int ei = eye - area->cells;
-	int vi = view_cell - area->cells;
+	int ei = eye - g_area->cells;
+	int vi = view_cell - g_area->cells;
 
 	int ex = ei % w, ey = ei / w;
 	int vx = vi % w, vy = vi / w;
@@ -165,7 +153,7 @@ int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 			if (x < 0 || y < 0 || x >= w || y >= h)
 				return 0;
 
-			t_cell *cell = &area->cells[y * w + x];
+			t_cell *cell = &g_area->cells[y * w + x];
 
 			if (x == vx && y == vy)
 				return 1; // Reached the target
@@ -215,15 +203,16 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 	return cell;
 }
 
-t_cell *random_neighbor(t_area *area, t_cell *cell)
+t_cell *random_neighbor(t_cell *cell)
 {
 	e_direction dir = rand() % 8;
-	return neighbor(dir, area, cell);
+	return neighbor(dir, cell);
 }
 
-t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell)
+t_cell *neighbor(e_direction dir, t_cell *cell)
 {
-	int index = cell - area->cells;
+	t_area *area = g_area;
+	int index = cell - g_area->cells;
 	switch(dir)
 	{
 		case UP:

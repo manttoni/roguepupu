@@ -30,15 +30,15 @@ typedef enum
 /* Actions are separated into pc_action.c and npc_action.c and action.c for universals */
 
 /* PC ACTIONS, WITH SCAN UI */
-int pc_act(t_area *area);
-int pc_pick_up(t_area *area);
-int pc_examine(t_area *area);
-int pc_open(t_area *area);
-int pc_unlock(t_area *area);
-int pc_attack(t_area *area);
+int pc_act(void);
+int pc_pick_up(void);
+int pc_examine(void);
+int pc_open(void);
+int pc_unlock(void);
+int pc_attack(void);
 
 /* NPC ACTIONS, USES AI */
-int npc_act(t_area *area);
+int npc_act(void);
 
 /* UNIVERSAL ACTIONS */
 int act_attack(t_cell *attacker_cell, t_cell *defender_cell);

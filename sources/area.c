@@ -7,11 +7,11 @@
 #include "interface.h"
 #include <string.h>
 
-int get_player_index(t_area *area)
+int get_player_index(void)
 {
-	for (int i = 0; i < area->width * area->height; ++i)
+	for (int i = 0; i < g_area->width * g_area->height; ++i)
 	{
-		t_cell *c = &area->cells[i];
+		t_cell *c = &g_area->cells[i];
 		if (c->creature == NULL)
 			continue;
 		if (c->creature->ch == '@')
@@ -22,28 +22,28 @@ int get_player_index(t_area *area)
 	return -1;
 }
 
-t_cell *get_player_cell(t_area *area)
+t_cell *get_player_cell(void)
 {
-	int i = get_player_index(area);
-	return &area->cells[i];
+	int i = get_player_index();
+	return &g_area->cells[i];
 }
 
-t_creature *get_player(t_area *area)
+t_creature *get_player(void)
 {
-	int i = get_player_index(area);
-	t_cell *c = &area->cells[i];
+	int i = get_player_index();
+	t_cell *c = &g_area->cells[i];
 	return c->creature;
 }
 
-t_node *get_interactables(t_area *area, int flags)
+t_node *get_interactables(int flags)
 {
-	int pi = get_player_index(area);
-	t_cell *pc = &area->cells[pi];
+	int pi = get_player_index();
+	t_cell *pc = &g_area->cells[pi];
 
 	t_node *list = NULL;
-	for (int i = 0; i < AREA(area); ++i)
+	for (int i = 0; i < AREA(g_area); ++i)
 	{
-		t_cell *cell = &area->cells[i];
+		t_cell *cell = &g_area->cells[i];
 
 		// terrain checks
 		if (flags & SCAN_CLOSED && !is_closed(cell))
@@ -56,7 +56,7 @@ t_node *get_interactables(t_area *area, int flags)
 			continue;
 
 		// creature checks
-		if (flags & SCAN_ENEMY && !has_enemy(cell, get_player(area)))
+		if (flags & SCAN_ENEMY && !has_enemy(cell, get_player()))
 			continue;
 
 		// item checks
@@ -64,9 +64,9 @@ t_node *get_interactables(t_area *area, int flags)
 			continue;
 
 		// cell checks
-		if (flags & SCAN_VISIBLE && !is_visible(area, pc, cell))
+		if (flags & SCAN_VISIBLE && !is_visible(pc, cell))
 			continue;
-		if (flags & SCAN_NEIGHBOR && !is_neighbor(area, pc, cell))
+		if (flags & SCAN_NEIGHBOR && !is_neighbor(pc, cell))
 			continue;
 		if (!is_interactable(cell))
 			continue;

@@ -14,9 +14,9 @@ typedef struct s_area
 	t_cell	*cells;
 }	t_area;
 
-t_cell *get_player_cell(t_area *area);
-t_creature *get_player(t_area *area);
-int	get_player_index(t_area *area);
-t_node *get_interactables(t_area *area, int flags);
+t_cell *get_player_cell(void);
+t_creature *get_player(void);
+int	get_player_index(void);
+t_node *get_interactables(int flags);
 
 #endif

@@ -1,13 +1,8 @@
 #include "action.h"
 #include "cell.h"
-#include "area.h"
 #include "creature.h"
-#include "game.h"
-#include "draw.h"
 #include "interface.h"
-#include "globals.h"
 #include "dice.h"
-#include "windows.h"
 
 int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
 {

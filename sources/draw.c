@@ -17,29 +17,6 @@ void visual_effect(t_cell *cell, chtype effect)
 	refresh_window(map_win);
 }
 
-void cosmetic_effects(t_area *area)
-{
-	for (int i = 0; i < AREA(area); ++i)
-	{
-		t_cell *cell = &area->cells[i];
-		t_creature *creature = cell->creature;
-		if (creature != NULL && creature->bleeding > 0)
-		{
-			if (rand() % 4 == 0)
-				creature->bleeding--;
-			t_cell *blood_cell = cell;
-			int i = 0;
-			while (get_red(blood_cell->color) >= 2 && i++ < 15)
-				blood_cell = random_neighbor(area, cell);
-			if (i >= 15)
-				print_log("There is {red}blood{reset} everywhere!");
-			else
-				change_color(&blood_cell->color, 1, 0, 0);
-		}
-	}
-	draw_area(area);
-}
-
 void draw_cell(int y, int x, t_cell *cell)
 {
 	cell->last_draw = (t_coord){y, x};
@@ -59,27 +36,27 @@ void draw_cell(int y, int x, t_cell *cell)
 		wattroff(map_win, COLOR_PAIR(color_id));
 }
 
-void draw_area(t_area *area)
+void draw_area(void)
 {
 	int y_max, x_max;
 	getmaxyx(map_win, y_max, x_max);
 	int y_center = y_max / 2;
 	int x_center = x_max / 2;
 
-	int player_index = get_player_index(area);
-	int y_player = player_index / area->width;
-	int x_player = player_index % area->width;
+	int player_index = get_player_index();
+	int y_player = player_index / g_area->width;
+	int x_player = player_index % g_area->width;
 
 	int y_draw = y_center - y_player;
 	int x_draw = x_center - x_player;
 
 	werase(map_win);
-	for (int i = 0; i < AREA(area); ++i)
+	for (int i = 0; i < AREA(g_area); ++i)
 	{
-		t_cell *cell = &area->cells[i];
+		t_cell *cell = &g_area->cells[i];
 		if (y_draw < y_max - 1 && y_draw >= 1 && x_draw < x_max - 1 && x_draw >= 1)
 		{
-			if (is_visible(area, &area->cells[player_index], cell))
+			if (is_visible(&g_area->cells[player_index], cell))
 				draw_cell(y_draw, x_draw, cell);
 			else if (was_seen(cell) && cell->terrain->ch != '.')
 			{
@@ -95,12 +72,11 @@ void draw_area(t_area *area)
 			}
 		}
 		x_draw++;
-		if ((i + 1) % area->width == 0)
+		if ((i + 1) % g_area->width == 0)
 		{
 			y_draw++;
-			x_draw -= area->width;
+			x_draw -= g_area->width;
 		}
 	}
 	refresh_window(map_win);
-	//wrefresh(map_win);
 }

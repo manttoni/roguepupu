@@ -177,14 +177,14 @@ void print_inventory(t_node *inventory, int selected)
 
 void open_inventory(t_node **inventory, int mode)
 {
-	print_log("%C opens %s", get_player(g_area), mode == INVENTORY_LOOT ? "remains" : "inventory");
+	print_log("%C opens %s", get_player(), mode == INVENTORY_LOOT ? "remains" : "inventory");
 	int selected = 0;
 	int input = 0;
 	while (list_len(*inventory) > 0 && input != ESCAPE && input != 'i')
 	{
-		print_inventory(*inventory, selected);
 		if (selected >= list_len(*inventory))
 			selected = list_len(*inventory) - 1;
+		print_inventory(*inventory, selected);
 		input = getch();
 		switch (input)
 		{
@@ -196,10 +196,10 @@ void open_inventory(t_node **inventory, int mode)
 				switch (mode)
 				{
 					case INVENTORY_PLAYER:
-						use_item(get_player(g_area), inventory, selected);
+						use_item(get_player(), inventory, selected);
 						break;
 					case INVENTORY_LOOT:
-						loot_item(get_player(g_area), inventory, selected);
+						loot_item(get_player(), inventory, selected);
 						break;
 					default:
 						break;
@@ -218,9 +218,9 @@ void open_inventory(t_node **inventory, int mode)
 		}
 	}
 	if (mode == INVENTORY_PLAYER)
-		print_log("%C closes inventory", get_player(g_area));
+		print_log("%C closes inventory", get_player());
 	else if (mode == INVENTORY_LOOT)
-		print_log("%C closes remains", get_player(g_area));
+		print_log("%C closes remains", get_player());
 	werase(inventory_win);
 	refresh_window(inventory_win);
 }
@@ -300,13 +300,12 @@ void print_creature_status(t_creature *creature)
 
 void update_stat_win(void)
 {
-	t_area *area = g_area;
 	werase(stat_win);
 	wmove(stat_win, 1, 0);
-	t_node *enemies = get_interactables(area, SCAN_ENEMY | SCAN_VISIBLE);
+	t_node *enemies = get_interactables(SCAN_ENEMY | SCAN_VISIBLE);
 	t_node *ptr = enemies;
 
-	print_creature_status(get_player(area));
+	print_creature_status(get_player());
 	while (enemies != NULL)
 	{
 		t_cell *enemy_cell = (t_cell *) enemies->data;

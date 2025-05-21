@@ -11,17 +11,14 @@ void start(t_game *game)
 {
 	(void)game;
 	print_log("{green}Game started!{reset}");
-	t_area *area = g_area;
 	while(1)
 	{
 		update_stat_win();
-		draw_area(area);
-		if (pc_act(area) == QUIT_GAME)
+		draw_area();
+		if (pc_act() == QUIT_GAME)
 			return;
-		cosmetic_effects(area);
-		draw_area(area);
-		npc_act(area);
-		cosmetic_effects(area);
+		draw_area();
+		npc_act();
 		flushinp(); // empty input buffer
 	}
 }
@@ -36,7 +33,6 @@ void enter_area(t_game *game, t_area *area)
 t_game *new_game(t_area *area)
 {
 	t_game *game = my_calloc(sizeof(*game));
-	game->player = get_player(area);
 	enter_area(game, area);
 	return game;
 }

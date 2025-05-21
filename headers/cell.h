@@ -45,12 +45,11 @@ char cell_char(t_cell *cell);
 short cell_fg(t_cell *cell);
 short cell_bg(t_cell *cell);
 
-double distance(t_area *area, t_cell *a, t_cell *b);
-int mandis(t_area *area, t_cell *a, t_cell *b);
+double distance(t_cell *a, t_cell *b);
 
 t_cell new_cell(char terrain, char mech, char item, char creature, int area_level);
-t_cell *random_neighbor(t_area *area, t_cell *cell);
-t_cell *neighbor(e_direction dir, t_area *area, t_cell *cell);
+t_cell *random_neighbor(t_cell *cell);
+t_cell *neighbor(e_direction dir, t_cell *cell);
 
 int is_blocked(t_cell *cell);
 int is_interactable(t_cell *cell);
@@ -62,7 +61,7 @@ int has_npc(t_cell *cell);
 int has_enemy(t_cell *cell, t_creature *of);
 
 int was_seen(t_cell *cell);
-int is_visible(t_area *area, t_cell *eye, t_cell *target);
-int is_neighbor(t_area *area, t_cell *cell, t_cell *other);
+int is_visible(t_cell *eye, t_cell *target);
+int is_neighbor(t_cell *cell, t_cell *other);
 
 #endif
