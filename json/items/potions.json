@@ -1,0 +1,16 @@
+{
+	"potion": [
+		{
+			"name": "potion of healing",
+			"rarity": "common",
+			"effect": "heal 1d8",
+			"duration": "instant"
+		},
+		{
+			"name": "potion of invisibility",
+			"rarity": "very rare",
+			"effect": "invisibility",
+			"duration": "100"
+		}
+	]
+}

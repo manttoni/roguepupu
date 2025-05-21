@@ -14,7 +14,7 @@ void start(t_game *game)
 	t_area *area = g_area;
 	while(1)
 	{
-		update_stat_win(area);
+		update_stat_win();
 		draw_area(area);
 		if (pc_act(area) == QUIT_GAME)
 			return;

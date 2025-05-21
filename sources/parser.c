@@ -5,83 +5,129 @@
 #include <string.h>
 #include <errno.h>
 
-t_item *parse_weapons(char *raw)
+t_potion_data parse_potion_data(cJSON *potion)
+{
+	t_potion_data data;
+	cJSON *effect = cJSON_GetObjectItemCaseSensitive(potion, "effect");
+	cJSON *duration = cJSON_GetObjectItemCaseSensitive(potion, "duration");
+	if (!cJSON_IsString(effect) || !cJSON_IsString(duration))
+	{
+		logger("Potion data parsing error");
+		end_ncurses(ERROR_JSON_PARSE);
+	}
+
+	data.effect = strdup(effect->valuestring);
+	data.duration = strdup(duration->valuestring);
+	return data;
+}
+
+t_weapon_data parse_weapon_data(cJSON *weapon)
+{
+	t_weapon_data data;
+	cJSON *damage = cJSON_GetObjectItemCaseSensitive(weapon, "damage");
+	cJSON *damage_type = cJSON_GetObjectItemCaseSensitive(weapon, "damage_type");
+	cJSON *proficiency = cJSON_GetObjectItemCaseSensitive(weapon, "proficiency");
+	if (!cJSON_IsString(damage) || !cJSON_IsString(damage_type) || !cJSON_IsString(proficiency))
+	{
+		logger("weapon data parsing error");
+		end_ncurses(ERROR_JSON_PARSE);
+	}
+	data.damage = my_strdup(damage->valuestring);
+	data.damage_type = my_strdup(damage_type->valuestring);
+	data.proficiency = my_strdup(proficiency->valuestring);
+
+	cJSON *properties = cJSON_GetObjectItemCaseSensitive(weapon, "properties");
+	if (!cJSON_IsArray(properties))
+	{
+		logger("Properties in weapon parser is not an array");
+		end_ncurses(ERROR_JSON_PARSE);
+	}
+	int len = cJSON_GetArraySize(properties);
+	if (len > 0)
+		data.properties = my_calloc((len + 1) * sizeof(char*)); // NULL terminate
+	else
+	{
+		data.properties = NULL;
+		return data;
+	}
+
+	cJSON *prop = NULL;
+	int i = 0;
+	cJSON_ArrayForEach(prop, properties)
+	{
+		if (!cJSON_IsString(prop))
+		{
+			logger("Weapon property not a string");
+			end_ncurses(ERROR_JSON_PARSE);
+		}
+		data.properties[i] = my_strdup(prop->valuestring);
+		i++;
+	}
+	return data;
+}
+
+short get_color(char *rarity)
+{
+	if (strcmp(rarity, "common") == 0)
+		return COLOR_ITEM_COMMON;
+	else if (strcmp(rarity, "uncommon") == 0)
+		return COLOR_ITEM_UNCOMMON;
+	else if (strcmp(rarity, "rare") == 0)
+		return COLOR_ITEM_RARE;
+	else if (strcmp(rarity, "very rare") == 0)
+		return COLOR_ITEM_VERY_RARE;
+	else if (strcmp(rarity, "legendary") == 0)
+		return COLOR_ITEM_LEGENDARY;
+	logger("invalid rarity (weapon)");
+	end_ncurses(ERROR_JSON_PARSE);
+	return 0;
+}
+
+t_item *parse_items(char *raw, char *type)
 {
 	cJSON *json = cJSON_Parse(raw);
 	if (json == NULL)
 	{
-		logger("cJSON_Parse fail in weapons.json");
+		logger("cJSON_Parse fail (%s)", type);
 		end_ncurses(errno);
 	}
 
-	cJSON *weapons = cJSON_GetObjectItemCaseSensitive(json, "weapons");
-	if (!cJSON_IsArray(weapons))
+	cJSON *items = cJSON_GetObjectItemCaseSensitive(json, type);
+	if (!cJSON_IsArray(items))
 	{
-		logger("cJSON: not an array (weapons)");
+		logger("cJSON: not an array (%s)", type);
 		end_ncurses(ERROR_JSON_PARSE);
 	}
-	int n = cJSON_GetArraySize(weapons);
-	g_weapon_count = n;
+	int n = cJSON_GetArraySize(items);
 	t_item *array = my_calloc(n * sizeof(*array));
 
-	cJSON *weapon = NULL;
+	if (strcmp("weapon", type) == 0)
+		g_weapon_count = n;
+	else if (strcmp("potion", type) == 0)
+		g_potion_count = n;
+
+	cJSON *item = NULL;
 	int i = 0;
-	cJSON_ArrayForEach(weapon, weapons)
+	cJSON_ArrayForEach(item, items)
 	{
-		cJSON *name = cJSON_GetObjectItemCaseSensitive(weapon, "name");
-		cJSON *damage = cJSON_GetObjectItemCaseSensitive(weapon, "damage");
-		cJSON *damage_type = cJSON_GetObjectItemCaseSensitive(weapon, "damage_type");
-		cJSON *proficiency = cJSON_GetObjectItemCaseSensitive(weapon, "proficiency");
-		cJSON *rarity = cJSON_GetObjectItemCaseSensitive(weapon, "rarity");
-		cJSON *properties = cJSON_GetObjectItemCaseSensitive(weapon, "properties");
-		if (!cJSON_IsString(name) || !cJSON_IsString(damage) || !cJSON_IsString(damage_type)
-			|| !cJSON_IsString(proficiency) || !cJSON_IsString(rarity) || !cJSON_IsArray(properties))
+		cJSON *name = cJSON_GetObjectItemCaseSensitive(item, "name");
+		cJSON *rarity = cJSON_GetObjectItemCaseSensitive(item, "rarity");
+		if (!cJSON_IsString(name) || !cJSON_IsString(rarity))
 		{
-			logger("json format error (weapon: %s)", name->valuestring);
+			logger("Item parsing error");
 			end_ncurses(ERROR_JSON_PARSE);
 		}
+
 		array[i].name = my_strdup(name->valuestring);
 		array[i].rarity = my_strdup(rarity->valuestring);
-		array[i].ch = 'W';
-		array[i].type = "weapon";
-		array[i].proficiency = my_strdup(proficiency->valuestring);
+		array[i].ch = toupper(type[0]);
+		array[i].type = type;
+		array[i].color = get_color(array[i].rarity);
 
-		if (strcmp(array[i].rarity, "common") == 0)
-			array[i].color = COLOR_ITEM_COMMON;
-		else if (strcmp(array[i].rarity, "uncommon") == 0)
-			array[i].color = COLOR_ITEM_UNCOMMON;
-		else if (strcmp(array[i].rarity, "rare") == 0)
-			array[i].color = COLOR_ITEM_RARE;
-		else if (strcmp(array[i].rarity, "very rare") == 0)
-			array[i].color = COLOR_ITEM_VERY_RARE;
-		else if (strcmp(array[i].rarity, "legendary") == 0)
-			array[i].color = COLOR_ITEM_LEGENDARY;
-		else
-		{
-			logger("invalid rarity (weapon)");
-			end_ncurses(ERROR_JSON_PARSE);
-		}
-
-		array[i].data.weapon_data.damage = my_strdup(damage->valuestring);
-		array[i].data.weapon_data.damage_type = my_strdup(damage_type->valuestring);
-
-		int len = cJSON_GetArraySize(properties);
-		if (len > 0)
-			array[i].properties = my_calloc((len + 1) * sizeof(char*)); // NULL terminate
-		else
-			array[i].properties = NULL;
-
-		cJSON *prop = NULL;
-		int j = 0;
-		cJSON_ArrayForEach(prop, properties)
-		{
-			if (!cJSON_IsString(prop))
-			{
-				logger("Weapon property not a string");
-				end_ncurses(ERROR_JSON_PARSE);
-			}
-			array[i].properties[j++] = my_strdup(prop->valuestring);
-		}
+		if (strcmp("weapon", type) == 0)
+			array[i].data.weapon_data = parse_weapon_data(item);
+		else if(strcmp("potion", type) == 0)
+			array[i].data.potion_data = parse_potion_data(item);
 		i++;
 	}
 	cJSON_Delete(json);

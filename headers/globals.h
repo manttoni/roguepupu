@@ -67,6 +67,7 @@ typedef struct s_item t_item;
 #define MAP_DUNGEON "json/maps/dungeon.json"
 
 #define WEAPON_FILE "json/items/weapons.json"
+#define POTION_FILE "json/items/potions.json"
 #define ARMOR_FILE "json/items/armor.json"
 
 /* Highlights */
@@ -106,8 +107,10 @@ typedef struct s_item t_item;
 #define INVENTORY_LOOT 2
 #define INVENTORY_TRADE 3
 
-extern int g_weapon_count;
 extern t_item *g_weapons;
+extern int g_weapon_count;
+extern t_item *g_potions;
+extern int g_potion_count;
 extern t_area *g_area;
 
 #endif

@@ -100,6 +100,7 @@ static void pc_open_container(t_terrain *container)
 
 static void pc_open_door(t_cell *door_cell)
 {
+	print_log("%C opens %T", get_player(g_area), door_cell->terrain);
 	free_terrain(door_cell->terrain);
 	door_cell->terrain = new_terrain('.', 0);
 }
@@ -116,7 +117,6 @@ int pc_open(t_area *area)
 		print_log("%T is locked", closed);
 		return 0;
 	}
-	print_log("%T opened", closed);
 	if (closed_cell->mech != NULL && closed_cell->mech->trap > 0)
 	{
 		print_log("Trap!");

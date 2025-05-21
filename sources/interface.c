@@ -121,6 +121,11 @@ void print_win(WINDOW *win, char *format, va_list args)
 				color = pair_id(COLOR_GREEN, COLOR_BLACK);
 				wattron(win, COLOR_PAIR(color));
 			}
+			else if (strncmp("{blue}", ptr, code_len) == 0)
+			{
+				color = pair_id(COLOR_BLUE, COLOR_BLACK);
+				wattron(win, COLOR_PAIR(color));
+			}
 			else if (strncmp("{reset}", ptr, code_len) == 0)
 				wattroff(win, A_ATTRIBUTES);
 			else
@@ -172,7 +177,7 @@ void print_inventory(t_node *inventory, int selected)
 
 void open_inventory(t_node **inventory, int mode)
 {
-	print_log("Inventory has %d items", list_len(*inventory));
+	print_log("%C opens %s", get_player(g_area), mode == INVENTORY_LOOT ? "remains" : "inventory");
 	int selected = 0;
 	int input = 0;
 	while (list_len(*inventory) > 0 && input != ESCAPE && input != 'i')
@@ -293,8 +298,9 @@ void print_creature_status(t_creature *creature)
 		wprintw(stat_win, "-");
 }
 
-void update_stat_win(t_area *area)
+void update_stat_win(void)
 {
+	t_area *area = g_area;
 	werase(stat_win);
 	wmove(stat_win, 1, 0);
 	t_node *enemies = get_interactables(area, SCAN_ENEMY | SCAN_VISIBLE);

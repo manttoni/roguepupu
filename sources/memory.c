@@ -12,7 +12,7 @@ void free_weapons(void)
 {
 	for (int i = 0; i < g_weapon_count; ++i)
 	{
-		char **properties = g_weapons[i].properties;
+		char **properties = g_weapons[i].data.weapon_data.properties;
 		char **ptr = properties;
 		while (properties != NULL && *properties != NULL)
 		{
@@ -21,9 +21,9 @@ void free_weapons(void)
 		}
 		free(ptr);
 		free(g_weapons[i].name);
-		free(g_weapons[i].proficiency);
 		free(g_weapons[i].rarity);
 		t_weapon_data data = g_weapons[i].data.weapon_data;
+		free(data.proficiency);
 		free(data.damage_type);
 		free(data.damage);
 	}

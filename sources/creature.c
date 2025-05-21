@@ -1,5 +1,7 @@
 #include "creature.h"
 #include "utils.h"
+#include "dice.h"
+#include "potion.h"
 #include "cell.h"
 #include "windows.h"
 #include "globals.h"
@@ -20,6 +22,26 @@ void loot_item(t_creature *looter, t_node **inventory, int i)
 	remove_node(inventory, node);
 }
 
+void heal_creature(t_creature *creature, char *amount)
+{
+	int healing = throw_dice(amount);
+	if (creature->health + healing > creature->max_health)
+		healing = creature->max_health - creature->health;
+	creature->health += healing;
+	print_log("%C is healed for {blue}%d{reset} hp", creature, healing);
+}
+
+void drink_potion(t_creature *drinker, t_item *potion)
+{
+	print_log("%C drinks %I", drinker, potion);
+	t_potion_data data = potion->data.potion_data;
+	if (strncmp(data.effect, "heal", 4) == 0)
+		heal_creature(drinker, strchr(data.effect, ' ') + 1);
+	free(potion);
+	remove_node(&drinker->inventory, get_node_data(drinker->inventory, potion));
+	update_stat_win();
+}
+
 void use_item(t_creature *user, t_node **inventory_ptr, int i)
 {
 	t_node *inventory = *inventory_ptr;
@@ -28,13 +50,15 @@ void use_item(t_creature *user, t_node **inventory_ptr, int i)
 
 	if (is_weapon(item) && user->weapon != item)
 		equip(user, item);
+	else if (is_potion(item))
+		drink_potion(user, item);
 }
 
 int has_ranged_weapon(t_creature *creature)
 {
 	if (creature->weapon == NULL)
 		return 0;
-	return has_property(creature->weapon, "ranged");
+	return weapon_has_property(creature->weapon, "ranged");
 }
 
 void equip(t_creature *creature, t_item *item)
@@ -102,7 +126,7 @@ t_creature *new_creature(char ch, int area_level)
 		case 'g':
 			creature->name = "Crazy Goblin";
 			add_item(creature, new_weapon("club"));
-			add_item(creature, new_weapon("greatclub"));
+			add_item(creature, new_potion("potion of healing"));
 			creature->ai = AI_CRAZY_GOBLIN;
 			creature->color = COLOR_CREATURE_GOBLIN;
 			creature->faction = FACTION_GOBLIN;
@@ -110,6 +134,7 @@ t_creature *new_creature(char ch, int area_level)
 		case '@':
 			creature->name = "Rabdin";
 			add_item(creature, new_weapon("light crossbow"));
+			add_item(creature, new_potion("potion of healing"));
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
 			break;

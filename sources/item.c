@@ -5,14 +5,21 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
+int is_potion(t_item *item)
+{
+	return strcmp(item->type, "potion") == 0;
+}
+
 int is_weapon(t_item *item)
 {
 	return strcmp(item->type, "weapon") == 0;
 }
 
-int has_property(t_item *item, char *property)
+int weapon_has_property(t_item *item, char *property)
 {
-	char **ptr = item->properties;
+	if (!is_weapon(item))
+		return 0;
+	char **ptr = item->data.weapon_data.properties;
 	while (*ptr != NULL)
 	{
 		if (strcmp(property, *ptr) == 0)

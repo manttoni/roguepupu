@@ -18,13 +18,18 @@ WINDOW *examine_win = NULL;
 WINDOW *inventory_win = NULL;
 
 t_item *g_weapons = NULL;
+int	g_weapon_count = 0;
+
+t_item *g_potions = NULL;
+int g_potion_count = 0;
+
 t_area *g_area = NULL;
 
-int	g_weapon_count = 0;
 
 void init_globals(void)
 {
-	g_weapons = parse_weapons(read_file(WEAPON_FILE));
+	g_weapons = parse_items(read_file(WEAPON_FILE), "weapon");
+	g_potions = parse_items(read_file(POTION_FILE), "potion");
 }
 
 void init(void)
