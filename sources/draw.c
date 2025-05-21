@@ -6,8 +6,9 @@
 #include "interface.h"
 #include <ncurses.h>
 
-void visual_effect(t_cell *cell, chtype effect)
+void visual_effect(t_creature *creature, chtype effect)
 {
+	t_cell *cell = get_creature_cell(creature);
 	cell->highlight = effect;
 	draw_cell(cell->last_draw.y, cell->last_draw.x, cell);
 	refresh_window(map_win);

@@ -93,7 +93,7 @@ int npc_act(void)
 			if (enemy->ai & AI_FLEE && enemy->health < enemy->max_health / 4)
 				flee(cell);
 			else if (is_neighbor(cell, get_player_cell()))
-				act_attack(cell, get_player_cell());
+				act_attack(enemy, get_player());
 			else if (enemy->ai & AI_PURSUE && is_visible(cell, get_player_cell()))
 				pursue(cell);
 		}

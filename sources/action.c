@@ -4,16 +4,25 @@
 #include "interface.h"
 #include "dice.h"
 
-int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
+int act_attack(t_creature *attacker, t_creature *defender)
 {
-	t_creature *attacker = attacker_cell->creature;
-	t_creature *defender = defender_cell->creature;
-	t_item *weapon = attacker->weapon;
-	u_item_data item_data = weapon->data;
-	t_weapon_data data = item_data.weapon_data;
+	t_item *weapon = get_weapon(attacker);
+	t_item *off_hand = get_off_hand(attacker);
 
-	print_log("%C attacks %C with a %I", attacker, defender, weapon);
-	take_damage(defender_cell, throw_dice(data.damage), data.damage_type);
+	if (weapon != NULL)
+	{
+		t_weapon_data main = get_weapon(attacker)->data.weapon_data;
+		print_log("%C attacks %C with a %I", attacker, defender, weapon);
+		take_damage(defender, get_main_damage(attacker), main.damage_type);
+
+		if (is_dual_wielding(attacker))
+		{
+			t_weapon_data off = get_off_hand(attacker)->data.weapon_data;
+			print_log("%C attacks %C with a %I", attacker, defender, off_hand);
+			take_damage(defender, throw_dice(off.damage), off.damage_type);
+		}
+	}
+
 	return 0;
 }
 

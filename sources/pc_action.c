@@ -153,8 +153,7 @@ int pc_attack(void)
 	if (defender_cell == NULL)
 		return 0;
 
-	t_cell *player_cell = get_player_cell();
-	act_attack(player_cell, defender_cell);
+	act_attack(get_player(), defender_cell->creature);
 	return 0;
 }
 

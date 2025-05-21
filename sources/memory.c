@@ -69,7 +69,7 @@ void free_creature(t_creature *creature)
 {
 	if (creature == NULL)
 		return;
-	free_item(creature->weapon);
+	free_item(get_weapon(creature));
 	free_inventory(creature->inventory);
 	free(creature);
 }

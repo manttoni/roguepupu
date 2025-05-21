@@ -52,6 +52,9 @@ void print_win(WINDOW *win, char *format, va_list args)
 				case 's':
 					wprintw(win, "%s", va_arg(args, char*));
 					break;
+				case 'c':
+					wprintw(win, "%c", va_arg(args, int));
+					break;
 				case '%':
 					wprintw(win, "%%");
 					break;
@@ -165,7 +168,7 @@ void print_inventory(t_node *inventory, int selected)
 
 		if (i == selected)
 			wattron(win, A_REVERSE);
-		print_win_va(win, "  %I\n", item);
+		print_win_va(win, "  %c%I\n", is_equipped(get_player(), item) ? '*' : ' ', item);
 		if (i == selected)
 			wattroff(win, A_REVERSE);
 

@@ -26,8 +26,9 @@ typedef struct s_item
 	u_item_data data;
 }	t_item;
 
+int is_equipment(t_item *item);
 int is_weapon(t_item *item);
 int is_potion(t_item *item);
-int weapon_has_property(t_item *item, char *property);
+int has_property(t_item *item, char *property);
 
 #endif

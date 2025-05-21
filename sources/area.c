@@ -7,6 +7,23 @@
 #include "interface.h"
 #include <string.h>
 
+t_cell *get_creature_cell(t_creature *creature)
+{
+	int i = get_creature_index(creature);
+	return &g_area->cells[i];
+}
+
+int get_creature_index(t_creature *creature)
+{
+	for (int i = 0; i < AREA(g_area); ++i)
+	{
+		t_cell *cell = &g_area->cells[i];
+		if (creature == cell->creature)
+			return i;
+	}
+	return -1;
+}
+
 int get_player_index(void)
 {
 	for (int i = 0; i < g_area->width * g_area->height; ++i)

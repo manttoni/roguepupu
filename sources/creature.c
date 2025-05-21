@@ -10,6 +10,57 @@
 #include "item.h"
 #include "weapon.h"
 
+int is_equipped(t_creature *creature, t_item *item)
+{
+	if (get_weapon(creature) == item || get_off_hand(creature) == item)
+		return 1;
+	return 0;
+}
+
+int is_dual_wielding(t_creature *creature)
+{
+	t_item *weapon = get_weapon(creature);
+	t_item *off_hand = get_off_hand(creature);
+
+	if (has_property(weapon, "two_handed"))
+		return 0;
+
+	if (has_property(weapon, "light") && has_property(off_hand, "light"))
+		return 1;
+	return 0;
+}
+
+int get_main_damage(t_creature *creature)
+{
+	t_item *weapon = get_weapon(creature);
+	t_item *off_hand = get_off_hand(creature);
+	char *weapon_damage = weapon->data.weapon_data.damage;
+
+	if (weapon == off_hand && has_property(weapon, "versatile"))
+		weapon_damage = strchr(weapon_damage, ';') + 1;
+	return throw_dice(weapon_damage);
+}
+
+t_item *get_off_hand(t_creature *creature)
+{
+	return creature->equipped.off_hand;
+}
+
+void set_off_hand(t_creature *creature, t_item *weapon)
+{
+	creature->equipped.off_hand = weapon;
+}
+
+t_item *get_weapon(t_creature *creature)
+{
+	return creature->equipped.weapon;
+}
+
+void set_weapon(t_creature *creature, t_item *weapon)
+{
+	creature->equipped.weapon = weapon;
+}
+
 void loot_item(t_creature *looter, t_node **inventory, int i)
 {
 	t_node *node = get_node(*inventory, i);
@@ -48,7 +99,7 @@ void use_item(t_creature *user, t_node **inventory_ptr, int i)
 	t_node *node = get_node(inventory, i);
 	t_item *item = (t_item *) node->data;
 
-	if (is_weapon(item) && user->weapon != item)
+	if (is_equipment(item))
 		equip(user, item);
 	else if (is_potion(item))
 		drink_potion(user, item);
@@ -56,15 +107,23 @@ void use_item(t_creature *user, t_node **inventory_ptr, int i)
 
 int has_ranged_weapon(t_creature *creature)
 {
-	if (creature->weapon == NULL)
+	if (get_weapon(creature) == NULL)
 		return 0;
-	return weapon_has_property(creature->weapon, "ranged");
+	return has_property(get_weapon(creature), "ranged");
 }
 
 void equip(t_creature *creature, t_item *item)
 {
 	if (is_weapon(item))
-		creature->weapon = item;
+	{
+		if (get_weapon(creature) == NULL)
+			set_weapon(creature, item);
+		else if (get_off_hand(creature) == NULL
+		&& has_property(get_weapon(creature), "light") && has_property(item, "light"))
+			set_off_hand(creature, item);
+		else
+			set_weapon(creature, item);
+	}
 	if (creature->ch == '@')
 		print_log("%C equips %I", creature, item);
 }
@@ -72,7 +131,7 @@ void equip(t_creature *creature, t_item *item)
 void add_item(t_creature *creature, t_item *item)
 {
 	add_node_last(&creature->inventory, new_node(item));
-	if (creature->weapon == NULL && is_weapon(item))
+	if (get_weapon(creature) == NULL && is_weapon(item))
 		equip(creature, item);
 }
 
@@ -95,11 +154,10 @@ void perish(t_creature *creature, char *damage_type)
 	}
 }
 
-int take_damage(t_cell *creature_cell, int damage, char *damage_type)
+int take_damage(t_creature *creature, int damage, char *damage_type)
 {
 	if (damage > 0)
-		visual_effect(creature_cell, COLOR_PAIR(COLOR_PAIR_RED));
-	t_creature *creature = creature_cell->creature;
+		visual_effect(creature, COLOR_PAIR(COLOR_PAIR_RED));
 	print_log("%C takes {red}%d{reset} %s damage", creature, damage, damage_type);
 	creature->health -= damage;
 
@@ -134,6 +192,8 @@ t_creature *new_creature(char ch, int area_level)
 		case '@':
 			creature->name = "Rabdin";
 			add_item(creature, new_weapon("light crossbow"));
+			add_item(creature, new_weapon("dagger"));
+			add_item(creature, new_weapon("dagger"));
 			add_item(creature, new_potion("potion of healing"));
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;

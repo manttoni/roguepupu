@@ -41,7 +41,7 @@ int pc_attack(void);
 int npc_act(void);
 
 /* UNIVERSAL ACTIONS */
-int act_attack(t_cell *attacker_cell, t_cell *defender_cell);
+int act_attack(t_creature *attacker, t_creature *defender);
 int act_move(t_cell *dst, t_cell *src);
 
 #endif
