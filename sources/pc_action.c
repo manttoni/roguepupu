@@ -147,7 +147,10 @@ int pc_unlock(t_area *area)
 
 int pc_attack(t_area *area)
 {
-	t_cell *defender_cell = scan(area, MELEE_ATTACK);
+	int attack_flag = MELEE_ATTACK;
+	if (has_ranged_weapon(get_player(area)))
+		attack_flag = RANGED_ATTACK;
+	t_cell *defender_cell = scan(area, attack_flag);
 	if (defender_cell == NULL)
 		return 0;
 

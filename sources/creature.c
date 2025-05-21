@@ -8,6 +8,13 @@
 #include "item.h"
 #include "weapon.h"
 
+int has_ranged_weapon(t_creature *creature)
+{
+	if (creature->weapon == NULL)
+		return 0;
+	return has_property(creature->weapon, "ranged");
+}
+
 void equip(t_creature *creature, t_item *item)
 {
 	if (is_weapon(item))
@@ -78,7 +85,7 @@ t_creature *new_creature(char ch, int area_level)
 			break;
 		case '@':
 			creature->name = "Rabdin";
-			creature->weapon = new_weapon("spear");
+			creature->weapon = new_weapon("sling");
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
 			break;

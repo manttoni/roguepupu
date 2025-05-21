@@ -182,10 +182,16 @@ int is_visible(t_area *area, t_cell *eye, t_cell *view_cell)
 	return 1; // Fallback, though unreachable
 }
 
+int was_seen(t_cell *cell)
+{
+	return cell->last_draw.y > -1;
+}
+
 t_cell new_cell(char terrain, char mech, char item, char creature, int area_level)
 {
 	t_cell cell;
 	memset(&cell, 0, sizeof(t_cell));
+	cell.last_draw = (t_coord){-1,-1};
 
 	cell.terrain = new_terrain(terrain, area_level);
 	cell.mech = new_mech(mech, area_level);

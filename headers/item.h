@@ -17,17 +17,18 @@ typedef union
 
 typedef struct s_item
 {
-	char			**properties;
-	char			*name;
-	char			*proficiency;
-	char			*type;
-	char			*rarity;
-	char			ch;
-	int				stack;
-	short			color;
-	u_item_data		data;
+	char **properties;
+	char *name;
+	char *proficiency;
+	char *type;
+	char *rarity;
+	char ch;
+	int stack;
+	short color;
+	u_item_data data;
 }	t_item;
 
 int is_weapon(t_item *item);
+int has_property(t_item *item, char *property);
 
 #endif

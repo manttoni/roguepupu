@@ -78,8 +78,22 @@ void draw_area(t_area *area)
 	{
 		t_cell *cell = &area->cells[i];
 		if (y_draw < y_max - 1 && y_draw >= 1 && x_draw < x_max - 1 && x_draw >= 1)
+		{
 			if (is_visible(area, &area->cells[player_index], cell))
 				draw_cell(y_draw, x_draw, cell);
+			else if (was_seen(cell))
+			{
+				t_cell ghost;
+				memset(&ghost, 0, sizeof(t_cell));
+				t_terrain t;
+				memset(&t, 0, sizeof(t_terrain));
+				t.ch = cell->terrain->ch;
+				t.color = color_id((t_color){1,1,1});
+				ghost.terrain = &t;
+				ghost.color = COLOR_BLACK;
+				draw_cell(y_draw, x_draw, &ghost);
+			}
+		}
 		x_draw++;
 		if ((i + 1) % area->width == 0)
 		{
