@@ -27,8 +27,8 @@ typedef struct s_creature
 char *creature_char(t_creature *creature);
 char *creature_string(t_creature *creature);
 void add_item(t_creature *creature, t_item *item);
-int take_damage(t_cell *creature_cell, int damage, e_damage_type damage_type);
-void perish(t_creature *creature, e_damage_type damage_type);
+int take_damage(t_cell *creature_cell, int damage, char *damage_type);
+void perish(t_creature *creature, char *damage_type);
 t_creature *new_creature(char ch, int area_level);
 int move_creature(t_cell *dest, t_cell *src);
 int is_enemy(t_creature *creature);

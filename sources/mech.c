@@ -1,6 +1,5 @@
 #include "mech.h"
 #include "utils.h"
-#include "die.h"
 #include "globals.h"
 #include <stdlib.h>
 

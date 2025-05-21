@@ -31,6 +31,7 @@ void list_clear(t_node **list);
 int min(int a, int b);
 int max(int a, int b);
 void *my_calloc(size_t size);
+char *my_strdup(char *str);
 void init_ncurses();
 void end_ncurses(int exit_value);
 int count_char(char *str, char c);

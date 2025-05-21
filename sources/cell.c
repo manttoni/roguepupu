@@ -189,7 +189,8 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 
 	cell.terrain = new_terrain(terrain, area_level);
 	cell.mech = new_mech(mech, area_level);
-	cell.item = new_random_item(item, area_level);
+	(void)item;
+	//cell.item = new_random_item(item, area_level);
 	cell.creature = new_creature(creature, area_level);
 
 	if (strchr(TERRAIN_BLOCKED, terrain) != NULL)

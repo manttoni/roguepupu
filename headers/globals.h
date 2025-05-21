@@ -1,10 +1,13 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <ncurses.h>
 #include "area.h"
+#include <ncurses.h>
+
+typedef struct s_item t_item;
 
 #define QUIT_GAME 42
+#define ERROR_JSON_PARSE 2
 
 #define TERRAIN_BLOCKED "DC#"
 #define TERRAIN_CLOSED "DCR"
@@ -60,17 +63,30 @@
 /* Calculations */
 #define AREA(area) ((area)->width * (area)->height)
 
-/* Maps */
-#define MAP_DUNGEON "maps/dungeon.json"
+/* Files */
+#define MAP_DUNGEON "json/maps/dungeon.json"
+
+#define WEAPON_FILE "json/items/weapons.json"
+#define ARMOR_FILE "json/items/armor.json"
 
 /* Highlights */
 #define HIGHLIGHT_REVERSE 1 // highlight stuff in scnning mode
 #define HIGHLIGHT_SELECTED 2 // selected highlighted thing
 
-/* Colors */
-// 0 is default colors
+/* Color pairs */
 #define COLOR_PAIR_RED 1
 #define NEXT_FREE 2
+
+/* Colors */
+#define COLOR_ID(r,g,b) (16 + 36 * r + 6 * g + b)
+#define COLOR_ITEM_COMMON (COLOR_ID(2,2,2))
+#define COLOR_ITEM_UNCOMMON (COLOR_ID(0,2,0))
+#define COLOR_ITEM_RARE (COLOR_ID(0,0,2))
+#define COLOR_ITEM_VERY_RARE (COLOR_ID(2,0,0))
+#define COLOR_ITEM_LEGENDARY (COLOR_ID(1,2,3))
+
+#define COLOR_CREATURE_GOBLIN (COLOR_ID(0,1,0))
+
 
 /* Damage related */
 #define DAMAGE_FATAL 1
@@ -83,5 +99,9 @@
 #define TWO_HANDED 4
 #define THROWN 8
 #define VERSATILE 16
+#define RANGED 32
+
+extern int g_weapon_count;
+extern t_item *g_weapons;
 
 #endif

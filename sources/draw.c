@@ -29,7 +29,7 @@ void cosmetic_effects(t_area *area)
 				creature->bleeding--;
 			t_cell *blood_cell = cell;
 			int i = 0;
-			while (get_red(blood_cell->color) >= 3 && i++ < 15)
+			while (get_red(blood_cell->color) >= 2 && i++ < 15)
 				blood_cell = random_neighbor(area, cell);
 			if (i >= 15)
 				print_log("There is {red}blood{reset} everywhere!");

@@ -1,6 +1,8 @@
 creature attributes (strength etc)
-creature skills (athletics etc)
+creature skills (athletics etc) / proficiency
+AB, AC
 combat d20 checks
+log window remake*
 status effects
 traps
 character class
@@ -10,7 +12,16 @@ character creation
 
 low prio / random stuff... aka do first:
 
+weapons remake (json)
+fog of war
 inventory system
-creature vision range
-fog of war kind of thing where cells that were seen before are visible in some way
+ranged weapons
+potions
+dual wielding
+
+* log window remake
+	print_win smart
+	interaction with pgup and pgdown
+	selected lines rolls shown somewhere
+	scroll log also using pg keys
 

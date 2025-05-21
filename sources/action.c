@@ -6,7 +6,7 @@
 #include "draw.h"
 #include "interface.h"
 #include "globals.h"
-#include "die.h"
+#include "dice.h"
 #include "windows.h"
 
 int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
@@ -14,14 +14,11 @@ int act_attack(t_cell *attacker_cell, t_cell *defender_cell)
 	t_creature *attacker = attacker_cell->creature;
 	t_creature *defender = defender_cell->creature;
 	t_item *weapon = attacker->weapon;
+	u_item_data item_data = weapon->data;
+	t_weapon_data data = item_data.weapon_data;
 
 	print_log("%C attacks %C with a %I", attacker, defender, weapon);
-	t_die *dice = weapon->dice;
-	while (dice->sides != 0)
-	{
-		take_damage(defender_cell, throw_die(*dice), dice->type);
-		dice++;
-	}
+	take_damage(defender_cell, throw_dice(data.damage), data.damage_type);
 	return 0;
 }
 

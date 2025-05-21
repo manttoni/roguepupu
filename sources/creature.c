@@ -4,8 +4,9 @@
 #include "windows.h"
 #include "globals.h"
 #include "interface.h"
-#include "die.h"
 #include "draw.h"
+#include "item.h"
+#include "weapon.h"
 
 void equip(t_creature *creature, t_item *item)
 {
@@ -26,14 +27,9 @@ int is_enemy(t_creature *creature)
 	return creature != NULL && strchr(ENEMY_CHARS, creature->ch) != NULL;
 }
 
-void perish(t_creature *creature, e_damage_type damage_type)
+void perish(t_creature *creature, char *damage_type)
 {
-	switch (damage_type)
-	{
-		default:
-			print_log("%C perishes", creature);
-			break;
-	}
+	print_log("%C perishes (%s)", creature, damage_type);
 	if (creature->ch == '@')
 	{
 		wmove(stat_win, 1, 0);
@@ -45,16 +41,13 @@ void perish(t_creature *creature, e_damage_type damage_type)
 	}
 }
 
-int take_damage(t_cell *creature_cell, int damage, e_damage_type damage_type)
+int take_damage(t_cell *creature_cell, int damage, char *damage_type)
 {
 	if (damage > 0)
 		visual_effect(creature_cell, COLOR_PAIR(COLOR_PAIR_RED));
 	t_creature *creature = creature_cell->creature;
-	print_log("%C takes {red}%d{reset} %s damage", creature, damage, dmg_str(damage_type));
+	print_log("%C takes {red}%d{reset} %s damage", creature, damage, damage_type);
 	creature->health -= damage;
-
-	if (is_physical(damage_type))
-		creature->bleeding += damage / 4; // this is a cosmetic feature
 
 	if (creature->health <= 0)
 	{
@@ -78,12 +71,14 @@ t_creature *new_creature(char ch, int area_level)
 	{
 		case 'g':
 			creature->name = "Crazy Goblin";
-			creature->weapon = new_random_item('W', 1);
+			creature->weapon = new_weapon("club");
 			creature->ai = AI_CRAZY_GOBLIN;
-			creature->color = color_id((t_color){0, 1, 0});
+			creature->color = COLOR_CREATURE_GOBLIN;
 			creature->faction = FACTION_GOBLIN;
 			break;
 		case '@':
+			creature->name = "Rabdin";
+			creature->weapon = new_weapon("spear");
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
 			break;

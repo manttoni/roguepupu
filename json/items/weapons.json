@@ -1,0 +1,117 @@
+{
+  "weapons": [
+	{
+	  "name": "club",
+	  "rarity": "common",
+	  "damage": "1d4",
+	  "damage_type": "bludgeoning",
+	  "proficiency": "simple",
+	  "properties": ["light"]
+	},
+	{
+	  "name": "dagger",
+	  "rarity": "common",
+	  "damage": "1d4",
+	  "damage_type": "piercing",
+	  "proficiency": "simple",
+	  "properties": ["finesse", "light", "thrown"]
+	},
+	{
+	  "name": "greatclub",
+	  "rarity": "common",
+	  "damage": "1d8",
+	  "damage_type": "bludgeoning",
+	  "proficiency": "simple",
+	  "properties": ["two-handed"]
+	},
+	{
+	  "name": "handaxe",
+	  "rarity": "common",
+	  "damage": "1d6",
+	  "damage_type": "slashing",
+	  "proficiency": "simple",
+	  "properties": ["light", "thrown"]
+	},
+	{
+	  "name": "javelin",
+	  "rarity": "common",
+	  "damage": "1d6",
+	  "damage_type": "piercing",
+	  "proficiency": "simple",
+	  "properties": ["thrown"]
+	},
+	{
+	  "name": "light hammer",
+	  "rarity": "common",
+	  "damage": "1d4",
+	  "damage_type": "bludgeoning",
+	  "proficiency": "simple",
+	  "properties": ["light", "thrown"]
+	},
+	{
+	  "name": "mace",
+	  "rarity": "common",
+	  "damage": "1d6",
+	  "damage_type": "bludgeoning",
+	  "proficiency": "simple",
+	  "properties": []
+	},
+	{
+	  "name": "quarterstaff",
+	  "rarity": "common",
+	  "damage": "1d6;1d8",
+	  "damage_type": "bludgeoning",
+	  "proficiency": "simple",
+	  "properties": ["versatile"]
+	},
+	{
+	  "name": "sickle",
+	  "rarity": "common",
+	  "damage": "1d4",
+	  "damage_type": "slashing",
+	  "proficiency": "simple",
+	  "properties": ["light"]
+	},
+	{
+	  "name": "spear",
+	  "rarity": "common",
+	  "damage": "1d6;1d8",
+	  "damage_type": "piercing",
+	  "proficiency": "simple",
+	  "properties": ["thrown", "versatile"]
+	},
+	{
+	  "name": "light crossbow",
+	  "rarity": "common",
+	  "damage": "1d8",
+	  "damage_type": "piercing",
+	  "proficiency": "simple",
+	  "properties": ["loading", "two-handed", "ranged"]
+	},
+	{
+	  "name": "dart",
+	  "rarity": "common",
+	  "damage": "1d4",
+	  "damage_type": "piercing",
+	  "proficiency": "simple",
+	  "properties": ["finesse", "thrown", "ranged"]
+	},
+	{
+	  "name": "shortbow",
+	  "rarity": "common",
+	  "damage": "1d6",
+	  "damage_type": "piercing",
+	  "proficiency": "simple",
+	  "properties": ["two-handed", "ranged"]
+	},
+	{
+	  "name": "sling",
+	  "rarity": "common",
+	  "damage": "1d4",
+	  "damage_type": "bludgeoning",
+	  "proficiency": "simple",
+	  "properties": ["ranged"]
+	}
+  ]
+}
+

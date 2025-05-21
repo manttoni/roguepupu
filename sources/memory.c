@@ -8,6 +8,35 @@
 #include "game.h"
 #include "globals.h"
 
+void free_weapons(void)
+{
+	for (int i = 0; i < g_weapon_count; ++i)
+	{
+		char **properties = g_weapons[i].properties;
+		char **ptr = properties;
+		while (properties != NULL && *properties != NULL)
+		{
+			free(*properties);
+			properties++;
+		}
+		free(ptr);
+		free(g_weapons[i].name);
+		free(g_weapons[i].proficiency);
+		free(g_weapons[i].rarity);
+		t_weapon_data data = g_weapons[i].data.weapon_data;
+		free(data.damage_type);
+		free(data.damage);
+	}
+	free(g_weapons);
+}
+
+void free_globals(void)
+{
+	logger("freeing weapons");
+	free_weapons();
+	logger("weapons freed");
+}
+
 void free_mech(t_mech *mech)
 {
 	free(mech);
@@ -20,9 +49,6 @@ void free_terrain(t_terrain *terrain)
 
 void free_item(t_item *item)
 {
-	if (item == NULL)
-		return;
-	free(item->dice);
 	free(item);
 }
 
@@ -67,7 +93,6 @@ void free_area(t_area *area)
 
 void free_game(t_game *game)
 {
-	free(game->player->name);
 	free_area(game->area);
 	free(game);
 }

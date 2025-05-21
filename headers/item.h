@@ -1,57 +1,33 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include "die.h"
-
-#define WEAPON_TYPES (CATEGORY_WEAPON_END)
-#define SIMPLE_WEAPON_TYPES (WEAPON_SIMPLE_END - WEAPON_SIMPLE - 1)
-
-#define POTION_TYPES (POTION_END - POTION - 1)
-
-typedef enum
-{
-	CATEGORY_WEAPON_SIMPLE,
-	CATEGORY_WEAPON_END
-}	e_weapon_category;
+#include "item_data.h"
 
 typedef enum
 {
 	WEAPON,
-		WEAPON_SIMPLE,
-			CLUB, DAGGER, GREATCLUB, HANDAXE, JAVELIN, LIGHT_HAMMER, MACE, QUARTERSTAFF, SICKLE, SPEAR,
-		WEAPON_SIMPLE_END,
-	WEAPON_END,
-	POTION,
-		POTION_HEALING,
-	POTION_END
+	ARMOR,
+	POTION
 }	e_item_type;
 
-typedef enum
+typedef union
 {
-	COMMON,
-	UNCOMMON,
-	RARE,
-	VERY_RARE,
-	LEGENDARY
-}	e_item_rarity;
+	t_weapon_data	weapon_data;
+}	u_item_data;
 
 typedef struct s_item
 {
+	char			**properties;
 	char			*name;
+	char			*proficiency;
+	char			*type;
+	char			*rarity;
 	char			ch;
+	int				stack;
 	short			color;
-	e_item_type		type;
-	e_item_rarity	rarity;
-	// t_enchant		enchantment; // magical properties
-	int				properties; // f.e. FINESSE | THROWN | MELEE or TWO_HANDED | RANGED or STACKABLE or READABLE etc
-	t_die			*dice; // these have how much and what type of dmg they do. or how much healing
+	u_item_data		data;
 }	t_item;
 
-char *item_string(t_item *item);
-int add_dice(t_item *item);
 int is_weapon(t_item *item);
-int is_potion(t_item *item);
-t_item *new_random_item(char ch, int area_level);
-t_item *new_weapon(e_item_type type, e_item_rarity rarity);
 
 #endif
