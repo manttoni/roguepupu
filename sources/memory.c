@@ -44,6 +44,8 @@ void free_mech(t_mech *mech)
 
 void free_terrain(t_terrain *terrain)
 {
+	if (terrain != NULL)
+		list_clear(&terrain->loot);
 	free(terrain);
 }
 
@@ -93,7 +95,7 @@ void free_area(t_area *area)
 
 void free_game(t_game *game)
 {
-	free_area(game->area);
+	free_area(g_area);
 	free(game);
 }
 

@@ -81,7 +81,7 @@ void draw_area(t_area *area)
 		{
 			if (is_visible(area, &area->cells[player_index], cell))
 				draw_cell(y_draw, x_draw, cell);
-			else if (was_seen(cell))
+			else if (was_seen(cell) && cell->terrain->ch != '.')
 			{
 				t_cell ghost;
 				memset(&ghost, 0, sizeof(t_cell));

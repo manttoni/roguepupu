@@ -8,6 +8,8 @@ extern WINDOW *map_win;
 extern WINDOW *log_win;
 extern WINDOW *leg_win;
 extern WINDOW *examine_win;
+extern WINDOW *inventory_win;
+extern WINDOW *rolls_win;
 
 typedef struct s_winset
 {

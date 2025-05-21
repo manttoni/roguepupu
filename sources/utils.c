@@ -74,6 +74,7 @@ void init_ncurses(void)
 	use_default_colors();
 	noecho();
 	cbreak();
+	init_color_pairs();
 	keypad(stdscr, TRUE);
 	refresh();
 }
@@ -131,6 +132,8 @@ void add_node_last(t_node **list, t_node *add)
 
 void remove_node(t_node **list, t_node *remove)
 {
+	if (remove == NULL)
+		return;
 	if (*list == remove)
 	{
 		*list = remove->next;
@@ -138,7 +141,7 @@ void remove_node(t_node **list, t_node *remove)
 		return;
 	}
 	t_node *prev = *list;
-	while (prev->next != remove)
+	while (prev != NULL && prev->next != remove)
 		prev = prev->next;
 	prev->next = remove->next;
 	free(remove);
@@ -146,6 +149,53 @@ void remove_node(t_node **list, t_node *remove)
 
 void list_clear(t_node **list)
 {
-	while (*list)
+	while (*list != NULL)
 		remove_node(list, *list);
 }
+
+t_node *copy_list(t_node *list)
+{
+	t_node *copy = NULL;
+	while (list != NULL)
+	{
+		add_node_last(&copy, new_node(list->data));
+		list = list->next;
+	}
+	return copy;
+}
+
+int list_len(t_node *list)
+{
+	int len = 0;
+	while (list != NULL)
+	{
+		len++;
+		list = list->next;
+	}
+	return len;
+}
+
+t_node *get_node(t_node *list, int i)
+{
+	int n = 0;
+	while (list != NULL)
+	{
+		if (i == n)
+			return list;
+		list = list->next;
+		n++;
+	}
+	return NULL;
+}
+
+t_node *get_node_data(t_node *list, void *data)
+{
+	while (list != NULL)
+	{
+		if (list->data == data)
+			return list;
+		list = list->next;
+	}
+	return NULL;
+}
+

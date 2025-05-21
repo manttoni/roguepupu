@@ -8,6 +8,28 @@
 #include "item.h"
 #include "weapon.h"
 
+void loot_item(t_creature *looter, t_node **inventory, int i)
+{
+	t_node *node = get_node(*inventory, i);
+	if (node == NULL)
+		return;
+	t_item *item = (t_item *) node->data;
+
+	add_item(looter, item);
+	print_log("%C loots %I", looter, item);
+	remove_node(inventory, node);
+}
+
+void use_item(t_creature *user, t_node **inventory_ptr, int i)
+{
+	t_node *inventory = *inventory_ptr;
+	t_node *node = get_node(inventory, i);
+	t_item *item = (t_item *) node->data;
+
+	if (is_weapon(item) && user->weapon != item)
+		equip(user, item);
+}
+
 int has_ranged_weapon(t_creature *creature)
 {
 	if (creature->weapon == NULL)
@@ -19,7 +41,8 @@ void equip(t_creature *creature, t_item *item)
 {
 	if (is_weapon(item))
 		creature->weapon = item;
-	print_log("%C equips %I", creature, item);
+	if (creature->ch == '@')
+		print_log("%C equips %I", creature, item);
 }
 
 void add_item(t_creature *creature, t_item *item)
@@ -78,14 +101,15 @@ t_creature *new_creature(char ch, int area_level)
 	{
 		case 'g':
 			creature->name = "Crazy Goblin";
-			creature->weapon = new_weapon("club");
+			add_item(creature, new_weapon("club"));
+			add_item(creature, new_weapon("greatclub"));
 			creature->ai = AI_CRAZY_GOBLIN;
 			creature->color = COLOR_CREATURE_GOBLIN;
 			creature->faction = FACTION_GOBLIN;
 			break;
 		case '@':
 			creature->name = "Rabdin";
-			creature->weapon = new_weapon("sling");
+			add_item(creature, new_weapon("light crossbow"));
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
 			break;

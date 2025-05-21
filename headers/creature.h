@@ -24,7 +24,9 @@ typedef struct s_creature
 	int			behavior;
 }	t_creature;
 
-
+void loot_item(t_creature *looter, t_node **inventory, int i);
+void use_item(t_creature *user, t_node **inventory, int i);
+void equip(t_creature *creature, t_item *item);
 int has_ranged_weapon(t_creature *creature);
 void add_item(t_creature *creature, t_item *item);
 int take_damage(t_cell *creature_cell, int damage, char *damage_type);

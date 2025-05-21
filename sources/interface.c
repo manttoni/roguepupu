@@ -25,6 +25,7 @@ void print_legend(void)
 	wprintw(leg_win, "  o is open\n");
 	wprintw(leg_win, "  a is attack\n");
 	wprintw(leg_win, "  p is pick up\n");
+	wprintw(leg_win, "  i is inventory\n");
 	wprintw(leg_win, "  SPACE is pass\n");
 	wprintw(leg_win, " Scanning:\n");
 	wprintw(leg_win, "  any key selects next object\n");
@@ -33,9 +34,6 @@ void print_legend(void)
 	wprintw(leg_win, " ESCAPE exit\n");
 }
 
-/* Can be called directly if args == NULL.
- * A better idea is to call this through another function
- * Like print_log, you will get more control */
 void print_win(WINDOW *win, char *format, va_list args)
 {
 	char *ptr = format;
@@ -58,25 +56,45 @@ void print_win(WINDOW *win, char *format, va_list args)
 					wprintw(win, "%%");
 					break;
 				case 'C':
+				{
 					t_creature *creature = va_arg(args, t_creature*);
-					color = creature->color;
-					name = creature->name;
+					if (creature != NULL)
+					{
+						color = creature->color;
+						name = creature->name;
+					}
 					break;
+				}
 				case 'I':
+				{
 					t_item *item = va_arg(args, t_item*);
-					color = item->color;
-					name = item->name;
+					if (item != NULL)
+					{
+						color = item->color;
+						name = item->name;
+					}
 					break;
+				}
 				case 'T':
+				{
 					t_terrain *terrain = va_arg(args, t_terrain*);
-					color = terrain->color;
-					name = terrain->name;
+					if (terrain != NULL)
+					{
+						color = terrain->color;
+						name = terrain->name;
+					}
 					break;
+				}
 				case 'M':
+				{
 					t_mech *mech = va_arg(args, t_mech*);
-					color = mech->color;
-					name = mech->name;
+					if (mech != NULL)
+					{
+						color = mech->color;
+						name = mech->name;
+					}
 					break;
+				}
 			}
 			if (strchr("CITM", ptr[1]))
 			{
@@ -127,6 +145,79 @@ static void print_win_va(WINDOW *win, char *format, ...)
 	va_start(args, format);
 	print_win(win, format, args);
 	va_end(args);
+}
+
+void print_inventory(t_node *inventory, int selected)
+{
+	WINDOW *win = inventory_win;
+	werase(win);
+	wmove(win, 1, 0);
+
+	int i = 0;
+	while (inventory != NULL)
+	{
+		t_item *item = (t_item *) inventory->data;
+
+		if (i == selected)
+			wattron(win, A_REVERSE);
+		print_win_va(win, "  %I\n", item);
+		if (i == selected)
+			wattroff(win, A_REVERSE);
+
+		inventory = inventory->next;
+		i++;
+	}
+	refresh_window(inventory_win);
+}
+
+void open_inventory(t_node **inventory, int mode)
+{
+	print_log("Inventory has %d items", list_len(*inventory));
+	int selected = 0;
+	int input = 0;
+	while (list_len(*inventory) > 0 && input != ESCAPE && input != 'i')
+	{
+		print_inventory(*inventory, selected);
+		if (selected >= list_len(*inventory))
+			selected = list_len(*inventory) - 1;
+		input = getch();
+		switch (input)
+		{
+
+			case 'i':
+			case ESCAPE:
+				break;
+			case ENTER:
+				switch (mode)
+				{
+					case INVENTORY_PLAYER:
+						use_item(get_player(g_area), inventory, selected);
+						break;
+					case INVENTORY_LOOT:
+						loot_item(get_player(g_area), inventory, selected);
+						break;
+					default:
+						break;
+				}
+				break;
+			case KEY_DOWN:
+				if (selected < list_len(*inventory) - 1)
+					selected++;
+				break;
+			case KEY_UP:
+				if (selected > 0)
+					selected--;
+				break;
+			default:
+				break;
+		}
+	}
+	if (mode == INVENTORY_PLAYER)
+		print_log("%C closes inventory", get_player(g_area));
+	else if (mode == INVENTORY_LOOT)
+		print_log("%C closes remains", get_player(g_area));
+	werase(inventory_win);
+	refresh_window(inventory_win);
 }
 
 void print_selected(t_cell *cell)

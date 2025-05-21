@@ -1,9 +1,17 @@
-#include <fcntl.h>
+#include "utils.h"
+#include "time.h"
 #include <errno.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include "../headers/utils.h"
+
+void init_logger(void)
+{
+	time_t t = time(NULL);
+	struct tm tm = *localtime(&t);
+	logger("\n%d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+}
 
 void logger(const char *format, ...)
 {

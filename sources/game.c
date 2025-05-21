@@ -9,8 +9,9 @@
 
 void start(t_game *game)
 {
+	(void)game;
 	print_log("{green}Game started!{reset}");
-	t_area *area = game->area;
+	t_area *area = g_area;
 	while(1)
 	{
 		update_stat_win(area);
@@ -27,8 +28,9 @@ void start(t_game *game)
 
 void enter_area(t_game *game, t_area *area)
 {
+	(void)game;
 	print_log("Entered area: {red}%s{reset}", area->name);
-	game->area = area;
+	g_area = area;
 }
 
 t_game *new_game(t_area *area)

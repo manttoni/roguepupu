@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <ctype.h>
 
+void init_logger(void);
 void logger(const char *format, ...);
 char *read_file(char *file);
 

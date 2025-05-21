@@ -91,11 +91,11 @@ int pc_examine(t_area *area)
 	return 0;
 }
 
-static void pc_open_container(t_creature *pc, t_terrain *container)
+static void pc_open_container(t_terrain *container)
 {
-	(void)pc;
-	(void)container;
-	// insert inventory ui code
+	open_inventory(&container->loot, INVENTORY_LOOT);
+	if (list_len(container->loot) == 0)
+		container->ch = '.';
 }
 
 static void pc_open_door(t_cell *door_cell)
@@ -124,7 +124,7 @@ int pc_open(t_area *area)
 	}
 	// Remains or Chest
 	if (strchr(TERRAIN_CONTAINER, closed->ch))
-		pc_open_container(get_player(area), closed);
+		pc_open_container(closed);
 	// Door
 	else if (strchr(TERRAIN_DOOR, closed->ch))
 		pc_open_door(closed_cell);
@@ -208,6 +208,8 @@ e_action get_player_action(int input)
 			return ACTION_PICK_UP;
 		case ' ':
 			return ACTION_PASS;
+		case 'i':
+			return ACTION_INVENTORY;
 		default:
 			return ACTION_NONE;
 	}
@@ -240,6 +242,7 @@ int pc_act(t_area *area)
 
 	switch(action)
 	{
+
 		case ACTION_MOVE_UPLEFT:
 			return act_move(neighbor(UPLEFT, area, cell), cell);
 		case ACTION_MOVE_UPRIGHT:
@@ -268,6 +271,9 @@ int pc_act(t_area *area)
 			return pc_pick_up(area);
 		case ACTION_PASS:
 			print_log("%s does nothing", player->name);
+			return 0;
+		case ACTION_INVENTORY:
+			open_inventory(&player->inventory, INVENTORY_PLAYER);
 			return 0;
 		default:
 			return 0;

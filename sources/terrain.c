@@ -15,6 +15,7 @@ t_terrain *new_terrain(char ch, int area_level)
 	{
 		case '#':
 			terrain->name = "Wall";
+			terrain->color = color_id((t_color){1,1,1});
 			break;
 		case 'D':
 			terrain->name = "Door";

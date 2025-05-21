@@ -79,13 +79,19 @@ static void init_stat_win(t_winset statset)
 	refresh_window(stat_win);
 }
 
+static void init_inventory_win(t_winset invset)
+{
+	inventory_win = my_newwin(invset);
+	refresh_window(inventory_win);
+}
+
 void init_windows(void)
 {
 	// winsets values are relative to stdcr size
-	t_winset logset, mapset, legset, statset;
+	t_winset logset, mapset, legset, statset, invset;
 
 	// status window
-	statset.height = 100;
+	statset.height = 50;
 	statset.width = 25;
 	statset.y = 0;
 	statset.x = 0;
@@ -103,16 +109,23 @@ void init_windows(void)
 	mapset.x = 25;
 
 	// legend window
-	legset.height = 100;
+	legset.height = 75;
 	legset.width = 25;
 	legset.y = 0;
 	legset.x = 75;
+
+	// inventory window
+	invset.height = 25;
+	invset.width = 25;
+	invset.y = 75;
+	invset.x = 75;
 
 	init_stat_win(statset);
 	init_log_win(logset);
 	init_map_win(mapset);
 	init_leg_win(legset);
 	init_examine_win();
+	init_inventory_win(invset);
 }
 
 void delete_windows(void)

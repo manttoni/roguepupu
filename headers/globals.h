@@ -101,7 +101,13 @@ typedef struct s_item t_item;
 #define VERSATILE 16
 #define RANGED 32
 
+/* Inventory stuff */
+#define INVENTORY_PLAYER 1
+#define INVENTORY_LOOT 2
+#define INVENTORY_TRADE 3
+
 extern int g_weapon_count;
 extern t_item *g_weapons;
+extern t_area *g_area;
 
 #endif

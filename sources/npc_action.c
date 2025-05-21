@@ -79,6 +79,7 @@ int npc_act(t_area *area)
 			free_terrain(cell->terrain);
 			cell->terrain = new_terrain('R', 0);
 			cell->terrain->color = color;
+			cell->terrain->loot = copy_list(cell->creature->inventory);
 			free_creature(cell->creature);
 			cell->creature = NULL;
 		}
