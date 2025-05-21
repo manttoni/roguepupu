@@ -22,7 +22,7 @@ int is_dual_wielding(t_creature *creature)
 	t_item *weapon = get_weapon(creature);
 	t_item *off_hand = get_off_hand(creature);
 
-	if (has_property(weapon, "two_handed"))
+	if (has_property(weapon, "two-handed"))
 		return 0;
 
 	if (has_property(weapon, "light") && has_property(off_hand, "light"))
@@ -59,6 +59,8 @@ t_item *get_weapon(t_creature *creature)
 void set_weapon(t_creature *creature, t_item *weapon)
 {
 	creature->equipped.weapon = weapon;
+	if (has_property(weapon, "two-handed"))
+		set_off_hand(creature, weapon);
 }
 
 void loot_item(t_creature *looter, t_node **inventory, int i)
@@ -93,6 +95,16 @@ void drink_potion(t_creature *drinker, t_item *potion)
 	update_stat_win();
 }
 
+void unequip(t_creature *creature, t_item *item)
+{
+	if (get_weapon(creature) == item)
+		set_weapon(creature, NULL);
+	if (get_off_hand(creature) == item)
+		set_off_hand(creature, NULL);
+	if (creature == get_player())
+		print_log("%C unequips %I", creature, item);
+}
+
 void use_item(t_creature *user, t_node **inventory_ptr, int i)
 {
 	t_node *inventory = *inventory_ptr;
@@ -100,7 +112,12 @@ void use_item(t_creature *user, t_node **inventory_ptr, int i)
 	t_item *item = (t_item *) node->data;
 
 	if (is_equipment(item))
-		equip(user, item);
+	{
+		if (!is_equipped(user, item))
+			equip(user, item);
+		else
+			unequip(user, item);
+	}
 	else if (is_potion(item))
 		drink_potion(user, item);
 }
@@ -112,17 +129,29 @@ int has_ranged_weapon(t_creature *creature)
 	return has_property(get_weapon(creature), "ranged");
 }
 
+int can_wield_both(t_item *a, t_item *b)
+{
+	if (a == NULL || b == NULL)
+		return 1;
+	if (has_property(a, "light") || a == NULL)
+		if (has_property(b, "light") || b == NULL)
+			return 1;
+	print_log("cant wield both");
+	return 0;
+}
+
 void equip(t_creature *creature, t_item *item)
 {
+	if (is_equipped(creature, item) || !is_equipment(item))
+		return;
 	if (is_weapon(item))
 	{
-		if (get_weapon(creature) == NULL)
+		if (get_weapon(creature) == NULL && can_wield_both(get_off_hand(creature), item))
 			set_weapon(creature, item);
-		else if (get_off_hand(creature) == NULL
-		&& has_property(get_weapon(creature), "light") && has_property(item, "light"))
+		else if (get_off_hand(creature) == NULL && can_wield_both(get_weapon(creature), item))
 			set_off_hand(creature, item);
 		else
-			set_weapon(creature, item);
+			return;
 	}
 	if (creature->ch == '@')
 		print_log("%C equips %I", creature, item);
@@ -131,8 +160,9 @@ void equip(t_creature *creature, t_item *item)
 void add_item(t_creature *creature, t_item *item)
 {
 	add_node_last(&creature->inventory, new_node(item));
-	if (get_weapon(creature) == NULL && is_weapon(item))
-		equip(creature, item);
+	if (is_weapon(item))
+		if (get_weapon(creature) == NULL || get_off_hand(creature) == NULL)
+			equip(creature, item);
 }
 
 int is_enemy(t_creature *creature)

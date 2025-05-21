@@ -168,7 +168,19 @@ void print_inventory(t_node *inventory, int selected)
 
 		if (i == selected)
 			wattron(win, A_REVERSE);
-		print_win_va(win, "  %c%I\n", is_equipped(get_player(), item) ? '*' : ' ', item);
+		wprintw(win, " ");
+		if (is_equipped(get_player(), item))
+		{
+			if (get_weapon(get_player()) == get_off_hand(get_player()))
+				wprintw(win, " MO | ");
+			else if (get_weapon(get_player()) == item)
+				wprintw(win, "  M | ");
+			else
+				wprintw(win, "  O | ");
+		}
+		else
+			wprintw(win, "      ");
+		print_win_va(win, "%I\n", item);
 		if (i == selected)
 			wattroff(win, A_REVERSE);
 

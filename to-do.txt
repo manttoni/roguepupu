@@ -12,8 +12,6 @@ character creation
 
 low prio / random stuff... aka do first:
 
-dual wielding and versatile
-
 * log window remake
 	print_win smart
 	interaction with pgup and pgdown

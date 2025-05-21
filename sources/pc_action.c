@@ -212,6 +212,36 @@ e_action get_player_action(int input)
 			return ACTION_NONE;
 	}
 }
+
+// lets the user control ui if they want. if non ui input is given, it is returned
+static int ui_controls(void)
+{
+	while (1)
+	{
+		int input = getch();
+		switch (input)
+		{
+			case ESCAPE:
+				print_log("{red}Press ESC again to quit or C to cancel.{reset}");
+				while (1)
+				{
+					input = getch();
+					if (input == ESCAPE)
+						return QUIT_GAME;
+					if (input == 'c')
+					{
+						print_log("{green}Quit canceled{reset}");
+						input = getch();
+						break;
+					}
+				}
+				break;
+			default:
+				return input;
+		}
+	}
+}
+
 /* Return some int, will probably be AP cost of action or something later */
 int pc_act(void)
 {
@@ -219,23 +249,9 @@ int pc_act(void)
 	t_cell *cell = &g_area->cells[pi];
 	t_creature *player = cell->creature;
 
-	int input = getch();
-	if (input == ESCAPE)
-	{
-		print_log("{red}Press ESC again to quit or C to cancel.{reset}");
-		while (1)
-		{
-			input = getch();
-			if (input == ESCAPE) // later this could open a menu to save game etc
-				return QUIT_GAME;
-			if (input == 'c')
-			{
-				print_log("{green}Quit canceled{reset}");
-				input = getch();
-				break;
-			}
-		}
-	}
+	int input = ui_controls();
+	if (input == QUIT_GAME)
+		return QUIT_GAME;
 	e_action action = get_player_action(input);
 
 	switch(action)
