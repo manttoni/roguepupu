@@ -12,13 +12,12 @@ character creation
 
 low prio / random stuff... aka do first:
 
-inventory system
 potions
 dual wielding
 
 * log window remake
 	print_win smart
 	interaction with pgup and pgdown
-	selected lines rolls shown somewhere
-	scroll log also using pg keys
+	selected lines rolls shown in rolls window
+	can scroll to previous messages
 
