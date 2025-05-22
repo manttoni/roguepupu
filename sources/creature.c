@@ -10,6 +10,48 @@
 #include "item.h"
 #include "weapon.h"
 
+void reset_actions(t_creature *creature)
+{
+	creature->movement = 30;
+	creature->actions = 1;
+	creature->bonus = 1;
+}
+
+static int mod(int val)
+{
+	return (val - 10) / 2;
+}
+
+int strmod(t_creature *creature)
+{
+	return mod(creature->abilities.strength);
+}
+
+int dexmod(t_creature *creature)
+{
+	return mod(creature->abilities.dexterity);
+}
+
+int conmod(t_creature *creature)
+{
+	return mod(creature->abilities.constitution);
+}
+
+int intmod(t_creature *creature)
+{
+	return mod(creature->abilities.intelligence);
+}
+
+int wismod(t_creature *creature)
+{
+	return mod(creature->abilities.wisdom);
+}
+
+int chamod(t_creature *creature)
+{
+	return mod(creature->abilities.charisma);
+}
+
 int is_equipped(t_creature *creature, t_item *item)
 {
 	if (get_weapon(creature) == item || get_off_hand(creature) == item)
@@ -22,12 +64,16 @@ int is_dual_wielding(t_creature *creature)
 	t_item *weapon = get_weapon(creature);
 	t_item *off_hand = get_off_hand(creature);
 
-	if (has_property(weapon, "two-handed"))
+	if (weapon == off_hand)
 		return 0;
 
-	if (has_property(weapon, "light") && has_property(off_hand, "light"))
-		return 1;
-	return 0;
+	if (weapon == NULL || off_hand == NULL)
+		return 0;
+
+	if (!is_weapon(weapon) || !is_weapon(off_hand))
+		return 0;
+
+	return 1;
 }
 
 int get_main_damage(t_creature *creature)
@@ -209,6 +255,10 @@ t_creature *new_creature(char ch, int area_level)
 	creature->health = 20;
 	creature->max_health = 20;
 	creature->color = COLOR_WHITE;
+	creature->abilities = (t_abilities){8,8,8,8,8,8};
+	creature->movement = 30;
+	creature->actions = 1;
+	creature->bonus = 1;
 	switch (ch)
 	{
 		case 'g':

@@ -46,10 +46,10 @@ int main(void)
 {
 	init();
 
-	t_game *game = new_game(parse_area(read_file(MAP_DUNGEON)));
-	start(game);
+	g_area = parse_area(read_file(MAP_CAVES));
+	start();
 
-	free_game(game);
+	free_game();
 	free_globals();
 	end_ncurses(0);
 }

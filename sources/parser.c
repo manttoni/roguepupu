@@ -140,7 +140,7 @@ t_area *parse_area(char *raw)
 	cJSON *json = cJSON_Parse(raw);
 	if (json == NULL)
 	{
-		logger("cJSON_Parse failed");
+		logger("cJSON_Parse area fail");
 		end_ncurses(errno);
 	}
 	cJSON *name = cJSON_GetObjectItemCaseSensitive(json, "name");

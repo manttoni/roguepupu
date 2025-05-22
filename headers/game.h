@@ -12,7 +12,7 @@ typedef struct s_game
 }	t_game;
 
 void draw(t_area *area);
-void start(t_game *game);
+void start(void);
 t_game *new_game(t_area *area);
 
 #endif

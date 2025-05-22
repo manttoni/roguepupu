@@ -11,7 +11,7 @@
 #include "mech.h"
 
 void free_globals(void);
-void free_game(t_game *game);
+void free_game(void);
 void free_area(t_area *area);
 void free_cell(t_cell *cell);
 void free_creature(t_creature *creature);

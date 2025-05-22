@@ -6,7 +6,8 @@
 
 typedef struct s_item t_item;
 
-#define QUIT_GAME 42
+#define QUIT_GAME 1
+#define END_TURN 2
 #define ERROR_JSON_PARSE 2
 
 #define TERRAIN_BLOCKED "DC#"
@@ -65,6 +66,7 @@ typedef struct s_item t_item;
 
 /* Files */
 #define MAP_DUNGEON "json/maps/dungeon.json"
+#define MAP_CAVES "json/maps/caves.json"
 
 #define WEAPON_FILE "json/items/weapons.json"
 #define POTION_FILE "json/items/potions.json"

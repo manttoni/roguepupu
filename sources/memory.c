@@ -93,9 +93,8 @@ void free_area(t_area *area)
 	free(area);
 }
 
-void free_game(t_game *game)
+void free_game(void)
 {
 	free_area(g_area);
-	free(game);
 }
 

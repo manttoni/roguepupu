@@ -256,42 +256,24 @@ int pc_act(void)
 
 	switch(action)
 	{
-
-		case ACTION_MOVE_UPLEFT:
-			return act_move(neighbor(UPLEFT, cell), cell);
-		case ACTION_MOVE_UPRIGHT:
-			return act_move(neighbor(UPRIGHT, cell), cell);
-		case ACTION_MOVE_DOWNLEFT:
-			return act_move(neighbor(DOWNLEFT, cell), cell);
-		case ACTION_MOVE_DOWNRIGHT:
-			return act_move(neighbor(DOWNRIGHT, cell), cell);
-		case ACTION_MOVE_UP:
-			return act_move(neighbor(UP, cell), cell);
-		case ACTION_MOVE_DOWN:
-			return act_move(neighbor(DOWN, cell), cell);
-		case ACTION_MOVE_LEFT:
-			return act_move(neighbor(LEFT, cell), cell);
-		case ACTION_MOVE_RIGHT:
-			return act_move(neighbor(RIGHT, cell), cell);
-		case ACTION_EXAMINE:
-			return pc_examine();
-		case ACTION_OPEN:
-			return pc_open();
-		case ACTION_UNLOCK:
-			return pc_unlock();
-		case ACTION_ATTACK:
-			return pc_attack();
-		case ACTION_PICK_UP:
-			return pc_pick_up();
-		case ACTION_PASS:
-			print_log("%s does nothing", player->name);
-			return 0;
-		case ACTION_INVENTORY:
-			open_inventory(&player->inventory, INVENTORY_PLAYER);
-			return 0;
-		default:
-			return 0;
+		case ACTION_MOVE_UPLEFT:	act_move(UPLEFT, cell); break;
+		case ACTION_MOVE_UPRIGHT:	act_move(UPRIGHT, cell); break;
+		case ACTION_MOVE_DOWNLEFT:	act_move(DOWNLEFT, cell); break;
+		case ACTION_MOVE_DOWNRIGHT:	act_move(DOWNRIGHT, cell); break;
+		case ACTION_MOVE_UP:		act_move(UP, cell); break;
+		case ACTION_MOVE_DOWN:		act_move(DOWN, cell); break;
+		case ACTION_MOVE_LEFT:		act_move(LEFT, cell); break;
+		case ACTION_MOVE_RIGHT:		act_move(RIGHT, cell); break;
+		case ACTION_EXAMINE:		pc_examine(); break;
+		case ACTION_OPEN:			pc_open(); break;
+		case ACTION_UNLOCK:			pc_unlock(); break;
+		case ACTION_ATTACK:			pc_attack(); break;
+		case ACTION_PICK_UP:		pc_pick_up(); break;
+		case ACTION_PASS:			return END_TURN;
+		case ACTION_INVENTORY:		open_inventory(&player->inventory, INVENTORY_PLAYER); break;
+		default: return 0;
 	}
+	return 0;
 }
 
 

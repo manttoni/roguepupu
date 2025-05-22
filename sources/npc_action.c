@@ -20,14 +20,14 @@ void flee(t_cell *cell)
 	npc->behavior = AI_FLEE;
 
 	t_cell *player_cell = get_player_cell();
-	t_cell *best_flee = cell;
+	e_direction best_flee = 0;
 	for (int i = 0; i < 8; ++i)
 	{
 		t_cell *n = neighbor(dirs[i], cell);
 		if (n == NULL || is_blocked(n))
 			continue;
-		if (distance(n, player_cell) >= distance(best_flee, player_cell))
-			best_flee = n;
+		if (distance(n, player_cell) >= distance(neighbor(best_flee, cell), player_cell))
+			best_flee = i;
 	}
 	act_move(best_flee, cell);
 }
@@ -40,27 +40,27 @@ void pursue(t_cell *cell)
 	npc->behavior = AI_PURSUE;
 
 	t_cell *player_cell = get_player_cell();
-	t_cell *best_pursue = cell;
-	t_cell *second_best = cell;
+	e_direction best_pursue = 0;
+	e_direction second_best = 0;
 	for (int i = 0; i < 8; ++i)
 	{
 		t_cell *n = neighbor(dirs[i], cell);
 		if (n == NULL)
 			continue;
-		if (distance(n, player_cell) <= distance(best_pursue, player_cell))
+		if (distance(n, player_cell) <= distance(neighbor(best_pursue, cell), player_cell))
 		{
 			second_best = best_pursue;
-			best_pursue = n;
+			best_pursue = i;
 		}
 	}
 	if (act_move(best_pursue, cell) == 0)
 		if (act_move(second_best, cell) == 0)
-			act_move(neighbor(dirs[rand() % 8], cell), cell);
+			act_move(dirs[rand() % 8], cell);
 }
 
 void wander(t_cell *cell)
 {
-	while (act_move(neighbor(dirs[rand() % 8], cell), cell) == 0);
+	while (act_move(dirs[rand() % 8], cell) == 0);
 }
 
 int npc_act(void)
@@ -75,7 +75,8 @@ int npc_act(void)
 
 		if (enemy->health <= 0)
 		{
-			short color = cell->terrain->color;
+			short color = cell->creature->color;
+			change_color(&color, -1, -1, -1); // dim the color
 			free_terrain(cell->terrain);
 			cell->terrain = new_terrain('R', 0);
 			cell->terrain->color = color;

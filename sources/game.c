@@ -7,10 +7,11 @@
 #include "globals.h"
 #include "interface.h"
 
-void start(t_game *game)
+void start()
 {
-	(void)game;
 	print_log("{green}Game started!{reset}");
+	t_abilities a = get_player()->abilities;
+	print_log("str:%d dex:%d con:%d int:%d wis:%d cha:%d", a.strength, a.dexterity, a.constitution, a.intelligence, a.wisdom, a.charisma);
 	while(1)
 	{
 		update_stat_win();
@@ -23,16 +24,3 @@ void start(t_game *game)
 	}
 }
 
-void enter_area(t_game *game, t_area *area)
-{
-	(void)game;
-	print_log("Entered area: {red}%s{reset}", area->name);
-	g_area = area;
-}
-
-t_game *new_game(t_area *area)
-{
-	t_game *game = my_calloc(sizeof(*game));
-	enter_area(game, area);
-	return game;
-}

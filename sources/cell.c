@@ -182,6 +182,8 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 	cell.last_draw = (t_coord){-1,-1};
 
 	cell.terrain = new_terrain(terrain, area_level);
+	if (cell.terrain == NULL)
+		cell.terrain = new_terrain('.', area_level);
 	if (terrain == '#')
 		cell.color = color_id((t_color){1,1,1});
 	else

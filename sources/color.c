@@ -53,6 +53,9 @@ void change_color(short *id, int dred, int dgreen, int dblue)
 	color.red += dred;
 	color.green += dgreen;
 	color.blue += dblue;
+	color.red = max(0, color.red);
+	color.green = max(0, color.green);
+	color.blue = max(0, color.blue);
 	color.red = min(5, color.red);
 	color.green = min(5, color.green);
 	color.blue = min(5, color.blue);

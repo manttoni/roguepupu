@@ -14,12 +14,23 @@ typedef struct s_equipped
 	t_item	*off_hand;
 }	t_equipped;
 
+typedef struct s_abilities
+{
+	int strength;
+	int dexterity;
+	int constitution;
+	int intelligence;
+	int wisdom;
+	int charisma;
+}	t_abilities;
+
 typedef struct s_creature
 {
 	char		ch; // what does it look like?
 	short		color;
 	char		*name;
 	t_equipped	equipped;
+	t_abilities	abilities;
 	t_node		*inventory;
 	int			ai;
 	int			health;
@@ -28,8 +39,18 @@ typedef struct s_creature
 	int			stunned;
 	int			faction;
 	int			behavior;
+	int			movement;
+	int			actions;
+	int			bonus;
 }	t_creature;
 
+void reset_actions(t_creature *creature);
+int strmod(t_creature *creature);
+int dexmod(t_creature *creature);
+int conmod(t_creature *creature);
+int intmod(t_creature *creature);
+int wismod(t_creature *creature);
+int chamod(t_creature *creature);
 void loot_item(t_creature *looter, t_node **inventory, int i);
 void use_item(t_creature *user, t_node **inventory, int i);
 void equip(t_creature *creature, t_item *item);
