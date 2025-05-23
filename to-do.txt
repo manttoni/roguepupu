@@ -1,7 +1,5 @@
-creature attributes (strength etc)
-AB, AC
-combat d20 checks
-creature skills (athletics etc) / proficiency
+proficiency
+creature skills (athletics etc)
 status effects
 traps
 character class
@@ -9,6 +7,7 @@ character sheet
 special attacks
 character creation
 
+vegetation feature
 actions and bonus action
 diagonal movement and vision when moving around corner
 perishin on top of remains will remove earlier remains
@@ -17,3 +16,4 @@ perishin on top of remains will remove earlier remains
 	solution smop: multi stuff
 equipment.h
 abilities.h
+dice_rolls.h or something

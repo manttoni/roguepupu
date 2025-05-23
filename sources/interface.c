@@ -26,6 +26,7 @@ void print_legend(void)
 	wprintw(leg_win, "  a is attack\n");
 	wprintw(leg_win, "  p is pick up\n");
 	wprintw(leg_win, "  i is inventory\n");
+	wprintw(leg_win, "  w is swap weapon\n");
 	wprintw(leg_win, "  SPACE is pass\n");
 	wprintw(leg_win, " Scanning:\n");
 	wprintw(leg_win, "  any key selects next object\n");
@@ -171,11 +172,11 @@ void print_inventory(t_node *inventory, int selected)
 		wprintw(win, " ");
 		if (is_equipped(get_player(), item))
 		{
-			if (get_weapon(get_player()) == get_off_hand(get_player()))
+			if (get_weapon(get_player()) == get_offhand(get_player()))
 				wprintw(win, " MO | ");
 			else if (get_weapon(get_player()) == item)
 				wprintw(win, "  M | ");
-			else
+			else if (get_offhand(get_player()) == item)
 				wprintw(win, "  O | ");
 		}
 		else
@@ -192,6 +193,7 @@ void print_inventory(t_node *inventory, int selected)
 
 void open_inventory(t_node **inventory, int mode)
 {
+	list_sort(*inventory, &compare_item_name);
 	print_log("%C opens %s", get_player(), mode == INVENTORY_LOOT ? "remains" : "inventory");
 	int selected = 0;
 	int input = 0;

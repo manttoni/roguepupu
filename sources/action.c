@@ -5,22 +5,47 @@
 #include "interface.h"
 #include "dice.h"
 
+void print_attack_roll(char *hit_miss, t_creature *attacker, t_creature *defender, t_item *weapon, t_roll roll)
+{
+	char *off = "";
+	if (get_offhand(attacker) == weapon && is_dual_wielding(attacker))
+		off = "(offhand) ";
+	print_log("%C {red}%s{reset} %C with a %I %s( %s + %d = %d vs %d )",
+		attacker, hit_miss, defender, weapon, off, roll.dice, roll.mods, roll.result, get_AC(defender));
+}
+
 int act_attack(t_creature *attacker, t_creature *defender)
 {
 	t_item *weapon = get_weapon(attacker);
-	t_item *off_hand = get_off_hand(attacker);
+	t_item *offhand = get_offhand(attacker);
 
-	int weapon_damage = calculate_damage(attacker, weapon);
 	if (weapon != NULL)
 	{
-		print_log("%C attacks %C with a %I", attacker, defender, weapon);
-		take_damage(defender, weapon_damage, get_damage_type(weapon));
+		t_roll dmg = damage_roll(attacker, weapon);
+		t_roll atk = attack_roll(attacker, weapon);
 
-		int off_hand_damage = calculate_damage(attacker, off_hand);
-		if (is_dual_wielding(attacker))
+		if (atk.result >= get_AC(defender))
 		{
-			print_log("%C attacks %C with a %I (off-hand)", attacker, defender, off_hand);
-			take_damage(defender, off_hand_damage, get_damage_type(off_hand));
+			print_attack_roll("hits", attacker, defender, weapon, atk);
+			take_damage(defender, dmg, get_damage_type(weapon));
+		}
+		else
+			print_attack_roll("misses", attacker, defender, weapon, atk);
+
+
+		// attack with offhand if it is same type as main weapon and creature is dual wielding
+		if (is_dual_wielding(attacker) && has_property(weapon, "ranged") == has_property(offhand, "ranged"))
+		{
+			dmg = damage_roll(attacker, offhand);
+			atk = attack_roll(attacker, offhand);
+
+			if (atk.result >= get_AC(defender))
+			{
+				print_attack_roll("hits", attacker, defender, offhand, atk);
+				take_damage(defender, dmg, get_damage_type(offhand));
+			}
+			else
+				print_attack_roll("misses", attacker, defender, offhand, atk);
 		}
 	}
 

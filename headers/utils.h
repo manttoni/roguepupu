@@ -32,8 +32,10 @@ t_node *get_node(t_node *list, int i);
 t_node *get_node_data(t_node *list, void *data);
 void list_sort(t_node *list, int (*compare)(t_node *a, t_node *b));
 int compare_distance_player(t_node *a, t_node *b);
+int compare_item_name(t_node *a, t_node *b);
 
 /* OTHER STUFF */
+char *find_next_of(char *str, char *set);
 int min(int a, int b);
 int max(int a, int b);
 void *my_calloc(size_t size);

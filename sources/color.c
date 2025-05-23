@@ -57,7 +57,6 @@ short pair_id(short fg, short bg, int mod)
 	if (i == next_free) // was not initialized yet
 	{
 		init_pair(i, fg, bg);
-		print_log("Colors initialized: %d", i);
 		pairs[i] = pair_id;
 		next_free++;
 		if (next_free > 255)

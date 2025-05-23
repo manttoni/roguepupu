@@ -10,6 +10,13 @@
 #include "item.h"
 #include "weapon.h"
 
+int get_AC(t_creature *creature)
+{
+	int AC = 10;
+	AC += dexmod(creature);
+	return AC;
+}
+
 int get_darkvision(t_creature *creature)
 {
 	// calculates by race, class, items etc
@@ -54,7 +61,7 @@ int chamod(t_creature *creature)
 
 int is_equipped(t_creature *creature, t_item *item)
 {
-	if (get_weapon(creature) == item || get_off_hand(creature) == item)
+	if (get_weapon(creature) == item || get_offhand(creature) == item)
 		return 1;
 	return 0;
 }
@@ -62,39 +69,28 @@ int is_equipped(t_creature *creature, t_item *item)
 int is_dual_wielding(t_creature *creature)
 {
 	t_item *weapon = get_weapon(creature);
-	t_item *off_hand = get_off_hand(creature);
+	t_item *offhand = get_offhand(creature);
 
-	if (weapon == off_hand)
+	if (weapon == offhand)
 		return 0;
 
-	if (weapon == NULL || off_hand == NULL)
+	if (weapon == NULL || offhand == NULL)
 		return 0;
 
-	if (!is_weapon(weapon) || !is_weapon(off_hand))
+	if (!is_weapon(weapon) || !is_weapon(offhand))
 		return 0;
 
 	return 1;
 }
 
-int get_main_damage(t_creature *creature)
+t_item *get_offhand(t_creature *creature)
 {
-	t_item *weapon = get_weapon(creature);
-	t_item *off_hand = get_off_hand(creature);
-	char *weapon_damage = weapon->data.weapon_data.damage;
-
-	if (weapon == off_hand && has_property(weapon, "versatile"))
-		weapon_damage = strchr(weapon_damage, ';') + 1;
-	return throw_dice(weapon_damage);
+	return creature->equipped.offhand;
 }
 
-t_item *get_off_hand(t_creature *creature)
+void set_offhand(t_creature *creature, t_item *weapon)
 {
-	return creature->equipped.off_hand;
-}
-
-void set_off_hand(t_creature *creature, t_item *weapon)
-{
-	creature->equipped.off_hand = weapon;
+	creature->equipped.offhand = weapon;
 }
 
 t_item *get_weapon(t_creature *creature)
@@ -106,9 +102,9 @@ void set_weapon(t_creature *creature, t_item *weapon)
 {
 	creature->equipped.weapon = weapon;
 	if (has_property(weapon, "two-handed"))
-		set_off_hand(creature, weapon);
+		set_offhand(creature, weapon);
 	if (has_property(weapon, "versatile"))
-		set_off_hand(creature, weapon);
+		set_offhand(creature, weapon);
 }
 
 void loot_item(t_creature *looter, t_node **inventory, int i)
@@ -125,17 +121,18 @@ void loot_item(t_creature *looter, t_node **inventory, int i)
 
 void heal_creature(t_creature *creature, char *amount)
 {
-	int healing = throw_dice(amount);
-	if (creature->health + healing > creature->max_health)
-		healing = creature->max_health - creature->health;
-	creature->health += healing;
-	print_log("%C is healed for {blue}%d{reset} hp", creature, healing);
+	t_roll heal_roll = throw(amount, atoi(find_next_of(amount, "-+")), 0);
+	int healing = heal_roll.result;
+	creature->health = min(creature->health + healing, creature->max_health);
+	print_log("%C is healed for {blue}%d (%s){reset} hp", creature, healing, amount);
 }
 
 void drink_potion(t_creature *drinker, t_item *potion)
 {
 	print_log("%C drinks %I", drinker, potion);
 	t_potion_data data = potion->data.potion_data;
+
+	// heal potion format: "heal xdy +z"
 	if (strncmp(data.effect, "heal", 4) == 0)
 		heal_creature(drinker, strchr(data.effect, ' ') + 1);
 	free(potion);
@@ -147,8 +144,8 @@ void unequip(t_creature *creature, t_item *item)
 {
 	if (get_weapon(creature) == item)
 		set_weapon(creature, NULL);
-	if (get_off_hand(creature) == item)
-		set_off_hand(creature, NULL);
+	if (get_offhand(creature) == item)
+		set_offhand(creature, NULL);
 	if (creature == get_player())
 		print_log("%C unequips %I", creature, item);
 }
@@ -177,13 +174,12 @@ int has_ranged_weapon(t_creature *creature)
 	return has_property(get_weapon(creature), "ranged");
 }
 
-int can_wield_both(t_item *a, t_item *b)
+int is_valid_weaponset(t_item *weapon, t_item *offhand)
 {
-	if (a == NULL || b == NULL)
+	if (weapon == NULL || offhand == NULL)
 		return 1;
-	if (has_property(a, "light") && has_property(b, "light"))
-			return 1;
-	print_log("cant wield both");
+	if (has_property(weapon, "light") && has_property(offhand, "light"))
+		return 1;
 	return 0;
 }
 
@@ -193,12 +189,15 @@ void equip(t_creature *creature, t_item *item)
 		return;
 	if (is_weapon(item))
 	{
-		if (get_weapon(creature) == NULL && can_wield_both(get_off_hand(creature), item))
+		if (get_weapon(creature) == NULL && is_valid_weaponset(item, get_offhand(creature)))
 			set_weapon(creature, item);
-		else if (get_off_hand(creature) == NULL && can_wield_both(get_weapon(creature), item))
-			set_off_hand(creature, item);
+		else if (get_offhand(creature) == NULL && is_valid_weaponset(get_weapon(creature), item))
+			set_offhand(creature, item);
 		else
+		{
+			print_log("Can't equip %I. Unequip something first.", item);
 			return;
+		}
 	}
 	if (creature->ch == '@')
 		print_log("%C equips %I", creature, item);
@@ -208,7 +207,7 @@ void add_item(t_creature *creature, t_item *item)
 {
 	add_node_last(&creature->inventory, new_node(item));
 	if (is_weapon(item))
-		if (get_weapon(creature) == NULL || get_off_hand(creature) == NULL)
+		if (get_weapon(creature) == NULL || get_offhand(creature) == NULL)
 			equip(creature, item);
 }
 
@@ -231,11 +230,13 @@ void perish(t_creature *creature, char *damage_type)
 	}
 }
 
-int take_damage(t_creature *creature, int damage, char *damage_type)
+int take_damage(t_creature *creature, t_roll damage_roll, char *damage_type)
 {
+	int damage = damage_roll.result;
 	if (damage > 0)
 		visual_effect(creature, COLOR_PAIR(COLOR_PAIR_RED));
-	print_log("%C takes {red}%d{reset} %s damage", creature, damage, damage_type);
+
+	print_log("%C takes {red}%d{reset} %s damage ( %s + %d )", creature, damage, damage_type, damage_roll.dice, damage_roll.mods);
 	creature->health -= damage;
 
 	if (creature->health <= 0)
@@ -244,6 +245,16 @@ int take_damage(t_creature *creature, int damage, char *damage_type)
 		return DAMAGE_FATAL;
 	}
 	return !DAMAGE_FATAL;
+}
+
+void randomize_abilities(t_abilities *a)
+{
+	a->strength = throw("4d6", 0, 0).result;
+	a->dexterity = throw("4d6", 0, 0).result;
+	a->constitution = throw("4d6", 0, 0).result;
+	a->intelligence = throw("4d6", 0, 0).result;
+	a->wisdom = throw("4d6", 0, 0).result;
+	a->charisma = throw("4d6", 0, 0).result;
 }
 
 t_creature *new_creature(char ch, int area_level)
@@ -256,7 +267,7 @@ t_creature *new_creature(char ch, int area_level)
 	creature->health = 20;
 	creature->max_health = 20;
 	creature->color = COLOR_WHITE;
-	creature->abilities = (t_abilities){8,8,8,8,8,8};
+	randomize_abilities(&creature->abilities);
 	switch (ch)
 	{
 		case 'g':

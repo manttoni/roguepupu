@@ -219,7 +219,7 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 			end_ncurses(1);
 		}
 	}
-	if (strchr(TERRAIN_WALLFLOOR, cell.terrain->ch))
+	if (strchr("#", cell.terrain->ch))
 		cell.color = cell.terrain->color;
 	else
 		cell.color = color_id((t_color){0,0,0});

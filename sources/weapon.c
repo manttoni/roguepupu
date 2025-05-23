@@ -10,20 +10,21 @@ char *get_damage_type(t_item *weapon)
 	return weapon->data.weapon_data.damage_type;
 }
 
-int weapon_AB(t_item *weapon)
+static int get_weapon_bonus(t_item *weapon)
 {
 	(void)weapon;
 	return 0; // later check +1 enchantments here maybe
 }
 
-int AB(t_creature *creature, t_item *weapon)
+static int get_ability_mod(t_creature *creature, t_item *weapon)
 {
-	int ab = weapon_AB(weapon);
+	if (has_property(weapon, "ranged"))
+		return dexmod(creature);
+
+	int mod = strmod(creature);
 	if (has_property(weapon, "finesse"))
-		ab += max(strmod(creature), dexmod(creature));
-	else
-		ab += strmod(creature);
-	return ab;
+		mod = max(mod, dexmod(creature));
+	return mod;
 }
 
 char *get_dice(t_item *weapon)
@@ -31,16 +32,29 @@ char *get_dice(t_item *weapon)
 	return weapon->data.weapon_data.damage;
 }
 
-int calculate_damage(t_creature *creature, t_item *weapon)
+t_roll damage_roll(t_creature *creature, t_item *weapon)
 {
-	if (weapon == NULL)
-		return 0;
-	int damage = AB(creature, weapon);
+	int mods = get_weapon_bonus(weapon);
+	if (get_weapon(creature) == weapon) // only main weapon gets ability mod bonus unless has some feat
+		mods += get_ability_mod(creature, weapon);
+
 	char *dice = get_dice(weapon);
-	if (has_property(weapon, "versatile") && get_off_hand(creature) == NULL)
+
+	// if using a versatile weapon with both hands, use better dice
+	if (has_property(weapon, "versatile") && get_weapon(creature) == get_offhand(creature))
 		dice = strchr(dice, ';') + 1;
-	damage += throw_dice(dice);
-	return max(1, damage);
+
+	return throw(dice, mods, 0);
+}
+
+t_roll attack_roll(t_creature *creature, t_item *weapon)
+{
+	int mods = get_weapon_bonus(weapon);
+	mods += get_ability_mod(creature, weapon); // offhand gets bonus to hit also
+
+	char *dice = "1d20";
+
+	return throw(dice, mods, 0);
 }
 
 t_item *new_weapon(char *weapon_name)

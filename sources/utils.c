@@ -7,6 +7,19 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
+// returns pointer to first occurrence of a char in set
+// if not found, returns pointer to the null terminator
+char *find_next_of(char *str, char *set)
+{
+	while (*str != '\0')
+	{
+		if (strchr(set, *str))
+			return str;
+		str++;
+	}
+	return str;
+}
+
 int win_width(WINDOW *win)
 {
 	int y, x;
@@ -213,6 +226,14 @@ int compare_distance_player(t_node *a, t_node *b)
 	return distance((t_cell *) a->data, player) > distance((t_cell *) b->data, player);
 }
 
+// data has to be t_item
+int compare_item_name(t_node *a, t_node *b)
+{
+	t_item *item_a = (t_item *) a->data;
+	t_item *item_b = (t_item *) b->data;
+	return strcmp(item_a->name, item_b->name);
+}
+
 // bubble sort
 void list_sort(t_node *list, int (*compare)(t_node *a, t_node *b))
 {
@@ -222,7 +243,7 @@ void list_sort(t_node *list, int (*compare)(t_node *a, t_node *b))
 		t_node *node = list;
 		for (int j = 0; j < len - i - 1; ++j)
 		{
-			if (compare(node, node->next) == 1)
+			if (compare(node, node->next) > 0)
 				node_swap_data(node, node->next);
 			node = node->next;
 		}

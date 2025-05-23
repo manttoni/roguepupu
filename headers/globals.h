@@ -6,12 +6,21 @@
 
 typedef struct s_item t_item;
 
-#define CELL_SIZE 5
+/* Dice rolls */
+#define ROLL_DISADVANTAGE -1
+#define ROLL_NORMAL 0
+#define ROLL_ADVANTAGE 1
 
+/* Area and cell sizes etc */
+#define CELL_SIZE 5
+#define AREA(area) ((area)->width * (area)->height)
+
+/* Exit codes */
 #define QUIT_GAME 1
 #define END_TURN 2
 #define ERROR_JSON_PARSE 2
 
+/* char */
 #define TERRAIN_BLOCKED "DC#"
 #define TERRAIN_CLOSED "DCR"
 #define TERRAIN_DOOR "D"
@@ -29,7 +38,7 @@ typedef struct s_item t_item;
 #define ITEM_CHARS "WP"
 #define TERRAIN_CHARS "#.DCR"
 
-#define CELL_GHOST_CHARS (TERRAIN_CHARS)
+#define CELL_GHOST_CHARS "#DCR"
 
 /* Vision related */
 #define VISION_NONE 0 // no line of sight and was never seen before
@@ -37,17 +46,17 @@ typedef struct s_item t_item;
 #define VISION_DIM 2 // outside darkvision range
 #define VISION_BRIGHT 3 // inside darkvision range
 
-/* For scanning */
-#define SCAN_VISIBLE 1 << 0
-#define SCAN_NEIGHBOR 1 << 1
-#define SCAN_ENEMY 1 << 2
-#define SCAN_LOCKED 1 << 3
-#define SCAN_CLOSED 1 << 4
-#define SCAN_TRAPPED 1 << 5
-#define SCAN_ITEM 1 << 6
+/* For scanning and targeting */
+#define SCAN_VISIBLE (1 << 0)
+#define SCAN_NEIGHBOR (1 << 1)
+#define SCAN_ENEMY (1 << 2)
+#define SCAN_LOCKED (1 << 3)
+#define SCAN_CLOSED (1 << 4)
+#define SCAN_TRAPPED (1 << 5)
+#define SCAN_ITEM (1 << 6)
 
-#define FACTION_PLAYER 1 << 0
-#define FACTION_GOBLIN 2 << 1
+#define FACTION_PLAYER (1 << 0)
+#define FACTION_GOBLIN (2 << 1)
 
 #define FACTION_ALL (FACTION_PLAYER | FACTION_GOBLIN)
 
@@ -61,19 +70,16 @@ typedef struct s_item t_item;
 #define RANGED_ATTACK (SCAN_VISIBLE | SCAN_ENEMY)
 
 /* Enemy "AI" */
-#define AI_IDLE 1 << 0
-#define AI_WANDER 1 << 1
-#define AI_PURSUE 1 << 2
-#define AI_FLEE 1 << 3
+#define AI_IDLE (1 << 0)
+#define AI_WANDER (1 << 1)
+#define AI_PURSUE (1 << 2)
+#define AI_FLEE (1 << 3)
 
 #define AI_CRAZY_GOBLIN (AI_WANDER | AI_FLEE | AI_PURSUE)
 
 /* Keys */
 #define ESCAPE 27
 #define ENTER '\n'
-
-/* Calculations */
-#define AREA(area) ((area)->width * (area)->height)
 
 /* Files */
 #define MAP_DUNGEON "json/maps/dungeon.json"
@@ -89,8 +95,8 @@ typedef struct s_item t_item;
 
 /* Colors */
 #define COLOR_NORMAL 0
-#define COLOR_DARKER 1 << 0
-#define COLOR_GREYSCALE 1 << 1
+#define COLOR_DARKER (1 << 0)
+#define COLOR_GREYSCALE (1 << 1)
 
 #define DARK_FACTOR 0.5
 

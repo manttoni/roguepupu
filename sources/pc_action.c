@@ -7,6 +7,7 @@
 #include "draw.h"
 #include "interface.h"
 #include "windows.h"
+#include "weapon.h"
 
 void pc_disarm_trap(t_creature *pc, t_cell *trapped_cell)
 {
@@ -147,9 +148,17 @@ int pc_unlock(void)
 
 int pc_attack(void)
 {
+	// main hand weapon defines which attack is done.
+	// if both are melee or both are ranged, automatically does offhand attack (unless toggled off)
+	// if offhand is different then attack manually as bonus offhand attack (once its implemented)
+	// (these things happen in act_attack)
+	// might change but for now feels like QOL for player
+	// because instead of attacking with ranged weapon in melee range maybe want to drink potion? (can be toggled if really want to)
+	// and attacking with melee in ranged range doesnt even work
 	int attack_flag = MELEE_ATTACK;
-	if (has_ranged_weapon(get_player()))
+	if (has_property(get_weapon(get_player()), "ranged"))
 		attack_flag = RANGED_ATTACK;
+
 	t_cell *defender_cell = scan(attack_flag);
 	if (defender_cell == NULL)
 		return 0;

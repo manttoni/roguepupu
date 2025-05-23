@@ -34,6 +34,7 @@ void init_globals(void)
 
 void init(void)
 {
+	srand(time(NULL));
 	init_logger();
 	init_globals();
 	signal(SIGSEGV, handle_segfault);
