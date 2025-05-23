@@ -2,6 +2,7 @@
 #define GLOBALS_H
 
 #include "area.h"
+#include "entities.h"
 #include <ncurses.h>
 
 typedef struct s_item t_item;
@@ -89,6 +90,8 @@ typedef struct s_item t_item;
 #define POTION_FILE "json/items/potions.json"
 #define ARMOR_FILE "json/items/armor.json"
 
+#define GOBLIN_FILE "json/creatures/goblin.json"
+
 /* Color pairs */
 #define COLOR_PAIR_RED 1
 #define NEXT_FREE 2
@@ -112,7 +115,7 @@ typedef struct s_item t_item;
 #define COLOR_METAL_DOOR (COLOR_ID(3,1,1))
 #define COLOR_METAL_CHEST (COLOR_ID(3,1,1))
 
-#define COLOR_CREATURE_GOBLIN (COLOR_ID(0,1,0))
+#define COLOR_GOBLIN (COLOR_ID(0,1,0))
 
 #define COLOR_CELL_GHOST (COLOR_ID(1,1,1))
 
@@ -124,10 +127,13 @@ typedef struct s_item t_item;
 #define INVENTORY_LOOT 2
 #define INVENTORY_TRADE 3
 
-extern t_item *g_weapons;
-extern int g_weapon_count;
-extern t_item *g_potions;
-extern int g_potion_count;
+/* Actual globals */
 extern t_area *g_area;
+
+extern t_item_group	*g_item_groups;
+extern int			g_item_group_count;
+
+extern t_creature_group	*g_creature_groups;
+extern int				g_creature_group_count;
 
 #endif

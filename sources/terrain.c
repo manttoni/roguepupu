@@ -8,7 +8,7 @@ t_terrain *new_terrain(char ch, int area_level)
 	(void)area_level;
 	if (strchr(TERRAIN_CHARS, ch) == NULL)
 		return NULL;
-	t_terrain *terrain = my_calloc(sizeof(t_terrain));
+	t_terrain *terrain = my_calloc(1, sizeof(t_terrain));
 	terrain->ch = ch;
 	terrain->color = color_id((t_color){1,1,1});
 	switch (ch)

@@ -7,7 +7,7 @@ t_mech *new_mech(char ch, int area_level)
 {
 	if (strchr(MECH_CHARS, ch) == NULL)
 		return NULL;
-	t_mech *mech = my_calloc(sizeof(*mech));
+	t_mech *mech = my_calloc(1, sizeof(*mech));
 	mech->ch = ch;
 	if (strchr("LS", ch) != NULL)
 		mech->lock = area_level;

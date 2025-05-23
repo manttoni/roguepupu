@@ -7,6 +7,19 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
+int resolve_macro(char *str)
+{
+	if (strcmp(str, "COLOR_GOBLIN") == 0)
+		return COLOR_GOBLIN;
+	if (strcmp(str, "AI_CRAZY_GOBLIN") == 0)
+		return AI_CRAZY_GOBLIN;
+	if (strcmp(str, "FACTION_GOBLIN") == 0)
+		return FACTION_GOBLIN;
+	logger("Unknown macro");
+	end_ncurses(1);
+	exit(1);
+}
+
 // returns pointer to first occurrence of a char in set
 // if not found, returns pointer to the null terminator
 char *find_next_of(char *str, char *set)
@@ -50,9 +63,9 @@ int max(int a, int b)
 	return b;
 }
 
-void *my_calloc(size_t size)
+void *my_calloc(size_t count, size_t size)
 {
-	void *mem = malloc(size);
+	void *mem = malloc(count * size);
 	if (mem == NULL)
 	{
 		logger("Malloc failed, size: %zu", size);
@@ -126,7 +139,7 @@ void handle_segfault(int sig)
 /* LINKED LIST STUFF */
 t_node *new_node(void *data)
 {
-	t_node *node = my_calloc(sizeof(t_node));
+	t_node *node = my_calloc(1, sizeof(t_node));
 	node->data = data;
 	return node;
 }

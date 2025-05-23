@@ -1,0 +1,22 @@
+{
+	"goblin":
+	[
+		{
+			"name": "crazy goblin",
+			"level": 1,
+			"size": "small",
+			"color": "COLOR_GOBLIN",
+			"ai": "AI_CRAZY_GOBLIN",
+			"faction": "FACTION_GOBLIN",
+			"abilities":
+			{
+				"strength": 14,
+				"dexterity": 12,
+				"constitution": 12,
+				"intelligence": 8,
+				"wisdom": 8,
+				"charisma": 8
+			}
+		}
+	]
+}

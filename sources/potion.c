@@ -5,12 +5,16 @@
 
 t_item *new_potion(char *potion_name)
 {
-	t_item *potion = my_calloc(sizeof(*potion));
-	for (int i = 0; i < g_potion_count; ++i)
+	t_item_group *potion_group = get_item_group("potion");
+	t_item *potions = potion_group->array;
+	int count = potion_group->count;
+
+	for (int i = 0; i < count; ++i)
 	{
-		if (strcmp(g_potions[i].name, potion_name) == 0)
+		if (strcmp(potions[i].name, potion_name) == 0)
 		{
-			memmove(potion, &g_potions[i], sizeof(*potion));
+			t_item *potion = my_calloc(1, sizeof(t_item));
+			memmove(potion, &potions[i], sizeof(*potion));
 			return potion;
 		}
 	}

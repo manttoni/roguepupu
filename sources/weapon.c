@@ -59,12 +59,16 @@ t_roll attack_roll(t_creature *creature, t_item *weapon)
 
 t_item *new_weapon(char *weapon_name)
 {
-	t_item *weapon = my_calloc(sizeof(*weapon));
-	for (int i = 0; i < g_weapon_count; ++i)
+	t_item_group *weapon_group = get_item_group("weapon");
+	t_item *weapons = weapon_group->array;
+	int count = weapon_group->count;
+
+	for (int i = 0; i < count; ++i)
 	{
-		if (strcmp(g_weapons[i].name, weapon_name) == 0)
+		if (strcmp(weapons[i].name, weapon_name) == 0)
 		{
-			memmove(weapon, &g_weapons[i], sizeof(*weapon));
+			t_item *weapon = my_calloc(1, sizeof(t_item));
+			memmove(weapon, &weapons[i], sizeof(*weapon));
 			return weapon;
 		}
 	}

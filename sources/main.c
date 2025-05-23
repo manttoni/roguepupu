@@ -5,6 +5,7 @@
 #include "windows.h"
 #include "globals.h"
 #include "parser.h"
+#include "entities.h"
 #include <signal.h>
 #include <ncurses.h>
 #include <stdlib.h>
@@ -17,19 +18,49 @@ WINDOW *leg_win = NULL;
 WINDOW *examine_win = NULL;
 WINDOW *inventory_win = NULL;
 
-t_item *g_weapons = NULL;
-int	g_weapon_count = 0;
+t_item_group *g_item_groups = NULL;
+int g_item_group_count = 0;
 
-t_item *g_potions = NULL;
-int g_potion_count = 0;
+t_creature_group *g_creature_groups = NULL;
+int g_creature_group_count = 0;
 
 t_area *g_area = NULL;
 
 
+void init_items(void)
+{
+	char *groups[] = {"weapon", "potion"};
+	char *files[] = {WEAPON_FILE, POTION_FILE};
+
+	g_item_group_count = sizeof(groups) / sizeof(char *);
+	g_item_groups = my_calloc(g_item_group_count, sizeof(t_item_group));
+
+	for (int i = 0; i < g_item_group_count; ++i)
+	{
+		g_item_groups[i].category = groups[i];
+		g_item_groups[i].array = parse_items(read_file(files[i]), groups[i], &g_item_groups[i].count);
+	}
+}
+
+void init_creatures(void)
+{
+	char *groups[] = {"goblin"};
+	char *files[] = {GOBLIN_FILE};
+
+	g_creature_group_count = sizeof(groups) / sizeof(char *);
+	g_creature_groups = my_calloc(g_creature_group_count, sizeof(t_creature_group));
+
+	for (int i = 0; i < g_creature_group_count; ++i)
+	{
+		g_creature_groups[i].category = groups[i];
+		g_creature_groups[i].array = parse_creatures(read_file(files[i]), groups[i], &g_creature_groups[i].count);
+	}
+}
+
 void init_globals(void)
 {
-	g_weapons = parse_items(read_file(WEAPON_FILE), "weapon");
-	g_potions = parse_items(read_file(POTION_FILE), "potion");
+	init_items();
+	init_creatures();
 }
 
 void init(void)

@@ -44,7 +44,7 @@ t_weapon_data parse_weapon_data(cJSON *weapon)
 	}
 	int len = cJSON_GetArraySize(properties);
 	if (len > 0)
-		data.properties = my_calloc((len + 1) * sizeof(char*)); // NULL terminate
+		data.properties = my_calloc(len + 1, sizeof(char*)); // NULL terminate
 	else
 	{
 		data.properties = NULL;
@@ -83,7 +83,86 @@ short get_color(char *rarity)
 	return 0;
 }
 
-t_item *parse_items(char *raw, char *type)
+t_creature *parse_creatures(char *raw, char *type, int *count)
+{
+	cJSON *json = cJSON_Parse(raw);
+	if (json == NULL)
+	{
+		logger("cJSON_Parse fail (%s)", type);
+		end_ncurses(errno);
+	}
+
+	cJSON *creatures = cJSON_GetObjectItemCaseSensitive(json, type);
+	if (!cJSON_IsArray(creatures))
+	{
+		logger("cJSON: not an array (%s)", type);
+		end_ncurses(ERROR_JSON_PARSE);
+	}
+
+	int n = cJSON_GetArraySize(creatures);
+	t_creature *array = my_calloc(n, sizeof(*array));
+	*count = n;
+
+	cJSON *creature = NULL;
+	int i = 0;
+	cJSON_ArrayForEach(creature, creatures)
+	{
+		cJSON *name = cJSON_GetObjectItemCaseSensitive(creature, "name");
+		cJSON *level = cJSON_GetObjectItemCaseSensitive(creature, "level");
+		cJSON *size = cJSON_GetObjectItemCaseSensitive(creature, "size");
+		cJSON *color = cJSON_GetObjectItemCaseSensitive(creature, "color");
+		cJSON *ai = cJSON_GetObjectItemCaseSensitive(creature, "ai");
+		cJSON *faction = cJSON_GetObjectItemCaseSensitive(creature, "faction");
+		cJSON *abilities = cJSON_GetObjectItemCaseSensitive(creature, "abilities");
+
+		// Validate required fields
+		if (!cJSON_IsString(name) || !cJSON_IsNumber(level) || !cJSON_IsString(size) ||
+			!cJSON_IsString(color) || !cJSON_IsString(ai) || !cJSON_IsString(faction) ||
+			!cJSON_IsObject(abilities))
+		{
+			logger("Creature parsing error (%s)", type);
+			end_ncurses(ERROR_JSON_PARSE);
+		}
+
+		array[i].name = my_strdup(name->valuestring);
+		array[i].level = level->valueint;
+		array[i].size = my_strdup(size->valuestring);
+		array[i].color = resolve_macro(color->valuestring);
+		array[i].ai = resolve_macro(ai->valuestring);
+		array[i].faction = resolve_macro(faction->valuestring);
+
+		// Parse abilities individually
+		//cJSON *ability = NULL;
+		cJSON *strength = cJSON_GetObjectItemCaseSensitive(abilities, "strength");
+		cJSON *dexterity = cJSON_GetObjectItemCaseSensitive(abilities, "dexterity");
+		cJSON *constitution = cJSON_GetObjectItemCaseSensitive(abilities, "constitution");
+		cJSON *intelligence = cJSON_GetObjectItemCaseSensitive(abilities, "intelligence");
+		cJSON *wisdom = cJSON_GetObjectItemCaseSensitive(abilities, "wisdom");
+		cJSON *charisma = cJSON_GetObjectItemCaseSensitive(abilities, "charisma");
+
+		if (!cJSON_IsNumber(strength) || !cJSON_IsNumber(dexterity) || !cJSON_IsNumber(constitution) ||
+			!cJSON_IsNumber(intelligence) || !cJSON_IsNumber(wisdom) || !cJSON_IsNumber(charisma))
+		{
+			logger("Creature abilities parsing error (%s)", type);
+			end_ncurses(ERROR_JSON_PARSE);
+		}
+
+		array[i].abilities.strength = strength->valueint;
+		array[i].abilities.dexterity = dexterity->valueint;
+		array[i].abilities.constitution = constitution->valueint;
+		array[i].abilities.intelligence = intelligence->valueint;
+		array[i].abilities.wisdom = wisdom->valueint;
+		array[i].abilities.charisma = charisma->valueint;
+
+		i++;
+	}
+
+	cJSON_Delete(json);
+	free(raw);
+	return array;
+}
+
+t_item *parse_items(char *raw, char *type, int *count)
 {
 	cJSON *json = cJSON_Parse(raw);
 	if (json == NULL)
@@ -99,12 +178,8 @@ t_item *parse_items(char *raw, char *type)
 		end_ncurses(ERROR_JSON_PARSE);
 	}
 	int n = cJSON_GetArraySize(items);
-	t_item *array = my_calloc(n * sizeof(*array));
-
-	if (strcmp("weapon", type) == 0)
-		g_weapon_count = n;
-	else if (strcmp("potion", type) == 0)
-		g_potion_count = n;
+	t_item *array = my_calloc(n, sizeof(*array));
+	*count = n;
 
 	cJSON *item = NULL;
 	int i = 0;
@@ -150,7 +225,7 @@ t_area *parse_area(char *raw)
 	cJSON *items = cJSON_GetObjectItemCaseSensitive(json, "items");
 	cJSON *creatures = cJSON_GetObjectItemCaseSensitive(json, "creatures");
 
-	t_area *area = my_calloc(sizeof(*area));
+	t_area *area = my_calloc(1, sizeof(*area));
 	if (!cJSON_IsString(name)
 		|| name->valuestring == NULL
 		|| !cJSON_IsNumber(level)
@@ -167,7 +242,7 @@ t_area *parse_area(char *raw)
 	area->level = level->valueint;
 	area->height = cJSON_GetArraySize(terrain);
 	area->width = strlen(cJSON_GetArrayItem(terrain, 0)->valuestring);
-	area->cells = my_calloc(AREA(area) * sizeof(*(area->cells)));
+	area->cells = my_calloc(AREA(area), sizeof(*(area->cells)));
 	for (int i = 0; i < area->height; ++i)
 	{
 		cJSON *terline = cJSON_GetArrayItem(terrain, i);

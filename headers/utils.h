@@ -8,6 +8,9 @@
 #include <errno.h>
 #include <string.h>
 #include <fcntl.h>
+#include <stdnoreturn.h>
+
+noreturn void end_ncurses(int exit_value);
 
 typedef struct s_coord
 {
@@ -35,10 +38,11 @@ int compare_distance_player(t_node *a, t_node *b);
 int compare_item_name(t_node *a, t_node *b);
 
 /* OTHER STUFF */
+int resolve_macro(char *str);
 char *find_next_of(char *str, char *set);
 int min(int a, int b);
 int max(int a, int b);
-void *my_calloc(size_t size);
+void *my_calloc(size_t count, size_t size);
 char *my_strdup(char *str);
 void init_ncurses(void);
 void end_ncurses(int exit_value);

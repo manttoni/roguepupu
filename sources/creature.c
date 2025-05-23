@@ -257,28 +257,47 @@ void randomize_abilities(t_abilities *a)
 	a->charisma = throw("4d6", 0, 0).result;
 }
 
+void set_max_health(t_creature *creature)
+{
+	t_roll hit_die = throw("1d8", 0, 0);
+	int health = hit_die.result + conmod(creature);
+	creature->health = health;
+	creature->max_health = health;
+}
+
+t_creature *new_goblin(char *goblin_name)
+{
+	t_creature_group *goblin_group = get_creature_group("goblin");
+	t_creature *goblins = goblin_group->array;
+	int count = goblin_group->count;
+
+	for (int i = 0; i < count; ++i)
+	{
+		if (strcmp(goblins[i].name, goblin_name) == 0)
+		{
+			t_creature *goblin = my_calloc(1, sizeof(t_creature));
+			memmove(goblin, &goblins[i], sizeof(*goblin));
+			return goblin;
+		}
+	}
+	logger("Goblin not found: %s", goblin_name);
+	end_ncurses(1);
+	return NULL;
+}
+
 t_creature *new_creature(char ch, int area_level)
 {
 	(void)area_level;
 	if (strchr(CREATURE_CHARS, ch) == NULL)
 		return NULL;
-	t_creature *creature = my_calloc(sizeof(t_creature));
-	creature->ch = ch;
-	creature->health = 20;
-	creature->max_health = 20;
-	creature->color = COLOR_WHITE;
-	randomize_abilities(&creature->abilities);
+	t_creature *creature;
 	switch (ch)
 	{
 		case 'g':
-			creature->name = "Crazy Goblin";
-			add_item(creature, new_weapon("club"));
-			add_item(creature, new_potion("potion of healing"));
-			creature->ai = AI_CRAZY_GOBLIN;
-			creature->color = COLOR_CREATURE_GOBLIN;
-			creature->faction = FACTION_GOBLIN;
+			creature = new_goblin("crazy goblin");
 			break;
 		case '@':
+			creature = my_calloc(1, sizeof(t_creature));
 			creature->name = "Rabdin";
 			add_item(creature, new_weapon("light crossbow"));
 			add_item(creature, new_weapon("dagger"));
@@ -286,11 +305,13 @@ t_creature *new_creature(char ch, int area_level)
 			add_item(creature, new_potion("potion of healing"));
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
+			randomize_abilities(&creature->abilities);
 			break;
 		default:
-			creature->name = "Bob the bug";
 			break;
 	}
+	creature->ch = ch;
+	set_max_health(creature);
 	return creature;
 }
 

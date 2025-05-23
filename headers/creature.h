@@ -38,6 +38,8 @@ typedef struct s_creature
 	int			max_health;
 	int			faction;
 	int			behavior;
+	int			level;
+	char		*size;
 }	t_creature;
 
 int get_darkvision(t_creature *creature);
