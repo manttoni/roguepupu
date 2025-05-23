@@ -35,15 +35,16 @@ typedef struct s_creature
 	int			ai;
 	int			health;
 	int			max_health;
-	int			bleeding; // a cosmetic feature
-	int			stunned;
 	int			faction;
 	int			behavior;
-	int			movement;
-	int			actions;
-	int			bonus;
 }	t_creature;
 
+int get_darkvision(t_creature *creature);
+int get_movement(t_creature *creature);
+int get_AC(t_creature *creature);
+int get_actions(t_creature *creature);
+int get_bonus_actions(t_creature *creature);
+int get_saving_throw(t_creature *creature, char *saving_throw);
 void reset_actions(t_creature *creature);
 int strmod(t_creature *creature);
 int dexmod(t_creature *creature);

@@ -101,7 +101,7 @@ void print_win(WINDOW *win, char *format, va_list args)
 			}
 			if (strchr("CITM", ptr[1]))
 			{
-				short pi = pair_id(color, COLOR_BLACK);
+				short pi = pair_id(color, COLOR_BLACK, COLOR_NORMAL);
 				wattron(win, COLOR_PAIR(pi));
 				wprintw(win, "%s", name);
 				wattroff(win, COLOR_PAIR(pi));
@@ -116,24 +116,24 @@ void print_win(WINDOW *win, char *format, va_list args)
 
 			if (strncmp("{red}", ptr, code_len) == 0)
 			{
-				color = pair_id(COLOR_RED, COLOR_BLACK);
+				color = pair_id(color_id((t_color){5,0,0}), COLOR_BLACK, COLOR_NORMAL);
 				wattron(win, COLOR_PAIR(color));
 			}
 			else if (strncmp("{green}", ptr, code_len) == 0)
 			{
-				color = pair_id(COLOR_GREEN, COLOR_BLACK);
+				color = pair_id(color_id((t_color){0,5,0}), COLOR_BLACK, COLOR_NORMAL);
 				wattron(win, COLOR_PAIR(color));
 			}
 			else if (strncmp("{blue}", ptr, code_len) == 0)
 			{
-				color = pair_id(COLOR_BLUE, COLOR_BLACK);
+				color = pair_id(color_id((t_color){0,0,5}), COLOR_BLACK, COLOR_NORMAL);
 				wattron(win, COLOR_PAIR(color));
 			}
 			else if (strncmp("{reset}", ptr, code_len) == 0)
 				wattroff(win, A_ATTRIBUTES);
 			else
 			{
-				color = pair_id(atoi(ptr + 1), COLOR_BLACK);
+				color = pair_id(atoi(ptr + 1), COLOR_BLACK, COLOR_NORMAL);
 				wattron(win, COLOR_PAIR(color));
 			}
 			ptr += code_len;
@@ -273,7 +273,6 @@ void print_log(char *format, ...)
 	wprintw(log_win, "\n");
 	refresh_window(log_win);
 	va_end(args);
-	usleep(100000);
 }
 
 void print_stat(char *format, ...)
@@ -297,7 +296,7 @@ void print_creature_status(t_creature *creature)
 	char buf[x];
 	snprintf(buf, sizeof(buf), "Health: %d / %d", creature->health, creature->max_health);
 	wprintw(stat_win, "  ");
-	short pi = pair_id(COLOR_WHITE, color_id((t_color){1,0,0}));
+	short pi = pair_id(COLOR_WHITE, color_id((t_color){1,0,0}), COLOR_NORMAL);
 	wattron(stat_win, COLOR_PAIR(pi));
 	for (size_t i = 0; i < bar_width; ++i)
 	{

@@ -76,7 +76,6 @@ int npc_act(void)
 		if (enemy->health <= 0)
 		{
 			short color = cell->creature->color;
-			change_color(&color, -1, -1, -1); // dim the color
 			free_terrain(cell->terrain);
 			cell->terrain = new_terrain('R', 0);
 			cell->terrain->color = color;
@@ -84,12 +83,16 @@ int npc_act(void)
 			free_creature(cell->creature);
 			cell->creature = NULL;
 		}
-		else if (!is_visible(cell, player_cell))
+		else if (is_visible(cell, player_cell) == VISION_NONE)
 		{
 			if (enemy->ai & AI_WANDER)
 				wander(cell);
 		}
-		else
+		else if (is_visible(cell, player_cell) == VISION_DIM)
+		{
+//			if (enemy->ai & AI_STALK) do some stalking
+		}
+		else if (is_visible(cell, player_cell) == VISION_BRIGHT)
 		{
 			if (enemy->ai & AI_FLEE && enemy->health < enemy->max_health / 4)
 				flee(cell);

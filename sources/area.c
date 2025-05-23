@@ -81,7 +81,7 @@ t_node *get_interactables(int flags)
 			continue;
 
 		// cell checks
-		if (flags & SCAN_VISIBLE && !is_visible(pc, cell))
+		if (flags & SCAN_VISIBLE && is_visible(pc, cell) <= VISION_GHOST)
 			continue;
 		if (flags & SCAN_NEIGHBOR && !is_neighbor(pc, cell))
 			continue;

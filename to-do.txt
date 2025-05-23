@@ -2,7 +2,6 @@ creature attributes (strength etc)
 AB, AC
 combat d20 checks
 creature skills (athletics etc) / proficiency
-log window remake*
 status effects
 traps
 character class
@@ -11,4 +10,10 @@ special attacks
 character creation
 
 actions and bonus action
-
+diagonal movement and vision when moving around corner
+perishin on top of remains will remove earlier remains
+	solution a: spawn in next cell
+	solution b: combine their loot
+	solution smop: multi stuff
+equipment.h
+abilities.h

@@ -20,17 +20,38 @@ void visual_effect(t_creature *creature, chtype effect)
 
 void draw_cell(int y, int x, t_cell *cell)
 {
-	cell->last_draw = (t_coord){y, x};
-	wmove(map_win, cell->last_draw.y, cell->last_draw.x);
+	int vision = is_visible(get_player_cell(), cell);
+	if (vision == VISION_NONE)
+		return;
 
-	short color_id = pair_id(cell_fg(cell), cell_bg(cell));
+	char ch = cell_char(cell);
+	short color_id;
 	chtype highlight_color = cell->highlight & A_COLOR;
+	cell->last_draw = (t_coord){y, x};
+
+	switch (vision)
+	{
+		case VISION_GHOST:
+			if (strchr(CELL_GHOST_CHARS, ch) == NULL)
+				return;
+			color_id = pair_id(COLOR_CELL_GHOST, COLOR_BLACK, 0);
+			break;
+		case VISION_DIM:
+			color_id = pair_id(cell_fg(cell), cell_bg(cell), COLOR_DARKER | COLOR_GREYSCALE);
+			break;
+		case VISION_BRIGHT:
+			color_id = pair_id(cell_fg(cell), cell_bg(cell), COLOR_DARKER);
+			break;
+		default:
+			break;
+	}
 
 	wattron(map_win, cell->highlight);
 	if (highlight_color == 0)
 		wattron(map_win, COLOR_PAIR(color_id));
 
-	waddch(map_win, cell_char(cell));
+	wmove(map_win, y, x);
+	waddch(map_win, ch);
 
 	wattroff(map_win, cell->highlight);
 	if (highlight_color == 0)
@@ -54,24 +75,9 @@ void draw_area(void)
 	werase(map_win);
 	for (int i = 0; i < AREA(g_area); ++i)
 	{
-		t_cell *cell = &g_area->cells[i];
 		if (y_draw < y_max - 1 && y_draw >= 1 && x_draw < x_max - 1 && x_draw >= 1)
-		{
-			if (is_visible(&g_area->cells[player_index], cell))
-				draw_cell(y_draw, x_draw, cell);
-			else if (was_seen(cell) && cell->terrain->ch != '.')
-			{
-				t_cell ghost;
-				memset(&ghost, 0, sizeof(t_cell));
-				t_terrain t;
-				memset(&t, 0, sizeof(t_terrain));
-				t.ch = cell->terrain->ch;
-				t.color = color_id((t_color){1,1,1});
-				ghost.terrain = &t;
-				ghost.color = COLOR_BLACK;
-				draw_cell(y_draw, x_draw, &ghost);
-			}
-		}
+			draw_cell(y_draw, x_draw, get_cell(i));
+
 		x_draw++;
 		if ((i + 1) % g_area->width == 0)
 		{

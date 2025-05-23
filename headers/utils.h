@@ -30,6 +30,8 @@ t_node *copy_list(t_node *list);
 int list_len(t_node *list);
 t_node *get_node(t_node *list, int i);
 t_node *get_node_data(t_node *list, void *data);
+void list_sort(t_node *list, int (*compare)(t_node *a, t_node *b));
+int compare_distance_player(t_node *a, t_node *b);
 
 /* OTHER STUFF */
 int min(int a, int b);

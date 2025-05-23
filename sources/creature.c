@@ -10,11 +10,11 @@
 #include "item.h"
 #include "weapon.h"
 
-void reset_actions(t_creature *creature)
+int get_darkvision(t_creature *creature)
 {
-	creature->movement = 30;
-	creature->actions = 1;
-	creature->bonus = 1;
+	// calculates by race, class, items etc
+	(void) creature;
+	return 120 / CELL_SIZE; // how many feet are the cells
 }
 
 static int mod(int val)
@@ -107,6 +107,8 @@ void set_weapon(t_creature *creature, t_item *weapon)
 	creature->equipped.weapon = weapon;
 	if (has_property(weapon, "two-handed"))
 		set_off_hand(creature, weapon);
+	if (has_property(weapon, "versatile"))
+		set_off_hand(creature, weapon);
 }
 
 void loot_item(t_creature *looter, t_node **inventory, int i)
@@ -179,8 +181,7 @@ int can_wield_both(t_item *a, t_item *b)
 {
 	if (a == NULL || b == NULL)
 		return 1;
-	if (has_property(a, "light") || a == NULL)
-		if (has_property(b, "light") || b == NULL)
+	if (has_property(a, "light") && has_property(b, "light"))
 			return 1;
 	print_log("cant wield both");
 	return 0;
@@ -256,9 +257,6 @@ t_creature *new_creature(char ch, int area_level)
 	creature->max_health = 20;
 	creature->color = COLOR_WHITE;
 	creature->abilities = (t_abilities){8,8,8,8,8,8};
-	creature->movement = 30;
-	creature->actions = 1;
-	creature->bonus = 1;
 	switch (ch)
 	{
 		case 'g':

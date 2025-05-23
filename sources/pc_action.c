@@ -65,6 +65,7 @@ t_cell *scan(int flags)
 		print_log("Nothing to see here");
 		return NULL;
 	}
+	list_sort(list, &compare_distance_player);
 	t_node *ptr = list;
 
 	// highlight interactables with A_REVERSE

@@ -1,10 +1,11 @@
+#include "file_reader.h"
+#include "area.h"
+#include "globals.h"
+#include "interface.h"
+#include "color.h"
+#include "cell.h"
 #include <stdlib.h>
 #include <ncurses.h>
-#include "../headers/file_reader.h"
-#include "../headers/area.h"
-#include "../headers/globals.h"
-#include "../headers/interface.h"
-#include "../headers/color.h"
 
 int win_width(WINDOW *win)
 {
@@ -199,3 +200,31 @@ t_node *get_node_data(t_node *list, void *data)
 	return NULL;
 }
 
+static void node_swap_data(t_node *a, t_node *b)
+{
+	void *temp = a->data;
+	a->data = b->data;
+	b->data = temp;
+}
+
+int compare_distance_player(t_node *a, t_node *b)
+{
+	t_cell *player = get_player_cell();
+	return distance((t_cell *) a->data, player) > distance((t_cell *) b->data, player);
+}
+
+// bubble sort
+void list_sort(t_node *list, int (*compare)(t_node *a, t_node *b))
+{
+	int len = list_len(list);
+	for (int i = 0; i < len - 1; ++i)
+	{
+		t_node *node = list;
+		for (int j = 0; j < len - i - 1; ++j)
+		{
+			if (compare(node, node->next) == 1)
+				node_swap_data(node, node->next);
+			node = node->next;
+		}
+	}
+}

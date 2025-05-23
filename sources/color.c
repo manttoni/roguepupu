@@ -1,14 +1,50 @@
 #include "color.h"
 #include "utils.h"
 #include "globals.h"
+#include "interface.h"
 #include <ncurses.h>
 
-short pair_id(short fg, short bg)
+short modified_color(short id, float dr, float dg, float db)
+{
+	t_color color = convert(id);
+	color.red *= dr;
+	color.green *= dg;
+	color.blue *= db;
+	return color_id(color);
+}
+
+// returns a new id, doesnt overwrite anything
+short grey_color(short id)
+{
+	return modified_color(id, 0.299, 0.587, 0.114);
+}
+
+// returns id
+short dark_color(short id)
+{
+	return modified_color(id, DARK_FACTOR, DARK_FACTOR, DARK_FACTOR);
+}
+
+short pair_id(short fg, short bg, int mod)
 {
 	static int pairs[256];
 	static int next_free = NEXT_FREE;
-	fg = min(255, fg);
-	bg = min(255, bg);
+
+	/* makes the colors not so bright (even the lowest values are bright)
+	 * it has to modify the [0,1000] values inside ncurses
+	if (mod & COLOR_DARKER)
+	{
+		fg = dark_color(fg);
+		bg = dark_color(bg);
+	}
+	*/
+	// greyscale when target cell is outside darkvision range
+	if (mod & COLOR_GREYSCALE)
+	{
+		fg = grey_color(fg);
+		bg = grey_color(fg);
+	}
+
 	short pair_id = 256 * fg + bg;
 
 	if (pair_id >= COLOR_PAIRS)
@@ -21,8 +57,11 @@ short pair_id(short fg, short bg)
 	if (i == next_free) // was not initialized yet
 	{
 		init_pair(i, fg, bg);
+		print_log("Colors initialized: %d", i);
 		pairs[i] = pair_id;
 		next_free++;
+		if (next_free > 255)
+			next_free = NEXT_FREE; // start resetting colors except #defined
 	}
 	return i;
 }
@@ -45,20 +84,5 @@ t_color convert(short id)
 	int green = (id / 6) % 6;
 	int blue  = id % 6;
 	return (t_color){red, green, blue};
-}
-
-void change_color(short *id, int dred, int dgreen, int dblue)
-{
-	t_color color = convert(*id);
-	color.red += dred;
-	color.green += dgreen;
-	color.blue += dblue;
-	color.red = max(0, color.red);
-	color.green = max(0, color.green);
-	color.blue = max(0, color.blue);
-	color.red = min(5, color.red);
-	color.green = min(5, color.green);
-	color.blue = min(5, color.blue);
-	*id = color_id(color);
 }
 

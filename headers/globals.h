@@ -6,6 +6,8 @@
 
 typedef struct s_item t_item;
 
+#define CELL_SIZE 5
+
 #define QUIT_GAME 1
 #define END_TURN 2
 #define ERROR_JSON_PARSE 2
@@ -15,6 +17,7 @@ typedef struct s_item t_item;
 #define TERRAIN_DOOR "D"
 #define TERRAIN_INTERACTABLE (TERRAIN_CLOSED)
 #define TERRAIN_CONTAINER "CR"
+#define TERRAIN_WALLFLOOR "#."
 
 #define MECH_INTERACTABLE "LTS"
 #define MECH_CHARS "LTS"
@@ -26,17 +29,25 @@ typedef struct s_item t_item;
 #define ITEM_CHARS "WP"
 #define TERRAIN_CHARS "#.DCR"
 
-/* For scanning */
-#define SCAN_VISIBLE 1
-#define SCAN_NEIGHBOR 2
-#define SCAN_ENEMY 4
-#define SCAN_LOCKED 8
-#define SCAN_CLOSED 16
-#define SCAN_TRAPPED 32
-#define SCAN_ITEM 64
+#define CELL_GHOST_CHARS (TERRAIN_CHARS)
 
-#define FACTION_PLAYER 1
-#define FACTION_GOBLIN 2
+/* Vision related */
+#define VISION_NONE 0 // no line of sight and was never seen before
+#define VISION_GHOST 1 // no line of sight but was seen before
+#define VISION_DIM 2 // outside darkvision range
+#define VISION_BRIGHT 3 // inside darkvision range
+
+/* For scanning */
+#define SCAN_VISIBLE 1 << 0
+#define SCAN_NEIGHBOR 1 << 1
+#define SCAN_ENEMY 1 << 2
+#define SCAN_LOCKED 1 << 3
+#define SCAN_CLOSED 1 << 4
+#define SCAN_TRAPPED 1 << 5
+#define SCAN_ITEM 1 << 6
+
+#define FACTION_PLAYER 1 << 0
+#define FACTION_GOBLIN 2 << 1
 
 #define FACTION_ALL (FACTION_PLAYER | FACTION_GOBLIN)
 
@@ -50,10 +61,10 @@ typedef struct s_item t_item;
 #define RANGED_ATTACK (SCAN_VISIBLE | SCAN_ENEMY)
 
 /* Enemy "AI" */
-#define AI_IDLE 0
-#define AI_WANDER 1
-#define AI_PURSUE 2
-#define AI_FLEE 4
+#define AI_IDLE 1 << 0
+#define AI_WANDER 1 << 1
+#define AI_PURSUE 1 << 2
+#define AI_FLEE 1 << 3
 
 #define AI_CRAZY_GOBLIN (AI_WANDER | AI_FLEE | AI_PURSUE)
 
@@ -72,15 +83,17 @@ typedef struct s_item t_item;
 #define POTION_FILE "json/items/potions.json"
 #define ARMOR_FILE "json/items/armor.json"
 
-/* Highlights */
-#define HIGHLIGHT_REVERSE 1 // highlight stuff in scnning mode
-#define HIGHLIGHT_SELECTED 2 // selected highlighted thing
-
 /* Color pairs */
 #define COLOR_PAIR_RED 1
 #define NEXT_FREE 2
 
 /* Colors */
+#define COLOR_NORMAL 0
+#define COLOR_DARKER 1 << 0
+#define COLOR_GREYSCALE 1 << 1
+
+#define DARK_FACTOR 0.5
+
 #define COLOR_ID(r,g,b) (16 + 36 * r + 6 * g + b)
 #define COLOR_ITEM_COMMON (COLOR_ID(2,2,2))
 #define COLOR_ITEM_UNCOMMON (COLOR_ID(0,2,0))
@@ -88,21 +101,17 @@ typedef struct s_item t_item;
 #define COLOR_ITEM_VERY_RARE (COLOR_ID(2,0,0))
 #define COLOR_ITEM_LEGENDARY (COLOR_ID(1,2,3))
 
+#define COLOR_CAVE_WALL (COLOR_ID(1,2,1))
+#define COLOR_CAVE_FLOOR (COLOR_ID(1,2,2))
+#define COLOR_METAL_DOOR (COLOR_ID(3,1,1))
+#define COLOR_METAL_CHEST (COLOR_ID(3,1,1))
+
 #define COLOR_CREATURE_GOBLIN (COLOR_ID(0,1,0))
 
+#define COLOR_CELL_GHOST (COLOR_ID(1,1,1))
 
 /* Damage related */
 #define DAMAGE_FATAL 1
-#define DAMAGE_STUN 2
-
-/* Weapon properties */
-#define NONE 0
-#define LIGHT 1
-#define FINESSE 2
-#define TWO_HANDED 4
-#define THROWN 8
-#define VERSATILE 16
-#define RANGED 32
 
 /* Inventory stuff */
 #define INVENTORY_PLAYER 1

@@ -40,6 +40,7 @@ typedef enum
 	NONE
 }	e_cell_type;
 
+t_cell *get_cell(int i);
 e_cell_type top_entity(t_cell *cell);
 char cell_char(t_cell *cell);
 short cell_fg(t_cell *cell);

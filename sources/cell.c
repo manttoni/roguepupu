@@ -8,6 +8,13 @@
 #include <stdbool.h>
 #include <math.h>
 
+t_cell *get_cell(int i)
+{
+	if (i < 0 || i >= AREA(g_area))
+		return NULL;
+	return &g_area->cells[i];
+}
+
 short cell_fg(t_cell *cell)
 {
 	if (cell->creature != NULL)
@@ -132,7 +139,10 @@ int is_neighbor(t_cell *cell, t_cell *other)
 int is_visible(t_cell *eye, t_cell *view_cell)
 {
 	if (eye == view_cell)
-		return 1;
+		return VISION_BRIGHT;
+
+	int darkvision = get_darkvision(eye->creature);
+
 	int w = g_area->width, h = g_area->height;
 
 	int ei = eye - g_area->cells;
@@ -149,16 +159,28 @@ int is_visible(t_cell *eye, t_cell *view_cell)
 
 	while (1)
 	{
-		if (!(x == ex && y == ey)) {
+		if (!(x == ex && y == ey))
+		{
 			if (x < 0 || y < 0 || x >= w || y >= h)
-				return 0;
+			{
+				if (was_seen(view_cell))
+					return VISION_GHOST;
+				return VISION_NONE;
+			}
 
 			t_cell *cell = &g_area->cells[y * w + x];
 
 			if (x == vx && y == vy)
-				return 1; // Reached the target
-			if (cell->terrain && strchr("#D", cell->terrain->ch)) {
-				return 0; // Blocked
+			{
+				if (darkvision >= distance(eye, view_cell))
+					return VISION_BRIGHT;
+				return VISION_DIM;
+			}
+			if (cell->terrain && strchr("#D", cell->terrain->ch))
+			{
+				if (was_seen(view_cell))
+					return VISION_GHOST;
+				return VISION_NONE;
 			}
 		}
 
@@ -167,7 +189,7 @@ int is_visible(t_cell *eye, t_cell *view_cell)
 		if (e2 <= dx) { err += dx; y += sy; }
 	}
 
-	return 1; // Fallback, though unreachable
+	return VISION_GHOST; // Fallback, though unreachable
 }
 
 int was_seen(t_cell *cell)
@@ -184,10 +206,6 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 	cell.terrain = new_terrain(terrain, area_level);
 	if (cell.terrain == NULL)
 		cell.terrain = new_terrain('.', area_level);
-	if (terrain == '#')
-		cell.color = color_id((t_color){1,1,1});
-	else
-		cell.color = color_id((t_color){0,0,0});
 	cell.mech = new_mech(mech, area_level);
 	(void)item;
 	//cell.item = new_random_item(item, area_level);
@@ -201,6 +219,10 @@ t_cell new_cell(char terrain, char mech, char item, char creature, int area_leve
 			end_ncurses(1);
 		}
 	}
+	if (strchr(TERRAIN_WALLFLOOR, cell.terrain->ch))
+		cell.color = cell.terrain->color;
+	else
+		cell.color = color_id((t_color){0,0,0});
 
 	return cell;
 }

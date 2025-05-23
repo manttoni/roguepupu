@@ -40,7 +40,7 @@ int calculate_damage(t_creature *creature, t_item *weapon)
 	if (has_property(weapon, "versatile") && get_off_hand(creature) == NULL)
 		dice = strchr(dice, ';') + 1;
 	damage += throw_dice(dice);
-	return damage;
+	return max(1, damage);
 }
 
 t_item *new_weapon(char *weapon_name)

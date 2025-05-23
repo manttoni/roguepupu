@@ -32,9 +32,7 @@ void free_weapons(void)
 
 void free_globals(void)
 {
-	logger("freeing weapons");
 	free_weapons();
-	logger("weapons freed");
 }
 
 void free_mech(t_mech *mech)
