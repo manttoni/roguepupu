@@ -7,7 +7,6 @@ character sheet
 special attacks
 character creation
 
-parser error checks are not yet enough
 enemy wander ai is stupid
 enemy flee ai can do better
 enemy stalking ai

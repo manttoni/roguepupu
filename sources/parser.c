@@ -243,7 +243,7 @@ t_area *parse_area(char *raw)
 	area->height = cJSON_GetArraySize(terrain);
 	area->width = strlen(cJSON_GetArrayItem(terrain, 0)->valuestring);
 	area->cells = my_calloc(AREA(area), sizeof(*(area->cells)));
-	for (int i = 0; i < area->height; ++i)
+	for (size_t i = 0; i < area->height; ++i)
 	{
 		cJSON *terline = cJSON_GetArrayItem(terrain, i);
 		cJSON *mecline = cJSON_GetArrayItem(mech, i);
@@ -266,8 +266,15 @@ t_area *parse_area(char *raw)
 			logger("Parsing error");
 			end_ncurses(errno);
 		}
-		// error checking almost done. arrays might still be different sizes
-		for (int j = 0; j < area->width; ++j)
+		if (strlen(terline->valuestring) != area->width
+			|| strlen(mecline->valuestring) != area->width
+			|| strlen(iteline->valuestring) != area->width
+			|| strlen(creline->valuestring) != area->width)
+		{
+			logger("Area lines len inconsistent");
+			end_ncurses(errno);
+		}
+		for (size_t j = 0; j < area->width; ++j)
 			area->cells[j + i * area->width] = new_cell(ter[j], mec[j], ite[j], cre[j], area->level);
 	}
 

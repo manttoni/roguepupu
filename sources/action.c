@@ -34,7 +34,7 @@ int act_attack(t_creature *attacker, t_creature *defender)
 
 
 		// attack with offhand if it is same type as main weapon and creature is dual wielding
-		if (is_dual_wielding(attacker) && has_property(weapon, "ranged") == has_property(offhand, "ranged"))
+		if (is_dual_wielding(attacker) && has_property(weapon, "ranged") == has_property(offhand, "ranged") && defender->health > 0)
 		{
 			dmg = damage_roll(attacker, offhand);
 			atk = attack_roll(attacker, offhand);

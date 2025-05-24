@@ -15,7 +15,7 @@ t_cell *get_creature_cell(t_creature *creature)
 
 int get_creature_index(t_creature *creature)
 {
-	for (int i = 0; i < AREA(g_area); ++i)
+	for (size_t i = 0; i < AREA(g_area); ++i)
 	{
 		t_cell *cell = &g_area->cells[i];
 		if (creature == cell->creature)
@@ -26,7 +26,7 @@ int get_creature_index(t_creature *creature)
 
 int get_player_index(void)
 {
-	for (int i = 0; i < g_area->width * g_area->height; ++i)
+	for (size_t i = 0; i < g_area->width * g_area->height; ++i)
 	{
 		t_cell *c = &g_area->cells[i];
 		if (c->creature == NULL)
@@ -58,7 +58,7 @@ t_node *get_interactables(int flags)
 	t_cell *pc = &g_area->cells[pi];
 
 	t_node *list = NULL;
-	for (int i = 0; i < AREA(g_area); ++i)
+	for (size_t i = 0; i < AREA(g_area); ++i)
 	{
 		t_cell *cell = &g_area->cells[i];
 

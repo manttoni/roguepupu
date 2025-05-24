@@ -59,7 +59,7 @@ void free_cell(t_cell *cell)
 
 void free_area(t_area *area)
 {
-	for (int i = 0; i < AREA(area); ++i)
+	for (size_t i = 0; i < AREA(area); ++i)
 	{
 		free_cell(&area->cells[i]);
 	}

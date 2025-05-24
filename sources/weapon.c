@@ -77,6 +77,18 @@ t_item *new_weapon(char *weapon_name)
 	return NULL;
 }
 
+t_item *new_random_weapon(void)
+{
+	t_item_group *weapon_group = get_item_group("weapon");
+	t_item *weapons = weapon_group->array;
+	int count = weapon_group->count;
+
+	int random = rand() % count;
+	t_item *weapon = my_calloc(1, sizeof(t_item));
+	memmove(weapon, &weapons[random], sizeof(*weapon));
+	return weapon;
+}
+
 int has_property(t_item *item, char *property)
 {
 	if (item == NULL)

@@ -1,6 +1,8 @@
 #ifndef AREA_H
 #define AREA_H
 
+#include <stdlib.h>
+
 typedef struct s_cell t_cell;
 typedef struct s_node t_node;
 typedef struct s_creature t_creature;
@@ -9,8 +11,8 @@ typedef struct s_area
 {
 	int		level;
     char    *name;
-	int		height;
-	int		width;
+	size_t	height;
+	size_t	width;
 	t_cell	*cells;
 }	t_area;
 

@@ -8,9 +8,9 @@
 #include <stdbool.h>
 #include <math.h>
 
-t_cell *get_cell(int i)
+t_cell *get_cell(size_t i)
 {
-	if (i < 0 || i >= AREA(g_area))
+	if (i >= AREA(g_area))
 		return NULL;
 	return &g_area->cells[i];
 }
@@ -236,11 +236,11 @@ t_cell *random_neighbor(t_cell *cell)
 t_cell *neighbor(e_direction dir, t_cell *cell)
 {
 	t_area *area = g_area;
-	int index = cell - g_area->cells;
+	size_t index = cell - g_area->cells;
 	switch(dir)
 	{
 		case UP:
-			if (index - area->width < 0)
+			if (index < area->width)
 				return NULL;
 			return &area->cells[index - area->width];
 		case DOWN:
@@ -256,11 +256,11 @@ t_cell *neighbor(e_direction dir, t_cell *cell)
 				return NULL;
 			return &area->cells[index + 1];
 		case UPLEFT:
-			if (index - area->width - 1 < 0 || index % area->width == 0)
+			if (index < area->width + 1 || index % area->width == 0)
 				return NULL;
 			return &area->cells[index - area->width - 1];
 		case UPRIGHT:
-			if (index - area->width + 1 < 0 || (index + 1) % area->width == 0)
+			if (index < area->width - 1 || (index + 1) % area->width == 0)
 				return NULL;
 			return &area->cells[index - area->width + 1];
 		case DOWNLEFT:

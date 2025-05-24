@@ -73,7 +73,7 @@ void draw_area(void)
 	int x_draw = x_center - x_player;
 
 	werase(map_win);
-	for (int i = 0; i < AREA(g_area); ++i)
+	for (size_t i = 0; i < AREA(g_area); ++i)
 	{
 		if (y_draw < y_max - 1 && y_draw >= 1 && x_draw < x_max - 1 && x_draw >= 1)
 			draw_cell(y_draw, x_draw, get_cell(i));

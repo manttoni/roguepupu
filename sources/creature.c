@@ -295,6 +295,7 @@ t_creature *new_creature(char ch, int area_level)
 	{
 		case 'g':
 			creature = new_goblin("crazy goblin");
+			add_item(creature, new_random_weapon());
 			break;
 		case '@':
 			creature = my_calloc(1, sizeof(t_creature));
