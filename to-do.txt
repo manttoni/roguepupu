@@ -23,6 +23,5 @@ perishin on top of remains will remove earlier remains
 	solution a: spawn in next cell
 	solution b: combine their loot
 	solution smop: multi stuff
-equipment.h
 abilities.h
 dice_rolls.h or something
