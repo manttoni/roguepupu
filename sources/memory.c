@@ -7,6 +7,7 @@
 #include "area.h"
 #include "game.h"
 #include "globals.h"
+#include "equipment.h"
 
 void free_globals(void)
 {

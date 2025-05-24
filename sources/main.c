@@ -39,6 +39,7 @@ void init_items(void)
 	{
 		g_item_groups[i].category = groups[i];
 		g_item_groups[i].array = parse_items(read_file(files[i]), groups[i], &g_item_groups[i].count);
+		logger("%s loaded and there are %d", groups[i], g_item_groups[i].count);
 	}
 }
 

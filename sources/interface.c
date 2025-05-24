@@ -6,6 +6,7 @@
 #include "draw.h"
 #include "globals.h"
 #include "utils.h"
+#include "equipment.h"
 #include <ncurses.h>
 
 void print_legend(void)

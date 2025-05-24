@@ -57,20 +57,11 @@ int wismod(t_creature *creature);
 int chamod(t_creature *creature);
 void loot_item(t_creature *looter, t_node **inventory, int i);
 void use_item(t_creature *user, t_node **inventory, int i);
-void equip(t_creature *creature, t_item *item);
-int has_ranged_weapon(t_creature *creature);
 void add_item(t_creature *creature, t_item *item);
 int take_damage(t_creature *creature, t_roll damage_roll, char *damage_type);
 void perish(t_creature *creature, char *damage_type);
 t_creature *new_creature(char ch, int area_level);
 int move_creature(t_cell *dest, t_cell *src);
 int is_enemy(t_creature *creature);
-t_item *get_weapon(t_creature *creature);
-void set_weapon(t_creature *creature, t_item *weapon);
-t_item *get_offhand(t_creature *creature);
-void set_offhand(t_creature *creature, t_item *weapon);
-int get_main_damage(t_creature *creature);
-int is_dual_wielding(t_creature *creature);
-int is_equipped(t_creature *creature, t_item *item);
 
 #endif

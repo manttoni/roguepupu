@@ -4,6 +4,7 @@
 #include "creature.h"
 #include "interface.h"
 #include "dice.h"
+#include "equipment.h"
 
 void print_attack_roll(char *hit_miss, t_creature *attacker, t_creature *defender, t_item *weapon, t_roll roll)
 {

@@ -8,6 +8,7 @@
 #include "interface.h"
 #include "windows.h"
 #include "weapon.h"
+#include "equipment.h"
 
 void pc_disarm_trap(t_creature *pc, t_cell *trapped_cell)
 {

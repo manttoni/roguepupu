@@ -4,6 +4,7 @@
 #include "dice.h"
 #include "utils.h"
 #include "globals.h"
+#include "equipment.h"
 
 char *get_damage_type(t_item *weapon)
 {
@@ -94,11 +95,12 @@ int has_property(t_item *item, char *property)
 	if (item == NULL)
 		return 0;
 	char **ptr;
+	// only weapons have properties, later armor will also have
 	if (is_weapon(item))
 		ptr = item->data.weapon_data.properties;
 	else
 		return 0;
-	while (*ptr != NULL)
+	while (ptr != NULL && *ptr != NULL)
 	{
 		if (strcmp(property, *ptr) == 0)
 			return 1;
