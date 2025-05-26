@@ -55,10 +55,10 @@ t_item *get_weapon(t_creature *creature)
 void set_weapon(t_creature *creature, t_item *weapon)
 {
 	creature->equipped.weapon = weapon;
-	if (has_property(weapon, "two-handed"))
+	if (has_property(weapon, "two-handed") || has_property(weapon, "versatile"))
+	{
 		set_offhand(creature, weapon);
-	if (has_property(weapon, "versatile"))
-		set_offhand(creature, weapon);
+	}
 }
 
 void unequip(t_creature *creature, t_item *item)
@@ -78,12 +78,17 @@ void equip(t_creature *creature, t_item *item)
 	if (is_weapon(item))
 	{
 		if (get_weapon(creature) == NULL && is_valid_weaponset(item, get_offhand(creature)))
+		{
 			set_weapon(creature, item);
+		}
 		else if (get_offhand(creature) == NULL && is_valid_weaponset(get_weapon(creature), item))
+		{
 			set_offhand(creature, item);
+		}
 		else
 		{
-			print_log("Can't equip %I. Unequip something first.", item);
+			if (creature->ch == '@')
+				print_log("Can't equip %I. Unequip something first.", item);
 			return;
 		}
 	}

@@ -11,6 +11,6 @@ typedef struct s_mech
 }	t_mech;
 
 char *mech_string(t_mech *mech);
-t_mech *new_mech(char ch, int area_level);
+t_mech *new_mech(char ch);
 
 #endif

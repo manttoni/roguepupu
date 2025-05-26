@@ -10,8 +10,6 @@
 #include "interface.h"
 #include <unistd.h>
 
-const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
-
 void flee(t_cell *cell)
 {
 	t_creature *npc = cell->creature;
@@ -23,7 +21,7 @@ void flee(t_cell *cell)
 	e_direction best_flee = 0;
 	for (int i = 0; i < 8; ++i)
 	{
-		t_cell *n = neighbor(dirs[i], cell);
+		t_cell *n = neighbor(g_dirs[i], cell);
 		if (n == NULL || is_blocked(n))
 			continue;
 		if (distance(n, player_cell) >= distance(neighbor(best_flee, cell), player_cell))
@@ -44,7 +42,7 @@ void pursue(t_cell *cell)
 	e_direction second_best = 0;
 	for (int i = 0; i < 8; ++i)
 	{
-		t_cell *n = neighbor(dirs[i], cell);
+		t_cell *n = neighbor(g_dirs[i], cell);
 		if (n == NULL)
 			continue;
 		if (distance(n, player_cell) <= distance(neighbor(best_pursue, cell), player_cell))
@@ -55,17 +53,17 @@ void pursue(t_cell *cell)
 	}
 	if (act_move(best_pursue, cell) == 0)
 		if (act_move(second_best, cell) == 0)
-			act_move(dirs[rand() % 8], cell);
+			act_move(g_dirs[rand() % 8], cell);
 }
 
 void wander(t_cell *cell)
 {
-	while (act_move(dirs[rand() % 8], cell) == 0);
+	while (act_move(g_dirs[rand() % 8], cell) == 0);
 }
 
 int npc_act(void)
 {
-	t_node *enemies = get_interactables(SCAN_ENEMY);
+	t_node *enemies = get_entities(SCAN_ENEMY);
 	t_node *ptr = enemies;
 	t_cell *player_cell = get_player_cell();
 	while (enemies != NULL)
@@ -88,11 +86,7 @@ int npc_act(void)
 			if (enemy->ai & AI_WANDER)
 				wander(cell);
 		}
-		else if (is_visible(cell, player_cell) == VISION_DIM)
-		{
-//			if (enemy->ai & AI_STALK) do some stalking
-		}
-		else if (is_visible(cell, player_cell) == VISION_BRIGHT)
+		else if (is_visible(cell, player_cell) == VISION_FULL)
 		{
 			if (enemy->ai & AI_FLEE && enemy->health < enemy->max_health / 4)
 				flee(cell);

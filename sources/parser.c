@@ -21,6 +21,34 @@ t_potion_data parse_potion_data(cJSON *potion)
 	return data;
 }
 
+char **parse_string_array(cJSON *array)
+{
+	if (!cJSON_IsArray(array))
+	{
+		logger("not an array");
+		end_ncurses(ERROR_JSON_PARSE);
+	}
+
+	size_t len = cJSON_GetArraySize(array);
+	if (len == 0)
+		return NULL;
+	char **parsed = my_calloc(len + 1, sizeof(*parsed));
+	cJSON *element = NULL;
+	size_t i = 0;
+	cJSON_ArrayForEach(element, array)
+	{
+		if (!cJSON_IsString(element))
+		{
+			logger("not a string");
+			end_ncurses(ERROR_JSON_PARSE);
+		}
+
+		parsed[i] = my_strdup(element->valuestring);
+		i++;
+	}
+	return parsed;
+}
+
 t_weapon_data parse_weapon_data(cJSON *weapon)
 {
 	t_weapon_data data;
@@ -37,32 +65,7 @@ t_weapon_data parse_weapon_data(cJSON *weapon)
 	data.proficiency = my_strdup(proficiency->valuestring);
 
 	cJSON *properties = cJSON_GetObjectItemCaseSensitive(weapon, "properties");
-	if (!cJSON_IsArray(properties))
-	{
-		logger("Properties in weapon parser is not an array");
-		end_ncurses(ERROR_JSON_PARSE);
-	}
-	int len = cJSON_GetArraySize(properties);
-	if (len > 0)
-		data.properties = my_calloc(len + 1, sizeof(char*)); // NULL terminate
-	else
-	{
-		data.properties = NULL;
-		return data;
-	}
-
-	cJSON *prop = NULL;
-	int i = 0;
-	cJSON_ArrayForEach(prop, properties)
-	{
-		if (!cJSON_IsString(prop))
-		{
-			logger("Weapon property not a string");
-			end_ncurses(ERROR_JSON_PARSE);
-		}
-		data.properties[i] = my_strdup(prop->valuestring);
-		i++;
-	}
+	data.properties = parse_string_array(properties);
 	return data;
 }
 
@@ -210,8 +213,62 @@ t_item *parse_items(char *raw, char *type, int *count)
 	return array;
 }
 
+t_fungus *parse_fungi(char *raw, int *count)
+{
+	cJSON *json = cJSON_Parse(raw);
+	if (json == NULL)
+	{
+		logger("cJSON_Parse fail (fungus)");
+		end_ncurses(errno);
+	}
+
+	cJSON *fungi = cJSON_GetObjectItemCaseSensitive(json, "fungus");
+	if (!cJSON_IsArray(fungi))
+	{
+		logger("cJSON: not an array (fungus)");
+		end_ncurses(ERROR_JSON_PARSE);
+	}
+	int n = cJSON_GetArraySize(fungi);
+	t_fungus *array = my_calloc(n, sizeof(*array));
+	*count = n;
+
+	cJSON *fungus = NULL;
+	int i = 0;
+	cJSON_ArrayForEach(fungus, fungi)
+	{
+		cJSON *name = cJSON_GetObjectItemCaseSensitive(fungus, "name");
+		cJSON *color = cJSON_GetObjectItemCaseSensitive(fungus, "color");
+		cJSON *glow = cJSON_GetObjectItemCaseSensitive(fungus, "glow");
+		cJSON *properties = cJSON_GetObjectItemCaseSensitive(fungus, "properties");
+		cJSON *ch = cJSON_GetObjectItemCaseSensitive(fungus, "ch");
+		cJSON *rarity = cJSON_GetObjectItemCaseSensitive(fungus, "rarity");
+		cJSON *spawn = cJSON_GetObjectItemCaseSensitive(fungus, "spawn");
+
+		if (!cJSON_IsString(name) || !cJSON_IsString(color) || !cJSON_IsNumber(glow) || !cJSON_IsString(ch) || !cJSON_IsNumber(rarity))
+		{
+			logger("json error in parse_fungi");
+			end_ncurses(ERROR_JSON_PARSE);
+		}
+
+		array[i].name = my_strdup(name->valuestring);
+		array[i].color = resolve_color_macro(color->valuestring);
+		array[i].glow = glow->valueint;
+		array[i].properties = parse_string_array(properties);
+		array[i].ch = ch->valuestring[0];
+		array[i].rarity = rarity->valueint;
+		array[i].spawn = parse_string_array(spawn);
+
+		i++;
+	}
+	cJSON_Delete(json);
+	free(raw);
+	logger("%d fungi parsed", n);
+	return array;
+}
+
 t_area *parse_area(char *raw)
 {
+	logger("Parsing area");
 	cJSON *json = cJSON_Parse(raw);
 	if (json == NULL)
 	{
@@ -224,6 +281,7 @@ t_area *parse_area(char *raw)
 	cJSON *mech = cJSON_GetObjectItemCaseSensitive(json, "mech");
 	cJSON *items = cJSON_GetObjectItemCaseSensitive(json, "items");
 	cJSON *creatures = cJSON_GetObjectItemCaseSensitive(json, "creatures");
+	cJSON *moisture = cJSON_GetObjectItemCaseSensitive(json, "moisture");
 
 	t_area *area = my_calloc(1, sizeof(*area));
 	if (!cJSON_IsString(name)
@@ -232,12 +290,14 @@ t_area *parse_area(char *raw)
 		|| !cJSON_IsArray(terrain)
 		|| !cJSON_IsArray(mech)
 		|| !cJSON_IsArray(items)
-		|| !cJSON_IsArray(creatures))
+		|| !cJSON_IsArray(creatures)
+		|| !cJSON_IsNumber(moisture))
 	{
 		logger("Parsing error");
 		end_ncurses(errno);
 	}
 
+	area->moisture = moisture->valueint;
 	area->name = strdup(name->valuestring);
 	area->level = level->valueint;
 	area->height = cJSON_GetArraySize(terrain);
@@ -275,11 +335,12 @@ t_area *parse_area(char *raw)
 			end_ncurses(errno);
 		}
 		for (size_t j = 0; j < area->width; ++j)
-			area->cells[j + i * area->width] = new_cell(ter[j], mec[j], ite[j], cre[j], area->level);
+			area->cells[j + i * area->width] = new_cell(ter[j], mec[j], ite[j], cre[j], area);
 	}
 
 	cJSON_Delete(json);
 
 	free(raw);
+	logger("Area parsed");
 	return area;
 }

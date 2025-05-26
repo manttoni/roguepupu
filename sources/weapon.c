@@ -68,7 +68,7 @@ t_item *new_weapon(char *weapon_name)
 	{
 		if (strcmp(weapons[i].name, weapon_name) == 0)
 		{
-			t_item *weapon = my_calloc(1, sizeof(t_item));
+			t_item *weapon = my_calloc(1, sizeof(*weapon));
 			memmove(weapon, &weapons[i], sizeof(*weapon));
 			return weapon;
 		}
@@ -85,7 +85,7 @@ t_item *new_random_weapon(void)
 	int count = weapon_group->count;
 
 	int random = rand() % count;
-	t_item *weapon = my_calloc(1, sizeof(t_item));
+	t_item *weapon = my_calloc(1, sizeof(*weapon));
 	memmove(weapon, &weapons[random], sizeof(*weapon));
 	return weapon;
 }

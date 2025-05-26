@@ -8,6 +8,11 @@ typedef struct s_color
 	short blue;
 }	t_color;
 
+short color_sum(short a, short b);
+short color_avg(short a, short b);
+short modified_color_scalar(short color, int dr, int dg, int db);
+short modified_color(short color, float dr, float dg, float db);
+int resolve_color_macro(const char *color);
 short greyscale(short fg, short bg);
 short get_red(short color);
 short pair_id(short id1, short id2, int mod);

@@ -22,7 +22,7 @@ int get_darkvision(t_creature *creature)
 {
 	// calculates by race, class, items etc
 	(void) creature;
-	return 120 / CELL_SIZE; // how many feet are the cells
+	return 60 / CELL_SIZE; // how many feet are the cells
 }
 
 static int mod(int val)
@@ -173,46 +173,52 @@ void randomize_abilities(t_abilities *a)
 
 void set_max_health(t_creature *creature)
 {
-	t_roll hit_die = throw("1d8", 0, 0);
-	int health = hit_die.result + conmod(creature);
+	t_roll hit_die;
+	int health = 0;
+	for (int i = 0; i < creature->level; ++i)
+	{
+		hit_die = throw("1d8", conmod(creature), 0);
+		health = max(1, hit_die.result);
+	}
 	creature->health = health;
 	creature->max_health = health;
 }
 
-t_creature *new_goblin(char *goblin_name)
+t_creature *new_creature_type(char *type, char *name)
 {
-	t_creature_group *goblin_group = get_creature_group("goblin");
-	t_creature *goblins = goblin_group->array;
-	int count = goblin_group->count;
+	t_creature_group *group = get_creature_group(type);
+	t_creature *array = group->array;
+	int count = group->count;
 
 	for (int i = 0; i < count; ++i)
 	{
-		if (strcmp(goblins[i].name, goblin_name) == 0)
+		if (strcmp(array[i].name, name) == 0)
 		{
-			t_creature *goblin = my_calloc(1, sizeof(t_creature));
-			memmove(goblin, &goblins[i], sizeof(*goblin));
-			return goblin;
+			t_creature *creature = my_calloc(1, sizeof(*creature));
+			memmove(creature, &array[i], sizeof(*creature));
+			return creature;
 		}
 	}
-	logger("Goblin not found: %s", goblin_name);
+
+	logger("Creature not found: %s : %s", type, name);
 	end_ncurses(1);
 	return NULL;
 }
 
-t_creature *new_creature(char ch, int area_level)
+t_creature *new_creature(char ch, t_area *area)
 {
-	(void)area_level;
 	if (strchr(CREATURE_CHARS, ch) == NULL)
 		return NULL;
 	t_creature *creature;
 	switch (ch)
 	{
 		case 'g':
-			creature = new_goblin("crazy goblin");
+			creature = new_creature_type("goblin", "crazy goblin");
+			creature->level = area->level;
 			add_item(creature, new_random_weapon());
 			break;
 		case '@':
-			creature = my_calloc(1, sizeof(t_creature));
+			creature = my_calloc(1, sizeof(*creature));
 			creature->name = "Rabdin";
 			add_item(creature, new_weapon("light crossbow"));
 			add_item(creature, new_weapon("dagger"));
@@ -221,6 +227,7 @@ t_creature *new_creature(char ch, int area_level)
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
 			randomize_abilities(&creature->abilities);
+			creature->level = 1;
 			break;
 		default:
 			break;

@@ -36,6 +36,7 @@ t_node *get_node_data(t_node *list, void *data);
 void list_sort(t_node *list, int (*compare)(t_node *a, t_node *b));
 int compare_distance_player(t_node *a, t_node *b);
 int compare_item_name(t_node *a, t_node *b);
+void free_list_data(t_node *list);
 
 /* OTHER STUFF */
 int resolve_macro(char *str);

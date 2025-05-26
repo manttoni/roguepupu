@@ -1,27 +1,16 @@
+status effects
 proficiency
 creature skills (athletics etc)
-status effects
 traps
+actions and bonus action
 character class
 character sheet
 special attacks
-character creation
 
-printing names should toupper first letters of word
-enemy wander ai is stupid
-enemy flee ai can do better
-enemy stalking ai
+vegetation feature <- high prio
+enemy ai remake
 color remake
-random_neighbor can do better
-healing message blue color contrast
-vegetation feature
-actions and bonus action
 diagonal movement and vision when moving around corner
-enemy death check in npc_act looks explosive if they die during their own turn
-	but it will get a remake at some point anyway after non hostile npc latest
-perishin on top of remains will remove earlier remains
-	solution a: spawn in next cell
-	solution b: combine their loot
-	solution smop: multi stuff
 abilities.h
 dice_rolls.h or something
+perishin on top of remains will remove earlier remains <- mark as low prio

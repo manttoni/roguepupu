@@ -13,12 +13,11 @@ t_item *new_potion(char *potion_name)
 	{
 		if (strcmp(potions[i].name, potion_name) == 0)
 		{
-			t_item *potion = my_calloc(1, sizeof(t_item));
+			t_item *potion = my_calloc(1, sizeof(*potion));
 			memmove(potion, &potions[i], sizeof(*potion));
 			return potion;
 		}
 	}
 	logger("Potion not found: %s", potion_name);
 	end_ncurses(1);
-	return NULL;
 }

@@ -36,11 +36,8 @@ void draw_cell(int y, int x, t_cell *cell)
 				return;
 			color_id = pair_id(COLOR_CELL_GHOST, COLOR_BLACK, 0);
 			break;
-		case VISION_DIM:
-			color_id = pair_id(cell_fg(cell), cell_bg(cell), COLOR_DARKER | COLOR_GREYSCALE);
-			break;
-		case VISION_BRIGHT:
-			color_id = pair_id(cell_fg(cell), cell_bg(cell), COLOR_DARKER);
+		case VISION_FULL:
+			color_id = pair_id(cell_fg(cell), cell_bg(cell), COLOR_NORMAL);
 			break;
 		default:
 			break;

@@ -13,6 +13,6 @@ typedef struct s_terrain
 }	t_terrain;
 
 char *terrain_string(t_terrain *terrain);
-t_terrain *new_terrain(char ch, int area_level);
+t_terrain *new_terrain(char ch, t_area *area);
 
 #endif

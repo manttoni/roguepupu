@@ -61,7 +61,7 @@ t_cell *select_cell(t_node *list)
 t_cell *scan(int flags)
 {
 	// get list
-	t_node *list = get_interactables(flags);
+	t_node *list = get_entities(flags);
 	if (list == NULL)
 	{
 		print_log("Nothing to see here");
@@ -104,7 +104,7 @@ static void pc_open_door(t_cell *door_cell)
 {
 	print_log("%C opens %T", get_player(), door_cell->terrain);
 	free_terrain(door_cell->terrain);
-	door_cell->terrain = new_terrain('.', 0);
+	door_cell->terrain = new_terrain('.', g_area);
 }
 
 int pc_open(void)

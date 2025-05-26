@@ -17,7 +17,6 @@ int resolve_macro(char *str)
 		return FACTION_GOBLIN;
 	logger("Unknown macro");
 	end_ncurses(1);
-	exit(1);
 }
 
 // returns pointer to first occurrence of a char in set
@@ -65,13 +64,12 @@ int max(int a, int b)
 
 void *my_calloc(size_t count, size_t size)
 {
-	void *mem = malloc(count * size);
+	void *mem = calloc(count, size);
 	if (mem == NULL)
 	{
-		logger("Malloc failed, size: %zu", size);
+		logger("Allocation failed, count=%zu, size: %zu", count, size);
 		end_ncurses(errno);
 	}
-	memset(mem, 0, size);
 	return mem;
 }
 
@@ -260,5 +258,14 @@ void list_sort(t_node *list, int (*compare)(t_node *a, t_node *b))
 				node_swap_data(node, node->next);
 			node = node->next;
 		}
+	}
+}
+
+void free_list_data(t_node *list)
+{
+	while (list != NULL)
+	{
+		free(list->data);
+		list = list->next;
 	}
 }

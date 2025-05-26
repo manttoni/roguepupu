@@ -10,6 +10,7 @@ typedef struct s_creature t_creature;
 typedef struct s_area
 {
 	int		level;
+	int		moisture;
     char    *name;
 	size_t	height;
 	size_t	width;
@@ -19,7 +20,7 @@ typedef struct s_area
 t_cell *get_player_cell(void);
 t_creature *get_player(void);
 int	get_player_index(void);
-t_node *get_interactables(int flags);
+t_node *get_entities(int flags);
 int get_creature_index(t_creature *creature);
 t_cell *get_creature_cell(t_creature *creature);
 

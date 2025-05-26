@@ -100,8 +100,18 @@ void print_win(WINDOW *win, char *format, va_list args)
 					}
 					break;
 				}
+				case 'F':
+				{
+					t_fungus *fungus = va_arg(args, t_fungus*);
+					if (fungus != NULL)
+					{
+						color = fungus->color;
+						name = fungus->name;
+					}
+					break;
+				}
 			}
-			if (strchr("CITM", ptr[1]))
+			if (strchr("CITMF", ptr[1]))
 			{
 				short pi = pair_id(color, COLOR_BLACK, COLOR_NORMAL);
 				wattron(win, COLOR_PAIR(pi));
@@ -249,18 +259,20 @@ void print_selected(t_cell *cell)
 	wmove(examine_win, 1, 2);
 	switch (top_entity(cell))
 	{
-		case CREATURE:
+		case ENTITY_CREATURE:
 			print_win_va(examine_win, "%C", cell->creature);
 			break;
-		case ITEM:
+		case ENTITY_ITEM:
 			print_win_va(examine_win, "%I", cell->item);
 			break;
-		case TERRAIN:
+		case ENTITY_TERRAIN:
 			print_win_va(examine_win, "%T", cell->terrain);
 			break;
-		case MECH:
+		case ENTITY_MECH:
 			print_win_va(examine_win, "%M", cell->mech);
 			break;
+		case ENTITY_FUNGUS:
+			print_win_va(examine_win, "%F", cell->fungus);
 		default:
 			break;
 	}
@@ -319,7 +331,7 @@ void update_stat_win(void)
 {
 	werase(stat_win);
 	wmove(stat_win, 1, 0);
-	t_node *enemies = get_interactables(SCAN_ENEMY | SCAN_VISIBLE);
+	t_node *enemies = get_entities(SCAN_ENEMY | SCAN_VISIBLE);
 	t_node *ptr = enemies;
 
 	print_creature_status(get_player());

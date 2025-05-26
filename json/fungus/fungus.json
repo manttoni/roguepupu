@@ -1,0 +1,95 @@
+{
+	"fungus":
+	[
+	  {
+		"name": "zurkhwood",
+		"color": "brown",
+		"glow": 0,
+		"properties": ["lumber", "flammable"],
+		"ch": "$",
+		"rarity": 1,
+		"spawn": ["space"]
+	  },
+	  {
+		"name": "bluecap",
+		"color": "pale blue",
+		"glow": 0,
+		"properties": ["edible"],
+		"ch": "%",
+		"rarity": 1,
+		"spawn": ["water"]
+	  },
+	  {
+		"name": "nightlight fungus",
+		"color": "soft blue",
+		"glow": 4,
+		"properties": ["light_source"],
+		"ch": "*",
+		"rarity": 2,
+		"spawn": ["wall"]
+	  },
+	  {
+		"name": "noctiscap",
+		"color": "deep purple",
+		"glow": 3,
+		"properties": ["alchemical", "poisonous"],
+		"ch": "!",
+		"rarity": 4,
+		"spawn": ["shadow", "magic", "cursed"]
+	  },
+	  {
+		"name": "torchstalk",
+		"color": "orange",
+		"glow": 3,
+		"properties": ["light_source", "explosive"],
+		"ch": "+",
+		"rarity": 3,
+		"spawn": ["walls"]
+	  },
+	  {
+		"name": "waterorb",
+		"color": "clear",
+		"glow": 1,
+		"properties": ["hallucinogenic", "poisonous"],
+		"ch": "o",
+		"rarity": 3,
+		"spawn": ["water"]
+	  },
+	  {
+		"name": "nightmare fungus",
+		"color": "black with red glow",
+		"glow": 5,
+		"properties": ["hallucinogenic", "poisonous"],
+		"ch": "\\",
+		"rarity": 5,
+		"spawn": ["cursed", "corpse"]
+	  },
+	  {
+		"name": "festercap",
+		"color": "white or grey",
+		"glow": 1,
+		"properties": ["poisonous", "spores"],
+		"ch": "-",
+		"rarity": 3,
+		"spawn": ["corpse", "wall"]
+	  },
+	  {
+		"name": "bloodcap",
+		"color": "crimson red",
+		"glow": 0,
+		"properties": ["dye", "alchemical"],
+		"ch": ",",
+		"rarity": 2,
+		"spawn": ["plants", "corpse"]
+	  },
+	  {
+		"name": "darkmantle moss",
+		"color": "pale green",
+		"glow": 2,
+		"properties": ["dye"],
+		"ch": "_",
+		"rarity": 2,
+		"spawn": ["wall", "water"]
+	  }
+	]
+}

@@ -1,7 +1,9 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Wextra -Werror -Wstrict-prototypes -fanalyzer -g -fsanitize=undefined -fsanitize=leak -Iheaders
-LFLAGS := -lncursesw -lm
+CFLAGS := -Wall -Wextra -Werror -Wstrict-prototypes \
+		  -fanalyzer -g -fsanitize=undefined -fsanitize=leak \
+		  -Iheaders
+LDFLAGS := -lncursesw -lm
 
 # Directories
 SRC_DIR := sources
@@ -19,7 +21,7 @@ all: $(BIN)
 
 # Link object files into binary
 $(BIN): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 	@mkdir -p logs
 
 # Compile source files into object files

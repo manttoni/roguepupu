@@ -8,6 +8,13 @@
 #include <stdbool.h>
 #include <math.h>
 
+const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
+
+int has_blocking_terrain(t_cell *cell)
+{
+	return strchr(TERRAIN_BLOCKING, cell->terrain->ch) != NULL;
+}
+
 t_cell *get_cell(size_t i)
 {
 	if (i >= AREA(g_area))
@@ -17,32 +24,92 @@ t_cell *get_cell(size_t i)
 
 short cell_fg(t_cell *cell)
 {
-	if (cell->creature != NULL)
-		return cell->creature->color;
-	if (cell->item != NULL)
-		return cell->item->color;
-	if (cell->terrain != NULL)
-		return cell->terrain->color;
-	return COLOR_WHITE;
+	switch (top_entity(cell))
+	{
+		case ENTITY_CREATURE:
+			return cell->creature->color;
+		case ENTITY_FUNGUS:
+			return cell->fungus->color;
+		case ENTITY_ITEM:
+			return cell->item->color;
+		case ENTITY_TERRAIN:
+			return cell->terrain->color;
+		case ENTITY_MECH:
+			return cell->mech->color;
+		default:
+			return COLOR_WHITE;
+	}
 }
 
 short cell_bg(t_cell *cell)
 {
-	return cell->color;
+	if (get_illumination(cell) == 0)
+		return cell->color;
+
+	short glow = cell_fg(cell);
+	t_color gc = convert(glow);
+	// make the color as dim as possible
+	while (gc.red > 1 || gc.green > 1 || gc.blue > 1)
+	{
+		glow = modified_color_scalar(glow, -1, -1, -1);
+		gc = convert(glow);
+	}
+
+	return color_sum(cell->color, glow);
 }
+/*
+short cell_bg(t_cell *cell)
+{
+	short bgcolor = cell->color;
+	t_node *lights = get_entities(SCAN_LIGHT);
+	t_node *ptr = lights;
+	short added_color = color_id((t_color){0,0,0});
+	int added_color_count = 0;
+	while (ptr != NULL)
+	{
+		t_cell *light = (t_cell *) ptr->data;
+		double d = distance(light, cell);
+		int illumination = get_illumination(light);
+		if (d > illumination || is_visible(light, cell) != VISION_FULL)
+		{
+			ptr = ptr->next;
+			continue;
+		}
+		float light_str = (float)(illumination - d) * illumination;
+		light_str /= 2;
+		short c = modified_color_scalar(cell_fg(light), -d, -d, -d);
+
+		added_color = color_sum(added_color, c);
+		added_color_count++;
+
+		ptr = ptr->next;
+	}
+	list_clear(&lights);
+	if (added_color_count == 0)
+		return bgcolor;
+	float m = 1.f / added_color_count;
+	added_color = modified_color(added_color, m, m, m);
+
+	return color_avg(bgcolor, added_color);
+}*/
 
 char cell_char(t_cell *cell)
 {
-	// priority order is creature > item > terrain > mech
-	if (cell->creature != NULL)
-		return cell->creature->ch;
-	if (cell->item != NULL)
-		return cell->item->ch;
-	if (cell->terrain != NULL)
-		return cell->terrain->ch;
-	if (cell->mech != NULL)
-		return cell->mech->ch;
-	return '?';
+	switch (top_entity(cell))
+	{
+		case ENTITY_CREATURE:
+			return cell->creature->ch;
+		case ENTITY_FUNGUS:
+			return cell->fungus->ch;
+		case ENTITY_ITEM:
+			return cell->item->ch;
+		case ENTITY_TERRAIN:
+			return cell->terrain->ch;
+		case ENTITY_MECH:
+			return cell->mech->ch;
+		default:
+			return '?';
+	}
 }
 
 /* Real distance between cells */
@@ -57,22 +124,28 @@ double distance(t_cell *a, t_cell *b)
 	return hypot(x_a - x_b, y_a - y_b);
 }
 
-e_cell_type top_entity(t_cell *cell)
+e_entity top_entity(t_cell *cell)
 {
+
+	if (cell->terrain != NULL && strchr(TERRAIN_BLOCKING, cell->terrain->ch) != NULL)
+		return ENTITY_TERRAIN;
+
 	if (cell->creature != NULL)
-		return CREATURE;
+		return ENTITY_CREATURE;
+	if (cell->fungus != NULL)
+		return ENTITY_FUNGUS;
 	if (cell->item != NULL)
-		return ITEM;
+		return ENTITY_ITEM;
 	if (cell->terrain != NULL)
-		return TERRAIN;
+		return ENTITY_TERRAIN;
 	if (cell->mech != NULL)
-		return MECH;
-	return NONE;
+		return ENTITY_MECH;
+	return ENTITY_NONE;
 }
 
 int is_trapped(t_cell *cell)
 {
-	if (cell->mech != NULL && cell->mech->trap > 1)
+	if (cell->mech != NULL && cell->mech->trap > 0)
 		return 1;
 	return 0;
 }
@@ -91,7 +164,7 @@ int is_closed(t_cell *cell)
 
 int is_blocked(t_cell *cell)
 {
-	if (strchr(TERRAIN_BLOCKED, cell->terrain->ch) != NULL)
+	if (strchr(TERRAIN_BLOCKING, cell->terrain->ch) != NULL)
 		return 1;
 	if (cell->creature != NULL)
 		return 1;
@@ -101,6 +174,8 @@ int is_blocked(t_cell *cell)
 int is_interactable(t_cell *cell)
 {
 	if (cell->creature != NULL)
+		return 1;
+	if (cell->fungus != NULL)
 		return 1;
 	if (cell->item != NULL)
 		return 1;
@@ -135,13 +210,47 @@ int is_neighbor(t_cell *cell, t_cell *other)
 	return 0;
 }
 
+/* Gets the illumination coming from a cell */
+int get_illumination(t_cell *cell)
+{
+	switch (top_entity(cell))
+	{
+		case ENTITY_FUNGUS:
+			return cell->fungus->glow;
+		default:
+			return 0;
+	}
+}
+
+int is_illuminated(t_cell *cell)
+{
+	// get all light sources in area
+	t_node *lights = get_entities(SCAN_LIGHT);
+	t_node *ptr = lights;
+	while (ptr != NULL)
+	{
+		t_cell *light = (t_cell *) ptr->data;
+		if (distance(light, cell) <= get_illumination(light) && is_visible(light, cell) == VISION_FULL)
+		{
+			list_clear(&lights);
+			return 1;
+		}
+		ptr = ptr->next;
+	}
+	list_clear(&lights);
+	return 0;
+}
+
 // can eye see cell? using Bresenhams algorithm
 int is_visible(t_cell *eye, t_cell *view_cell)
 {
-	if (eye == view_cell)
-		return VISION_BRIGHT;
-
 	int darkvision = get_darkvision(eye->creature);
+	if (eye == view_cell)
+	{
+		if (darkvision > 0 || is_illuminated(view_cell))
+			return VISION_FULL;
+		return VISION_NONE;
+	}
 
 	int w = g_area->width, h = g_area->height;
 
@@ -172,9 +281,11 @@ int is_visible(t_cell *eye, t_cell *view_cell)
 
 			if (x == vx && y == vy)
 			{
-				if (darkvision >= distance(eye, view_cell))
-					return VISION_BRIGHT;
-				return VISION_DIM;
+				if (darkvision >= distance(eye, view_cell) || is_illuminated(view_cell))
+					return VISION_FULL;
+				if (was_seen(view_cell))
+					return VISION_GHOST;
+				return VISION_NONE;
 			}
 			if (cell->terrain && strchr("#D", cell->terrain->ch))
 			{
@@ -197,21 +308,20 @@ int was_seen(t_cell *cell)
 	return cell->last_draw.y > -1;
 }
 
-t_cell new_cell(char terrain, char mech, char item, char creature, int area_level)
+t_cell new_cell(char terrain, char mech, char item, char creature, t_area *area)
 {
+	(void)item;
 	t_cell cell;
-	memset(&cell, 0, sizeof(t_cell));
+	memset(&cell, 0, sizeof(cell));
 	cell.last_draw = (t_coord){-1,-1};
 
-	cell.terrain = new_terrain(terrain, area_level);
-	if (cell.terrain == NULL)
-		cell.terrain = new_terrain('.', area_level);
-	cell.mech = new_mech(mech, area_level);
-	(void)item;
-	//cell.item = new_random_item(item, area_level);
-	cell.creature = new_creature(creature, area_level);
+	cell.terrain = new_terrain(terrain, area);
+	if (cell.terrain == NULL) // if there was something in terrain layer that doesnt belong there
+		cell.terrain = new_terrain('.', area);
 
-	if (strchr(TERRAIN_BLOCKED, terrain) != NULL)
+	cell.mech = new_mech(mech);
+	cell.creature = new_creature(creature, area);
+	if (strchr(TERRAIN_BLOCKING, terrain) != NULL)
 	{
 		if (cell.item != NULL || cell.creature != NULL)
 		{

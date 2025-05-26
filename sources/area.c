@@ -52,7 +52,7 @@ t_creature *get_player(void)
 	return c->creature;
 }
 
-t_node *get_interactables(int flags)
+t_node *get_entities(int flags)
 {
 	int pi = get_player_index();
 	t_cell *pc = &g_area->cells[pi];
@@ -81,12 +81,14 @@ t_node *get_interactables(int flags)
 			continue;
 
 		// cell checks
-		if (flags & SCAN_VISIBLE && is_visible(pc, cell) <= VISION_GHOST)
+		if (flags & SCAN_VISIBLE && is_visible(pc, cell) != VISION_FULL)
 			continue;
 		if (flags & SCAN_NEIGHBOR && !is_neighbor(pc, cell))
 			continue;
-		if (!is_interactable(cell))
+		if (flags & SCAN_LIGHT && get_illumination(cell) == 0)
 			continue;
+		//if (!is_interactable(cell))
+		//	continue;
 
 		add_node_last(&list, new_node(cell));
 	}

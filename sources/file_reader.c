@@ -19,7 +19,6 @@ void logger(const char *format, ...)
 	if (logfile == NULL)
 	{
 		end_ncurses(errno);
-		exit(errno);
 	}
 
 	va_list args;
@@ -38,8 +37,7 @@ char *read_file(char *file)
 		end_ncurses(errno);
 	size_t len = lseek(fd, 0, SEEK_END);
 	lseek(fd, 0, SEEK_SET);
-	char *buf = my_calloc(len + 1, sizeof(char));
-	memset(buf, 0, len + 1);
+	char *buf = my_calloc(len + 1, sizeof(*buf));
 	if (read(fd, buf, len) < 0)
 		end_ncurses(errno);
 	close(fd);

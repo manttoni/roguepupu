@@ -4,6 +4,85 @@
 #include "interface.h"
 #include <ncurses.h>
 
+short color_sum(short a, short b)
+{
+	t_color ac = convert(a);
+	t_color bc = convert(b);
+
+	t_color c;
+	c.red = ac.red + bc.red;
+	c.green = ac.green + bc.green;
+	c.blue = ac.blue + bc.blue;
+	return color_id(c);
+}
+
+short color_avg(short a, short b)
+{
+	short sum = color_sum(a, b);
+	t_color c = convert(sum);
+	c.red /= 2;
+	c.green /= 2;
+	c.blue /= 2;
+	return color_id(c);
+}
+
+int resolve_color_macro(const char* color)
+{
+    if (strcmp(color, "brown") == 0) {
+        return COLOR_BROWN;
+    } else if (strcmp(color, "pale blue") == 0) {
+        return COLOR_PALE_BLUE;
+    } else if (strcmp(color, "reddish orange") == 0) {
+        return COLOR_ORANGE_RED;
+    } else if (strcmp(color, "grayish brown") == 0) {
+        return COLOR_GRAY_BROWN;
+    } else if (strcmp(color, "off-white") == 0) {
+        return COLOR_OFF_WHITE;
+    } else if (strcmp(color, "soft blue") == 0) {
+        return COLOR_SOFT_BLUE;
+    } else if (strcmp(color, "deep purple") == 0) {
+        return COLOR_PURPLE;
+    } else if (strcmp(color, "orange") == 0) {
+        return COLOR_ORANGE;
+    } else if (strcmp(color, "clear") == 0) {
+        return COLOR_CLEAR;
+    } else if (strcmp(color, "black with red glow") == 0) {
+        return COLOR_BLACK_RED;
+    } else if (strcmp(color, "white or grey") == 0) {
+        return COLOR_WHITE_GREY;
+    } else if (strcmp(color, "crimson red") == 0) {
+        return COLOR_CRIMSON;
+    } else if (strcmp(color, "pale green") == 0) {
+        return COLOR_PALE_GREEN;
+    } else {
+        return COLOR_DEFAULT;
+    }
+}
+
+short modified_color_scalar(short id, int dr, int dg, int db)
+{
+	t_color color = convert(id);
+	int red = color.red + dr;
+	int green = color.green + dg;
+	int blue = color.blue + db;
+
+	if (red < 0)
+		red = 0;
+	if (green < 0)
+		green = 0;
+	if (blue < 0)
+		blue = 0;
+
+	if (red > 5)
+		red = 5;
+	if (green > 5)
+		green = 5;
+	if (blue > 5)
+		blue = 5;
+
+	return color_id((t_color){red, green, blue});
+}
+
 short modified_color(short id, float dr, float dg, float db)
 {
 	t_color color = convert(id);
@@ -30,14 +109,6 @@ short pair_id(short fg, short bg, int mod)
 	static int pairs[256];
 	static int next_free = NEXT_FREE;
 
-	/* makes the colors not so bright (even the lowest values are bright)
-	 * it has to modify the [0,1000] values inside ncurses
-	if (mod & COLOR_DARKER)
-	{
-		fg = dark_color(fg);
-		bg = dark_color(bg);
-	}
-	*/
 	// greyscale when target cell is outside darkvision range
 	if (mod & COLOR_GREYSCALE)
 	{
