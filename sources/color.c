@@ -4,6 +4,17 @@
 #include "interface.h"
 #include <ncurses.h>
 
+short color_max(short id)
+{
+	t_color color = convert(id);
+	while (color.red > 1 || color.green > 1 || color.blue > 1)
+	{
+		id = modified_color_scalar(id, -1, -1, -1);
+		color = convert(id);
+	}
+	return color_id(color);
+}
+
 short color_sum(short a, short b)
 {
 	t_color ac = convert(a);

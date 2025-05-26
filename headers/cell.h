@@ -68,7 +68,7 @@ int has_npc(t_cell *cell);
 int has_enemy(t_cell *cell, t_creature *of);
 
 int was_seen(t_cell *cell);
-int is_visible(t_cell *eye, t_cell *target);
+int visibility(t_cell *eye, t_cell *target);
 int is_neighbor(t_cell *cell, t_cell *other);
 
 #endif

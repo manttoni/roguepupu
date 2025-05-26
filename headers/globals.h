@@ -30,6 +30,7 @@ typedef struct s_item t_item;
 /* char */
 
 #define FUNGUS_CHARS "$*%!+o\\-,_"
+#define FUNGUS_BLOCKING "$"
 
 #define TERRAIN_BLOCKING "DC#"
 #define TERRAIN_CLOSED "DCR"

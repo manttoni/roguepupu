@@ -81,7 +81,7 @@ t_node *get_entities(int flags)
 			continue;
 
 		// cell checks
-		if (flags & SCAN_VISIBLE && is_visible(pc, cell) != VISION_FULL)
+		if (flags & SCAN_VISIBLE && visibility(pc, cell) != VISION_FULL)
 			continue;
 		if (flags & SCAN_NEIGHBOR && !is_neighbor(pc, cell))
 			continue;

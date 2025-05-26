@@ -43,6 +43,28 @@ short cell_fg(t_cell *cell)
 
 short cell_bg(t_cell *cell)
 {
+	t_node *lights = get_entities(SCAN_LIGHT);
+	t_node *ptr = lights;
+	short bg = cell->color;
+
+	while (ptr != NULL)
+	{
+		t_cell *light = (t_cell *) ptr->data;
+		if (distance(light, cell) > get_illumination(light) || visibility(light, cell) != VISION_FULL)
+		{
+			ptr = ptr->next;
+			continue;
+		}
+		short strongest_color = color_max(cell_fg(light)); // for glowing nightlight fungus this will return 0,0,1
+		bg = color_sum(bg, strongest_color);
+		ptr = ptr->next;
+	}
+	list_clear(&lights);
+	return bg;
+}
+/*
+short cell_bg(t_cell *cell)
+{
 	if (get_illumination(cell) == 0)
 		return cell->color;
 
@@ -57,42 +79,7 @@ short cell_bg(t_cell *cell)
 
 	return color_sum(cell->color, glow);
 }
-/*
-short cell_bg(t_cell *cell)
-{
-	short bgcolor = cell->color;
-	t_node *lights = get_entities(SCAN_LIGHT);
-	t_node *ptr = lights;
-	short added_color = color_id((t_color){0,0,0});
-	int added_color_count = 0;
-	while (ptr != NULL)
-	{
-		t_cell *light = (t_cell *) ptr->data;
-		double d = distance(light, cell);
-		int illumination = get_illumination(light);
-		if (d > illumination || is_visible(light, cell) != VISION_FULL)
-		{
-			ptr = ptr->next;
-			continue;
-		}
-		float light_str = (float)(illumination - d) * illumination;
-		light_str /= 2;
-		short c = modified_color_scalar(cell_fg(light), -d, -d, -d);
-
-		added_color = color_sum(added_color, c);
-		added_color_count++;
-
-		ptr = ptr->next;
-	}
-	list_clear(&lights);
-	if (added_color_count == 0)
-		return bgcolor;
-	float m = 1.f / added_color_count;
-	added_color = modified_color(added_color, m, m, m);
-
-	return color_avg(bgcolor, added_color);
-}*/
-
+*/
 char cell_char(t_cell *cell)
 {
 	switch (top_entity(cell))
@@ -127,7 +114,8 @@ double distance(t_cell *a, t_cell *b)
 e_entity top_entity(t_cell *cell)
 {
 
-	if (cell->terrain != NULL && strchr(TERRAIN_BLOCKING, cell->terrain->ch) != NULL)
+	if (cell->terrain != NULL &&
+		(strchr(TERRAIN_BLOCKING, cell->terrain->ch) != NULL || strchr(TERRAIN_CONTAINER, cell->terrain->ch)))
 		return ENTITY_TERRAIN;
 
 	if (cell->creature != NULL)
@@ -165,6 +153,8 @@ int is_closed(t_cell *cell)
 int is_blocked(t_cell *cell)
 {
 	if (strchr(TERRAIN_BLOCKING, cell->terrain->ch) != NULL)
+		return 1;
+	if (cell->fungus != NULL && strchr(FUNGUS_BLOCKING, cell->fungus->ch) != NULL)
 		return 1;
 	if (cell->creature != NULL)
 		return 1;
@@ -230,7 +220,7 @@ int is_illuminated(t_cell *cell)
 	while (ptr != NULL)
 	{
 		t_cell *light = (t_cell *) ptr->data;
-		if (distance(light, cell) <= get_illumination(light) && is_visible(light, cell) == VISION_FULL)
+		if (distance(light, cell) <= get_illumination(light) && visibility(light, cell) == VISION_FULL)
 		{
 			list_clear(&lights);
 			return 1;
@@ -241,8 +231,7 @@ int is_illuminated(t_cell *cell)
 	return 0;
 }
 
-// can eye see cell? using Bresenhams algorithm
-int is_visible(t_cell *eye, t_cell *view_cell)
+int visibility(t_cell *eye, t_cell *view_cell)
 {
 	int darkvision = get_darkvision(eye->creature);
 	if (eye == view_cell)
@@ -287,7 +276,8 @@ int is_visible(t_cell *eye, t_cell *view_cell)
 					return VISION_GHOST;
 				return VISION_NONE;
 			}
-			if (cell->terrain && strchr("#D", cell->terrain->ch))
+			if ((cell->terrain != NULL && strchr("#D", cell->terrain->ch))
+				|| (cell->fungus != NULL && strchr("$", cell->fungus->ch)))
 			{
 				if (was_seen(view_cell))
 					return VISION_GHOST;

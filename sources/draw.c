@@ -20,7 +20,7 @@ void visual_effect(t_creature *creature, chtype effect)
 
 void draw_cell(int y, int x, t_cell *cell)
 {
-	int vision = is_visible(get_player_cell(), cell);
+	int vision = visibility(get_player_cell(), cell);
 	if (vision == VISION_NONE)
 		return;
 
