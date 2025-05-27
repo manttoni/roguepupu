@@ -80,7 +80,7 @@ static void interact_harvest_fungus(t_cell *interactable)
 {
 	t_fungus *fungus = interactable->fungus;
 	print_log("%C harvests %F", get_player(), fungus);
-	add_item(get_player(), new_harvest(fungus));
+	add_item(get_player(), new_item("reagent", fungus->name));
 	free(fungus);
 	interactable->fungus = NULL;
 }
@@ -102,8 +102,7 @@ static void interact_open_door(t_cell *interactable)
 		return;
 	}
 	print_log("%C opens %T", get_player(), door);
-	free(door);
-	interactable->terrain = new_terrain('.', g_area);
+	interactable->terrain->ch = CHAR_FLOOR;
 }
 
 static void interact_open_container(t_cell *interactable)
@@ -118,17 +117,16 @@ static void interact_open_container(t_cell *interactable)
 	open_inventory(&container->loot, INVENTORY_LOOT);
 	if (container->loot != NULL)
 		return;
-	free(container);
-	interactable->terrain = new_terrain('.', g_area);
+	interactable->terrain->ch = CHAR_FLOOR;
 }
 
-static void interact_unlock(t_cell *interactable)
+/*static void interact_unlock(t_cell *interactable)
 {
 	t_mech *lock = interactable->mech;
 	print_log("%C unlocks %T", get_player(), interactable->terrain);
 	free(lock);
 	interactable->mech = NULL;
-}
+}*/
 
 void pc_interact(void)
 {
@@ -155,15 +153,15 @@ void pc_interact(void)
 			interact_pick_up(interactable);
 			break;
 		case ENTITY_TERRAIN:
-			if (ch == 'D')
+			if (ch == CHAR_DOOR)
 				interact_open_door(interactable);
 			else if (strchr(TERRAIN_CONTAINER, ch) != NULL)
 				interact_open_container(interactable);
 			break;
-		case ENTITY_MECH:
+		/*case ENTITY_MECH:
 			if (ch == 'L')
 				interact_unlock(interactable);
-			/*else if (is_trap(ch))
+			else if (is_trap(ch))
 				interact_disarm_trap(interactable);*/
 			break;
 		default:

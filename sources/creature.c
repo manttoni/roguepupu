@@ -114,15 +114,10 @@ void add_item(t_creature *creature, t_item *item)
 			equip(creature, item);
 }
 
-int is_enemy(t_creature *creature)
-{
-	return creature != NULL && strchr(ENEMY_CHARS, creature->ch) != NULL;
-}
-
 void perish(t_creature *creature, char *damage_type)
 {
 	print_log("%C perishes (%s)", creature, damage_type);
-	if (creature->ch == '@')
+	if (creature->ch == CHAR_PLAYER)
 	{
 		wmove(stat_win, 1, 0);
 		print_creature_status(creature);
@@ -200,7 +195,7 @@ void set_max_health(t_creature *creature)
 	creature->max_health = health;
 }
 
-t_creature *new_creature_type(char *type, char *name)
+t_creature *new_creature(char *type, char *name)
 {
 	t_creature_group *group = get_creature_group(type);
 	t_creature *array = group->array;
@@ -221,7 +216,7 @@ t_creature *new_creature_type(char *type, char *name)
 	return NULL;
 }
 
-t_creature *new_creature(char ch, t_area *area)
+t_creature *spawn_creature(char ch, t_area *area)
 {
 	if (strchr(CREATURE_CHARS, ch) == NULL)
 		return NULL;
@@ -229,11 +224,11 @@ t_creature *new_creature(char ch, t_area *area)
 	switch (ch)
 	{
 		case 'g':
-			creature = new_creature_type("goblin", "crazy goblin");
+			creature = new_creature("goblin", "crazy goblin");
 			creature->level = area->level;
 			add_item(creature, new_random_weapon());
 			break;
-		case '@':
+		case CHAR_PLAYER:
 			creature = my_calloc(1, sizeof(*creature));
 			creature->name = "Rabdin";
 			add_item(creature, new_weapon("light crossbow"));

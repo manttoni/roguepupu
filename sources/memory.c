@@ -77,6 +77,11 @@ void free_g_items(void)
 				free(pdata.effect);
 				free(pdata.duration);
 			}
+			else if (strcmp(item->type, "reagent") == 0)
+			{
+				t_reagent_data rdata = data.reagent_data;
+				free_array(rdata.properties);
+			}
 			logger("item data freed");
 			free(item->name);
 			free(item->rarity);
@@ -92,11 +97,8 @@ void free_g_items(void)
 
 void free_globals(void)
 {
-	logger("Freeing global items");
 	free_g_items();
-	logger("Freeing global creatures");
 	free_g_creatures();
-	logger("Freeing global fungi");
 	free_g_fungi();
 }
 

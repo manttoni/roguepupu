@@ -33,8 +33,8 @@ e_direction g_dirs[] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRI
 
 void init_items(void)
 {
-	char *groups[] = {"weapon", "potion"};
-	char *files[] = {WEAPON_FILE, POTION_FILE};
+	char *groups[] = {"weapon", "potion", "reagent"};
+	char *files[] = {WEAPON_FILE, POTION_FILE, REAGENT_FILE};
 
 	g_item_group_count = sizeof(groups) / sizeof(char *);
 	g_item_groups = my_calloc(g_item_group_count, sizeof(*g_item_groups));

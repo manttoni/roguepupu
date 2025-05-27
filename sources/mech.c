@@ -3,7 +3,8 @@
 #include "globals.h"
 #include <stdlib.h>
 
-t_mech *new_mech(char ch)
+/*
+t_mech *spawn_mech(char ch)
 {
 	if (strchr(MECH_CHARS, ch) == NULL)
 		return NULL;
@@ -16,4 +17,4 @@ t_mech *new_mech(char ch)
 	mech->name = "Foreign contraption";
 	mech->color = COLOR_WHITE;
 	return mech;
-}
+}*/

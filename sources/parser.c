@@ -5,22 +5,6 @@
 #include <string.h>
 #include <errno.h>
 
-t_potion_data parse_potion_data(cJSON *potion)
-{
-	t_potion_data data;
-	cJSON *effect = cJSON_GetObjectItemCaseSensitive(potion, "effect");
-	cJSON *duration = cJSON_GetObjectItemCaseSensitive(potion, "duration");
-	if (!cJSON_IsString(effect) || !cJSON_IsString(duration))
-	{
-		logger("Potion data parsing error");
-		end_ncurses(ERROR_JSON_PARSE);
-	}
-
-	data.effect = strdup(effect->valuestring);
-	data.duration = strdup(duration->valuestring);
-	return data;
-}
-
 char **parse_string_array(cJSON *array)
 {
 	if (!cJSON_IsArray(array))
@@ -47,6 +31,37 @@ char **parse_string_array(cJSON *array)
 		i++;
 	}
 	return parsed;
+}
+
+t_reagent_data parse_reagent_data(cJSON *reagent)
+{
+	t_reagent_data data;
+
+	cJSON *properties = cJSON_GetObjectItemCaseSensitive(reagent, "properties");
+	if (!cJSON_IsArray(properties))
+	{
+		logger("reagent properties not an array");
+		end_ncurses(1);
+	}
+
+	data.properties = parse_string_array(properties);
+	return data;
+}
+
+t_potion_data parse_potion_data(cJSON *potion)
+{
+	t_potion_data data;
+	cJSON *effect = cJSON_GetObjectItemCaseSensitive(potion, "effect");
+	cJSON *duration = cJSON_GetObjectItemCaseSensitive(potion, "duration");
+	if (!cJSON_IsString(effect) || !cJSON_IsString(duration))
+	{
+		logger("Potion data parsing error");
+		end_ncurses(ERROR_JSON_PARSE);
+	}
+
+	data.effect = strdup(effect->valuestring);
+	data.duration = strdup(duration->valuestring);
+	return data;
 }
 
 t_weapon_data parse_weapon_data(cJSON *weapon)
@@ -198,7 +213,6 @@ t_item *parse_items(char *raw, char *type, int *count)
 
 		array[i].name = my_strdup(name->valuestring);
 		array[i].rarity = my_strdup(rarity->valuestring);
-		array[i].ch = toupper(type[0]);
 		array[i].type = type;
 		array[i].color = get_color(array[i].rarity);
 
@@ -206,6 +220,8 @@ t_item *parse_items(char *raw, char *type, int *count)
 			array[i].data.weapon_data = parse_weapon_data(item);
 		else if(strcmp("potion", type) == 0)
 			array[i].data.potion_data = parse_potion_data(item);
+		else if(strcmp("reagent", type) == 0)
+			array[i].data.reagent_data = parse_reagent_data(item);
 		i++;
 	}
 	cJSON_Delete(json);

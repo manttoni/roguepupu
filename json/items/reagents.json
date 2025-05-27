@@ -1,0 +1,20 @@
+{
+	"reagent":
+	[
+	  {
+		"name": "zurkhwood",
+		"properties": ["lumber", "flammable"],
+		"rarity": "common"
+	  },
+	  {
+		"name": "bluecap",
+		"properties": ["edible"],
+		"rarity": "common"
+	  },
+	  {
+		"name": "nightlight fungus",
+		"properties": ["light_source"],
+		"rarity": "uncommon"
+	  }
+	]
+}

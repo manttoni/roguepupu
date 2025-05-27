@@ -75,7 +75,7 @@ int npc_act(void)
 		{
 			short color = cell->creature->color;
 			free_terrain(cell->terrain);
-			cell->terrain = new_terrain('R', 0);
+			cell->terrain = spawn_terrain(CHAR_LOOT, 0);
 			cell->terrain->color = color;
 			cell->terrain->loot = copy_list(cell->creature->inventory);
 			free_creature(cell->creature);

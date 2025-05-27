@@ -78,7 +78,7 @@ char cell_char(t_cell *cell)
 		case ENTITY_MECH:
 			return cell->mech->ch;
 		default:
-			return '?';
+			return CHAR_UNKNOWN;
 	}
 }
 
@@ -155,14 +155,9 @@ int is_interactable(t_cell *cell)
 		return 1;
 	if (cell->terrain != NULL && strchr(TERRAIN_INTERACTABLE, cell->terrain->ch) != NULL)
 		return 1;
-	if (cell->mech != NULL && strchr(MECH_INTERACTABLE, cell->mech->ch) != NULL)
-		return 1;
+	//if (cell->mech != NULL && strchr(MECH_INTERACTABLE, cell->mech->ch) != NULL)
+	//	return 1;
 	return 0;
-}
-
-int has_item(t_cell *cell)
-{
-	return cell->item != NULL;
 }
 
 int is_neighbor(t_cell *cell, t_cell *other)
@@ -220,6 +215,11 @@ int is_illuminated(t_cell *cell)
 	return 0;
 }
 
+int blocks_vision(t_cell *cell)
+{
+	return strchr(CHAR_BLOCK_VISION, cell_char(cell)) != NULL;
+}
+
 int visibility(t_cell *eye, t_cell *view_cell)
 {
 	int darkvision = get_darkvision(eye->creature);
@@ -265,8 +265,7 @@ int visibility(t_cell *eye, t_cell *view_cell)
 					return VISION_GHOST;
 				return VISION_NONE;
 			}
-			if ((cell->terrain != NULL && strchr("#D", cell->terrain->ch))
-				|| (cell->fungus != NULL && strchr("$", cell->fungus->ch)))
+			if (blocks_vision(cell))
 			{
 				if (was_seen(view_cell))
 					return VISION_GHOST;
@@ -290,28 +289,14 @@ int was_seen(t_cell *cell)
 t_cell new_cell(char terrain, char mech, char item, char creature, t_area *area)
 {
 	(void)item;
+	(void)mech;
 	t_cell cell;
 	memset(&cell, 0, sizeof(cell));
+	cell.color = MY_COLOR_BLACK;
 	cell.last_draw = (t_coord){-1,-1};
 
-	cell.terrain = new_terrain(terrain, area);
-	if (cell.terrain == NULL) // if there was something in terrain layer that doesnt belong there
-		cell.terrain = new_terrain('.', area);
-
-	cell.mech = new_mech(mech);
-	cell.creature = new_creature(creature, area);
-	if (strchr(TERRAIN_BLOCKING, terrain) != NULL)
-	{
-		if (cell.item != NULL || cell.creature != NULL)
-		{
-			logger("Item or creature spawned in bad place");
-			end_ncurses(1);
-		}
-	}
-	if (strchr("#", cell.terrain->ch))
-		cell.color = cell.terrain->color;
-	else
-		cell.color = color_id((t_color){0,0,0});
+	cell.terrain = spawn_terrain(terrain, area);
+	cell.creature = spawn_creature(creature, area);
 
 	return cell;
 }

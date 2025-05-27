@@ -1,9 +1,10 @@
 #ifndef ITEM_DATA_H
 #define ITEM_DATA_H
 
-typedef struct s_fungus_data
+typedef struct s_reagent_data
 {
-}	t_fungus_data;
+	char	**properties;
+}	t_reagent_data;
 
 typedef struct s_potion_data
 {

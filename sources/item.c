@@ -5,15 +5,23 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
-t_item *new_harvest(t_fungus *fungus)
+t_item *new_item(char *category, char *name)
 {
-	t_item *harvest = my_calloc(1, sizeof(*harvest));
-	harvest->name = fungus->name;
-	harvest->type = "fungus";
-	harvest->rarity = fungus->rarity;
-	harvest->ch = 'F';
-	harvest->color = fungus->color;
-	return harvest;
+	t_item_group *group = get_item_group(category);
+	t_item *array = group->array;
+	size_t count = group->count;
+
+	for (size_t i = 0; i < count; ++i)
+	{
+		if (strcmp(array[i].name, name) == 0)
+		{
+			t_item *item = my_calloc(1, sizeof(*item));
+			memmove(item, &array[i], sizeof(*item));
+			return item;
+		}
+	}
+	logger("Item not found: %s : %s", category, name);
+	end_ncurses(1);
 }
 
 int is_equipment(t_item *item)

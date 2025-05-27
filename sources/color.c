@@ -39,35 +39,13 @@ short color_avg(short a, short b)
 
 int resolve_color_macro(const char* color)
 {
-    if (strcmp(color, "brown") == 0) {
-        return COLOR_BROWN;
-    } else if (strcmp(color, "pale blue") == 0) {
-        return COLOR_PALE_BLUE;
-    } else if (strcmp(color, "reddish orange") == 0) {
-        return COLOR_ORANGE_RED;
-    } else if (strcmp(color, "grayish brown") == 0) {
-        return COLOR_GRAY_BROWN;
-    } else if (strcmp(color, "off-white") == 0) {
-        return COLOR_OFF_WHITE;
-    } else if (strcmp(color, "soft blue") == 0) {
-        return COLOR_SOFT_BLUE;
-    } else if (strcmp(color, "deep purple") == 0) {
-        return COLOR_PURPLE;
-    } else if (strcmp(color, "orange") == 0) {
-        return COLOR_ORANGE;
-    } else if (strcmp(color, "clear") == 0) {
-        return COLOR_CLEAR;
-    } else if (strcmp(color, "black with red glow") == 0) {
-        return COLOR_BLACK_RED;
-    } else if (strcmp(color, "white or grey") == 0) {
-        return COLOR_WHITE_GREY;
-    } else if (strcmp(color, "crimson red") == 0) {
-        return COLOR_CRIMSON;
-    } else if (strcmp(color, "pale green") == 0) {
-        return COLOR_PALE_GREEN;
-    } else {
-        return COLOR_DEFAULT;
-    }
+	if (strcmp(color, "brown") == 0)
+		return MY_COLOR_BROWN;
+	else if (strcmp(color, "pale blue") == 0)
+		return MY_COLOR_PALE_BLUE;
+	else if (strcmp(color, "soft blue") == 0)
+		return MY_COLOR_SOFT_BLUE;
+	return MY_COLOR_BLACK;
 }
 
 short modified_color_scalar(short id, int dr, int dg, int db)

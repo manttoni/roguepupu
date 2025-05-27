@@ -37,6 +37,7 @@ void use_item(t_creature *user, t_node **inventory, int i);
 void add_item(t_creature *creature, t_item *item);
 int take_damage(t_creature *creature, t_roll damage_roll, char *damage_type);
 void perish(t_creature *creature, char *damage_type);
-t_creature *new_creature(char ch, t_area *area);
+t_creature *new_creature(char *type, char *name);
+t_creature *spawn_creature(char ch, t_area *area);
 
 #endif

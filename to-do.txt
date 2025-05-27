@@ -1,16 +1,13 @@
+actions and bonus action
 status effects
 proficiency
 creature skills (athletics etc)
 traps
-actions and bonus action
 character class
 character sheet
 special attacks
-
-vegetation feature <- high prio
-enemy ai remake
+crafting
 color remake
 diagonal movement and vision when moving around corner
-abilities.h
 dice_rolls.h or something
 perishin on top of remains will remove earlier remains <- mark as low prio

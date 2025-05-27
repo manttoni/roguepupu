@@ -68,7 +68,7 @@ t_node *get_entities(t_creature *creature, int flags)
 		if (creature != NULL && is_neighbor(cell, get_creature_cell(creature)))
 			cell_flags |= RANGE_MELEE;
 
-		if (creature != NULL && visibility(cell, get_creature_cell(creature)) == VISION_FULL)
+		if (creature != NULL && visibility(get_creature_cell(creature), cell) == VISION_FULL)
 			cell_flags |= TARGET_VISIBLE;
 
 		if ((flags & cell_flags) != flags)

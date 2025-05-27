@@ -28,28 +28,29 @@ typedef struct s_item t_item;
 #define ERROR_JSON_PARSE 2
 
 /* char */
+#define CHAR_CORPSE 'C'
+#define CHAR_DOOR 'D'
+#define CHAR_LOOT 'L'
+#define CHAR_WALL '#'
+#define CHAR_FLOOR '.'
+#define CHAR_WET '~'
+#define CHAR_PLAYER '@'
+#define CHAR_UNKNOWN '?'
 
-#define FUNGUS_CHARS "$*%!+o\\-,_"
+#define CHAR_BLOCK_VISION "$D#"
+#define FUNGUS_CHARS "$*%"
 #define FUNGUS_BLOCKING "$"
 
-#define TERRAIN_BLOCKING "DC#"
-#define TERRAIN_CLOSED "DCR"
-#define TERRAIN_DOOR "D"
+#define TERRAIN_BLOCKING "D#"
+#define TERRAIN_CLOSED "DL"
 #define TERRAIN_INTERACTABLE (TERRAIN_CLOSED)
-#define TERRAIN_CONTAINER "CR"
-#define TERRAIN_WALLFLOOR "#."
+#define TERRAIN_CONTAINER "L"
 
-#define MECH_INTERACTABLE "LTS"
-#define MECH_CHARS "LTS"
+#define CREATURE_CHARS "@qwertyuiopasdfghjklzxcvbnm"
 
-#define ENEMY_CHARS "qwertyuiopasdfghjklzxcvbnm"
-#define PLAYER_CHAR "@"
-#define CREATURE_CHARS (ENEMY_CHARS PLAYER_CHAR)
+#define TERRAIN_CHARS "#.DL"
 
-#define ITEM_CHARS "WP"
-#define TERRAIN_CHARS "#.DCR"
-
-#define CELL_GHOST_CHARS "#DCR"
+#define CELL_GHOST_CHARS "#DC"
 
 /* Vision related */
 #define VISION_NONE 0
@@ -92,6 +93,7 @@ typedef struct s_item t_item;
 
 #define WEAPON_FILE "json/items/weapons.json"
 #define POTION_FILE "json/items/potions.json"
+#define REAGENT_FILE "json/items/reagents.json"
 #define ARMOR_FILE "json/items/armor.json"
 
 #define GOBLIN_FILE "json/creatures/goblin.json"
@@ -124,20 +126,10 @@ typedef struct s_item t_item;
 
 #define COLOR_CELL_GHOST COLOR_ID(1,1,1)
 
-#define COLOR_BROWN         COLOR_ID(3, 2, 1)
-#define COLOR_PALE_BLUE     COLOR_ID(3, 4, 5)
-#define COLOR_ORANGE_RED    COLOR_ID(5, 2, 0)
-#define COLOR_GRAY_BROWN    COLOR_ID(2, 2, 1)
-#define COLOR_OFF_WHITE     COLOR_ID(5, 5, 4)
-#define COLOR_SOFT_BLUE     COLOR_ID(2, 3, 5)
-#define COLOR_PURPLE        COLOR_ID(3, 0, 5)
-#define COLOR_ORANGE        COLOR_ID(5, 2, 0)
-#define COLOR_CLEAR         COLOR_ID(5, 5, 5)
-#define COLOR_BLACK_RED     COLOR_ID(3, 0, 0)
-#define COLOR_WHITE_GREY    COLOR_ID(5, 5, 5)
-#define COLOR_CRIMSON       COLOR_ID(5, 0, 1)
-#define COLOR_PALE_GREEN    COLOR_ID(2, 4, 2)
-#define COLOR_DEFAULT       COLOR_ID(3, 3, 3)
+#define MY_COLOR_BLACK COLOR_ID(0, 0, 0)
+#define MY_COLOR_BROWN COLOR_ID(3, 2, 1)
+#define MY_COLOR_PALE_BLUE COLOR_ID(3, 4, 5)
+#define MY_COLOR_SOFT_BLUE COLOR_ID(2, 3, 5)
 
 /* Damage related */
 #define DAMAGE_FATAL 1
