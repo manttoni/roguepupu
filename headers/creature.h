@@ -25,6 +25,9 @@ typedef struct s_creature
 	char		*size;
 }	t_creature;
 
+int get_attack_range(t_creature *creature);
+int enemy_factions(t_creature *creature);
+int is_in_combat(t_creature *creature);
 int get_darkvision(t_creature *creature);
 int get_movement(t_creature *creature);
 int get_actions(t_creature *creature);

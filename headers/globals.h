@@ -57,28 +57,20 @@ typedef struct s_item t_item;
 #define VISION_FULL 3
 
 /* For scanning and targeting */
-#define SCAN_VISIBLE (1 << 0)
-#define SCAN_NEIGHBOR (1 << 1)
-#define SCAN_ENEMY (1 << 2)
-#define SCAN_LOCKED (1 << 3)
-#define SCAN_CLOSED (1 << 4)
-#define SCAN_TRAPPED (1 << 5)
-#define SCAN_ITEM (1 << 6)
-#define SCAN_LIGHT (1 << 7)
+#define TARGET_INTERACTABLE (1 << 0)
+#define TARGET_LIGHT_SOURCE (1 << 1)
+#define TARGET_VISIBLE (1 << 2)
+#define TARGET_CREATURE (1 << 3)
 
-#define FACTION_PLAYER (1 << 0)
-#define FACTION_GOBLIN (2 << 1)
+#define RANGE_MELEE (1 << 10)
+#define RANGE_SHORT (1 << 11)
+#define RANGE_LONG (1 << 12)
 
-#define FACTION_ALL (FACTION_PLAYER | FACTION_GOBLIN)
+#define FACTION_PLAYER (1 << 20)
+#define FACTION_GOBLIN (1 << 21)
+#define FACTION_TRADER (1 << 22)
 
-#define ENEMY_FACTION(faction) (FACTION_ALL & ~(faction))
-
-#define PLAYER_EXAMINE (SCAN_VISIBLE)
-#define PLAYER_OPEN (SCAN_NEIGHBOR | SCAN_CLOSED)
-#define PLAYER_UNLOCK (SCAN_NEIGHBOR | SCAN_LOCKED)
-
-#define MELEE_ATTACK (SCAN_NEIGHBOR | SCAN_ENEMY)
-#define RANGED_ATTACK (SCAN_VISIBLE | SCAN_ENEMY)
+#define ATTACK_FLAGS(creature) (TARGET_VISIBLE | enemy_factions(creature) | get_attack_range(creature))
 
 #define NEIGHBOR_DIRECTIONS 8
 

@@ -11,6 +11,37 @@
 #include "weapon.h"
 #include "equipment.h"
 
+/* Will need some ranged weapon update */
+int get_attack_range(t_creature *creature)
+{
+	t_item *weapon = get_weapon(creature);
+	if (has_property(weapon, "ranged"))
+		return 0;
+	return RANGE_MELEE;
+}
+
+int enemy_factions(t_creature *creature)
+{
+	int faction = creature->faction;
+	switch (faction)
+	{
+		case FACTION_PLAYER:
+			return FACTION_GOBLIN;
+		case FACTION_GOBLIN:
+			return FACTION_PLAYER;
+		default:
+			return 0;
+	}
+}
+
+int is_in_combat(t_creature *creature)
+{
+	t_node *enemies = get_entities(creature, enemy_factions(creature) | TARGET_VISIBLE);
+	int in_combat = enemies != NULL;
+	list_clear(&enemies);
+	return in_combat;
+}
+
 int get_darkvision(t_creature *creature)
 {
 	// calculates by race, class, items etc

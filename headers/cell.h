@@ -31,7 +31,7 @@ typedef enum
 	DOWNLEFT,
 	DOWN,
 	DOWNRIGHT,
-	END_DIRECTION
+	DIRECTION_END
 }	e_direction;
 
 typedef enum
@@ -57,6 +57,7 @@ t_cell new_cell(char terrain, char mech, char item, char creature, t_area *area)
 t_cell *random_neighbor(t_cell *cell);
 t_cell *neighbor(e_direction dir, t_cell *cell);
 
+int get_cell_flags(t_cell *cell);
 int has_blocking_terrain(t_cell *cell);
 int is_blocked(t_cell *cell);
 int is_interactable(t_cell *cell);

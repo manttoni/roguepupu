@@ -27,7 +27,7 @@ static int check_requirement(t_area *area, size_t cell_index, char *fungus_requi
 	}
 	if (strcmp(fungus_requirement, "water") == 0)
 	{
-		for (size_t i = 0; i < END_DIRECTION; ++i)
+		for (size_t i = 0; i < DIRECTION_END; ++i)
 			if (neighbor(g_dirs[i], &area->cells[cell_index])->terrain->ch == '~')
 				return 1;
 		return 0;

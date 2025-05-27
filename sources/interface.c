@@ -331,16 +331,15 @@ void update_stat_win(void)
 {
 	werase(stat_win);
 	wmove(stat_win, 1, 0);
-	t_node *enemies = get_entities(SCAN_ENEMY | SCAN_VISIBLE);
-	t_node *ptr = enemies;
+	t_node *creatures = get_entities(get_player(), TARGET_CREATURE | TARGET_VISIBLE);
+	t_node *ptr = creatures;
 
-	print_creature_status(get_player());
-	while (enemies != NULL)
+	while (ptr != NULL)
 	{
-		t_cell *enemy_cell = (t_cell *) enemies->data;
-		print_creature_status(enemy_cell->creature);
-		enemies = enemies->next;
+		t_cell *cell = (t_cell *) ptr->data;
+		print_creature_status(cell->creature);
+		ptr = ptr->next;
 	}
-	list_clear(&ptr);
+	list_clear(&creatures);
 	refresh_window(stat_win);
 }

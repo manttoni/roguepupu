@@ -43,7 +43,7 @@ short cell_fg(t_cell *cell)
 
 short cell_bg(t_cell *cell)
 {
-	t_node *lights = get_entities(SCAN_LIGHT);
+	t_node *lights = get_entities(NULL, TARGET_LIGHT_SOURCE);
 	t_node *ptr = lights;
 	short bg = cell->color;
 
@@ -62,24 +62,7 @@ short cell_bg(t_cell *cell)
 	list_clear(&lights);
 	return bg;
 }
-/*
-short cell_bg(t_cell *cell)
-{
-	if (get_illumination(cell) == 0)
-		return cell->color;
 
-	short glow = cell_fg(cell);
-	t_color gc = convert(glow);
-	// make the color as dim as possible
-	while (gc.red > 1 || gc.green > 1 || gc.blue > 1)
-	{
-		glow = modified_color_scalar(glow, -1, -1, -1);
-		gc = convert(glow);
-	}
-
-	return color_sum(cell->color, glow);
-}
-*/
 char cell_char(t_cell *cell)
 {
 	switch (top_entity(cell))
@@ -115,7 +98,8 @@ e_entity top_entity(t_cell *cell)
 {
 
 	if (cell->terrain != NULL &&
-		(strchr(TERRAIN_BLOCKING, cell->terrain->ch) != NULL || strchr(TERRAIN_CONTAINER, cell->terrain->ch)))
+		(strchr(TERRAIN_BLOCKING, cell->terrain->ch) != NULL
+		 || strchr(TERRAIN_CONTAINER, cell->terrain->ch)))
 		return ENTITY_TERRAIN;
 
 	if (cell->creature != NULL)
@@ -181,13 +165,6 @@ int has_item(t_cell *cell)
 	return cell->item != NULL;
 }
 
-int has_enemy(t_cell *cell, t_creature *of_this_creature)
-{
-	if (cell->creature == NULL)
-		return 0;
-	return cell->creature->faction & ENEMY_FACTION(of_this_creature->faction);
-}
-
 int is_neighbor(t_cell *cell, t_cell *other)
 {
 	const int dirs[8] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
@@ -212,10 +189,22 @@ int get_illumination(t_cell *cell)
 	}
 }
 
+int get_cell_flags(t_cell *cell)
+{
+	int flags = 0;
+	if (get_illumination(cell) > 0)
+		flags |= TARGET_LIGHT_SOURCE;
+	if (cell->creature != NULL)
+		flags |= cell->creature->faction;
+	if (is_interactable(cell))
+		flags |= TARGET_INTERACTABLE;
+	return flags;
+}
+
 int is_illuminated(t_cell *cell)
 {
 	// get all light sources in area
-	t_node *lights = get_entities(SCAN_LIGHT);
+	t_node *lights = get_entities(NULL, TARGET_LIGHT_SOURCE);
 	t_node *ptr = lights;
 	while (ptr != NULL)
 	{

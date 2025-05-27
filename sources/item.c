@@ -5,6 +5,17 @@
 #include <stdlib.h>
 #include <ncurses.h>
 
+t_item *new_harvest(t_fungus *fungus)
+{
+	t_item *harvest = my_calloc(1, sizeof(*harvest));
+	harvest->name = fungus->name;
+	harvest->type = "fungus";
+	harvest->rarity = fungus->rarity;
+	harvest->ch = 'F';
+	harvest->color = fungus->color;
+	return harvest;
+}
+
 int is_equipment(t_item *item)
 {
 	return is_weapon(item);

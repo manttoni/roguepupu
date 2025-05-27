@@ -63,7 +63,7 @@ void wander(t_cell *cell)
 
 int npc_act(void)
 {
-	t_node *enemies = get_entities(SCAN_ENEMY);
+	t_node *enemies = get_entities(NULL, TARGET_CREATURE);
 	t_node *ptr = enemies;
 	t_cell *player_cell = get_player_cell();
 	while (enemies != NULL)

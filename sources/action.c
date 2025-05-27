@@ -15,7 +15,7 @@ void print_attack_roll(char *hit_miss, t_creature *attacker, t_creature *defende
 		attacker, hit_miss, defender, weapon, off, roll.dice, roll.mods, roll.result, get_AC(defender));
 }
 
-int act_attack(t_creature *attacker, t_creature *defender)
+void act_attack(t_creature *attacker, t_creature *defender)
 {
 	t_item *weapon = get_weapon(attacker);
 	t_item *offhand = get_offhand(attacker);
@@ -49,8 +49,6 @@ int act_attack(t_creature *attacker, t_creature *defender)
 				print_attack_roll("misses", attacker, defender, offhand, atk);
 		}
 	}
-
-	return 0;
 }
 
 /* Returns 1 if move was possible, 0 otherwise */

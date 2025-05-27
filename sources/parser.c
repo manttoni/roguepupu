@@ -255,7 +255,7 @@ t_fungus *parse_fungi(char *raw, int *count)
 		array[i].glow = glow->valueint;
 		array[i].properties = parse_string_array(properties);
 		array[i].ch = ch->valuestring[0];
-		array[i].rarity = rarity->valueint;
+		array[i].rarity = rarity->valuestring;
 		array[i].spawn = parse_string_array(spawn);
 
 		i++;

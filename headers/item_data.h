@@ -1,6 +1,10 @@
 #ifndef ITEM_DATA_H
 #define ITEM_DATA_H
 
+typedef struct s_fungus_data
+{
+}	t_fungus_data;
+
 typedef struct s_potion_data
 {
 	char	*effect;

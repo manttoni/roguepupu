@@ -52,45 +52,30 @@ t_creature *get_player(void)
 	return c->creature;
 }
 
-t_node *get_entities(int flags)
+/* Get creatures visible by creature, filtered by flags
+ * if creature == NULL, find globally */
+t_node *get_entities(t_creature *creature, int flags)
 {
-	int pi = get_player_index();
-	t_cell *pc = &g_area->cells[pi];
-
 	t_node *list = NULL;
 	for (size_t i = 0; i < AREA(g_area); ++i)
 	{
-		t_cell *cell = &g_area->cells[i];
+		t_cell *cell = get_cell(i);
+		int cell_flags = get_cell_flags(cell);
 
-		// terrain checks
-		if (flags & SCAN_CLOSED && !is_closed(cell))
-			continue;
+		if (cell->creature != NULL)
+			cell_flags |= TARGET_CREATURE;
 
-		// mech checks
-		if (flags & SCAN_LOCKED && !is_locked(cell))
-			continue;
-		if (flags & SCAN_TRAPPED && !is_trapped(cell))
-			continue;
+		if (creature != NULL && is_neighbor(cell, get_creature_cell(creature)))
+			cell_flags |= RANGE_MELEE;
 
-		// creature checks
-		if (flags & SCAN_ENEMY && !has_enemy(cell, get_player()))
-			continue;
+		if (creature != NULL && visibility(cell, get_creature_cell(creature)) == VISION_FULL)
+			cell_flags |= TARGET_VISIBLE;
 
-		// item checks
-		if (flags & SCAN_ITEM && !has_item(cell))
+		if ((flags & cell_flags) != flags)
 			continue;
-
-		// cell checks
-		if (flags & SCAN_VISIBLE && visibility(pc, cell) != VISION_FULL)
-			continue;
-		if (flags & SCAN_NEIGHBOR && !is_neighbor(pc, cell))
-			continue;
-		if (flags & SCAN_LIGHT && get_illumination(cell) == 0)
-			continue;
-		//if (!is_interactable(cell))
-		//	continue;
 
 		add_node_last(&list, new_node(cell));
 	}
 	return list;
 }
+
