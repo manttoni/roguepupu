@@ -327,12 +327,6 @@ t_cell new_cell(char terrain, char mech, char item, char creature, t_area *area)
 	return cell;
 }
 
-t_cell *random_neighbor(t_cell *cell)
-{
-	e_direction dir = rand() % 8;
-	return neighbor(dir, cell);
-}
-
 t_cell *neighbor(e_direction dir, t_cell *cell)
 {
 	t_area *area = g_area;

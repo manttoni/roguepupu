@@ -11,53 +11,11 @@
 #include "weapon.h"
 #include "equipment.h"
 
-int get_AC(t_creature *creature)
-{
-	int AC = 10;
-	AC += dexmod(creature);
-	return AC;
-}
-
 int get_darkvision(t_creature *creature)
 {
 	// calculates by race, class, items etc
 	(void) creature;
 	return 60 / CELL_SIZE; // how many feet are the cells
-}
-
-static int mod(int val)
-{
-	return (val - 10) / 2;
-}
-
-int strmod(t_creature *creature)
-{
-	return mod(creature->abilities.strength);
-}
-
-int dexmod(t_creature *creature)
-{
-	return mod(creature->abilities.dexterity);
-}
-
-int conmod(t_creature *creature)
-{
-	return mod(creature->abilities.constitution);
-}
-
-int intmod(t_creature *creature)
-{
-	return mod(creature->abilities.intelligence);
-}
-
-int wismod(t_creature *creature)
-{
-	return mod(creature->abilities.wisdom);
-}
-
-int chamod(t_creature *creature)
-{
-	return mod(creature->abilities.charisma);
 }
 
 void loot_item(t_creature *looter, t_node **inventory, int i)
@@ -144,6 +102,30 @@ void perish(t_creature *creature, char *damage_type)
 	}
 }
 
+static void bleed_on_ground(t_creature *creature, int damage)
+{
+	for (int i = 0; i < damage; ++i)
+	{
+		int r = rand() % 9;
+		t_cell *cell = get_creature_cell(creature);
+		if (r != 8)
+			cell = neighbor(g_dirs[rand() % 8], cell);
+		if (cell != NULL)
+			cell->color = modified_color_scalar(cell->color, 1, 0, 0);
+	}
+}
+
+int is_physical(char *damage_type)
+{
+	if (strcmp(damage_type, "slashing") == 0)
+		return 1;
+	if (strcmp(damage_type, "piercing") == 0)
+		return 1;
+	if (strcmp(damage_type, "bludgeoning") == 0)
+		return 1;
+	return 0;
+}
+
 int take_damage(t_creature *creature, t_roll damage_roll, char *damage_type)
 {
 	int damage = damage_roll.result;
@@ -152,6 +134,9 @@ int take_damage(t_creature *creature, t_roll damage_roll, char *damage_type)
 
 	print_log("%C takes {red}%d{reset} %s damage ( %s + %d )", creature, damage, damage_type, damage_roll.dice, damage_roll.mods);
 	creature->health -= damage;
+
+	if (is_physical(damage_type))
+		bleed_on_ground(creature, damage);
 
 	if (creature->health <= 0)
 	{
@@ -174,8 +159,8 @@ void randomize_abilities(t_abilities *a)
 void set_max_health(t_creature *creature)
 {
 	t_roll hit_die;
-	int health = 0;
-	for (int i = 0; i < creature->level; ++i)
+	int health = 8 + conmod(creature); // first level rolls max
+	for (int i = 1; i < creature->level; ++i)
 	{
 		hit_die = throw("1d8", conmod(creature), 0);
 		health = max(1, hit_die.result);

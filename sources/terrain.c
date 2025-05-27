@@ -25,7 +25,6 @@ t_terrain *new_terrain(char ch, t_area *area)
 			{
 				terrain->name = "wet floor";
 				terrain->ch = '~';
-				terrain->color = color_id((t_color){0,0,1});
 			}
 			else
 				terrain->name = "Floor";
