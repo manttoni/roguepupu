@@ -10,8 +10,8 @@ typedef struct s_equipped
 	t_item	*offhand;
 }	t_equipped;
 
-void unequip(t_creature *creature, t_item *item);
-void equip(t_creature *creature, t_item *item);
+int unequip(t_creature *creature, t_item *item);
+int equip(t_creature *creature, t_item *item);
 t_item *get_weapon(t_creature *creature);
 void set_weapon(t_creature *creature, t_item *weapon);
 t_item *get_offhand(t_creature *creature);

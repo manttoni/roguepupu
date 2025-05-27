@@ -128,16 +128,11 @@ static void interact_open_container(t_cell *interactable)
 	interactable->mech = NULL;
 }*/
 
-void pc_interact(void)
+int pc_interact(void)
 {
-	if (is_in_combat(get_player()))
-	{
-		print_log("%C is in combat", get_player());
-		return;
-	}
 	t_cell *interactable = select_target(RANGE_MELEE | TARGET_INTERACTABLE);
 	if (interactable == NULL)
-		return;
+		return 0;
 
 	char ch = cell_char(interactable);
 	switch (top_entity(interactable))
@@ -167,6 +162,7 @@ void pc_interact(void)
 		default:
 			break;
 	}
+	return 1;
 }
 
 // lets the user control ui if they want. if non ui input is given, it is returned
@@ -228,26 +224,35 @@ int pc_act(void)
 
 		e_direction dir = get_move_direction(input);
 		if (dir != DIRECTION_END)
-			act_move(dir, get_player_cell());
+		{
+			if (act_move(dir, get_player_cell()) == 0)
+				continue;
+			break;
+		}
 
 		switch(input)
 		{
 			case 'e':
 				select_target(TARGET_VISIBLE | TARGET_INTERACTABLE);
-				break;
+				continue;
 			case 'a':
 				t_cell *target = select_target(ATTACK_FLAGS(player));
 				if (target != NULL)
+				{
 					act_attack(player, target->creature);
-				break;
+					break;
+				}
+				continue;
 			case 'i':
-				open_inventory(&get_player()->inventory, INVENTORY_PLAYER);
-				break;
+				if (open_inventory(&get_player()->inventory, INVENTORY_PLAYER) == 1)
+					break;
+				continue;
 			case ENTER:
-				pc_interact();
-				break;
+				if (pc_interact() == 1)
+					break;
+				continue;
 			default:
-				break;
+				continue;
 		}
 		break;
 	}

@@ -46,6 +46,8 @@ short cell_bg(t_cell *cell)
 	t_node *lights = get_entities(NULL, TARGET_LIGHT_SOURCE);
 	t_node *ptr = lights;
 	short bg = cell->color;
+	if (cell_char(cell) == CHAR_WALL)
+		bg = cell->terrain->color;
 
 	while (ptr != NULL)
 	{

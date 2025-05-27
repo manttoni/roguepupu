@@ -202,12 +202,13 @@ void print_inventory(t_node *inventory, int selected)
 	refresh_window(inventory_win);
 }
 
-void open_inventory(t_node **inventory, int mode)
+int open_inventory(t_node **inventory, int mode)
 {
 	list_sort(*inventory, &compare_item_name);
 	print_log("%C opens %s", get_player(), mode == INVENTORY_LOOT ? "remains" : "inventory");
 	int selected = 0;
 	int input = 0;
+	int action = 0;
 	while (list_len(*inventory) > 0 && input != ESCAPE && input != 'i')
 	{
 		if (selected >= list_len(*inventory))
@@ -224,14 +225,16 @@ void open_inventory(t_node **inventory, int mode)
 				switch (mode)
 				{
 					case INVENTORY_PLAYER:
-						use_item(get_player(), inventory, selected);
+						action = use_item(get_player(), inventory, selected);
 						break;
 					case INVENTORY_LOOT:
-						loot_item(get_player(), inventory, selected);
+						action = loot_item(get_player(), inventory, selected);
 						break;
 					default:
 						break;
 				}
+				if (action > 0 && is_in_combat(get_player()))
+					input = ESCAPE;
 				break;
 			case KEY_DOWN:
 				if (selected < list_len(*inventory) - 1)
@@ -251,6 +254,7 @@ void open_inventory(t_node **inventory, int mode)
 		print_log("%C closes remains", get_player());
 	werase(inventory_win);
 	refresh_window(inventory_win);
+	return action;
 }
 
 void print_selected(t_cell *cell)

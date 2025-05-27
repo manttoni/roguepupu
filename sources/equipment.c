@@ -61,7 +61,7 @@ void set_weapon(t_creature *creature, t_item *weapon)
 	}
 }
 
-void unequip(t_creature *creature, t_item *item)
+int unequip(t_creature *creature, t_item *item)
 {
 	if (get_weapon(creature) == item)
 		set_weapon(creature, NULL);
@@ -69,12 +69,13 @@ void unequip(t_creature *creature, t_item *item)
 		set_offhand(creature, NULL);
 	if (creature == get_player())
 		print_log("%C unequips %I", creature, item);
+	return 1;
 }
 
-void equip(t_creature *creature, t_item *item)
+int equip(t_creature *creature, t_item *item)
 {
 	if (is_equipped(creature, item) || !is_equipment(item))
-		return;
+		return 0;
 	if (is_weapon(item))
 	{
 		if (get_weapon(creature) == NULL && is_valid_weaponset(item, get_offhand(creature)))
@@ -89,10 +90,11 @@ void equip(t_creature *creature, t_item *item)
 		{
 			if (creature->ch == '@')
 				print_log("Can't equip %I. Unequip something first.", item);
-			return;
+			return 0;
 		}
 	}
 	if (creature->ch == '@')
 		print_log("%C equips %I", creature, item);
+	return 1;
 }
 

@@ -49,16 +49,17 @@ int get_darkvision(t_creature *creature)
 	return 60 / CELL_SIZE; // how many feet are the cells
 }
 
-void loot_item(t_creature *looter, t_node **inventory, int i)
+int loot_item(t_creature *looter, t_node **inventory, int i)
 {
 	t_node *node = get_node(*inventory, i);
 	if (node == NULL)
-		return;
+		return 0;
 	t_item *item = (t_item *) node->data;
 
 	add_item(looter, item);
 	print_log("%C loots %I", looter, item);
 	remove_node(inventory, node);
+	return 1;
 }
 
 void heal_creature(t_creature *creature, char *amount)
@@ -69,7 +70,7 @@ void heal_creature(t_creature *creature, char *amount)
 	print_log("%C is healed for {blue}%d (%s){reset} hp", creature, healing, amount);
 }
 
-void drink_potion(t_creature *drinker, t_item *potion)
+int drink_potion(t_creature *drinker, t_item *potion)
 {
 	print_log("%C drinks %I", drinker, potion);
 	t_potion_data data = potion->data.potion_data;
@@ -80,9 +81,10 @@ void drink_potion(t_creature *drinker, t_item *potion)
 	free(potion);
 	remove_node(&drinker->inventory, get_node_data(drinker->inventory, potion));
 	update_stat_win();
+	return 1;
 }
 
-void use_item(t_creature *user, t_node **inventory_ptr, int i)
+int use_item(t_creature *user, t_node **inventory_ptr, int i)
 {
 	t_node *inventory = *inventory_ptr;
 	t_node *node = get_node(inventory, i);
@@ -91,12 +93,13 @@ void use_item(t_creature *user, t_node **inventory_ptr, int i)
 	if (is_equipment(item))
 	{
 		if (!is_equipped(user, item))
-			equip(user, item);
+			return equip(user, item);
 		else
-			unequip(user, item);
+			return unequip(user, item);
 	}
 	else if (is_potion(item))
-		drink_potion(user, item);
+		return drink_potion(user, item);
+	return 0;
 }
 
 int has_ranged_weapon(t_creature *creature)
