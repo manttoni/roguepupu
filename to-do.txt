@@ -1,13 +1,8 @@
 actions and bonus action
-status effects
-proficiency
-creature skills (athletics etc)
-traps
-character class
+weapon proficiency
+more weapons
+armor proficiency
+armor
 character sheet
-special attacks
 crafting
-color remake
-diagonal movement and vision when moving around corner
-dice_rolls.h or something
-perishin on top of remains will remove earlier remains <- mark as low prio
+
