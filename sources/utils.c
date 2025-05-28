@@ -4,8 +4,32 @@
 #include "interface.h"
 #include "color.h"
 #include "cell.h"
+#include "memory.h"
 #include <stdlib.h>
 #include <ncurses.h>
+
+size_t generate_id(void)
+{
+	static size_t id = 1;
+	return id++;
+}
+
+size_t array_len(char **array)
+{
+	size_t len = 0;
+	while (array[len] != NULL)
+		len++;
+	return len;
+}
+
+char **copy_char_array(char **array)
+{
+	size_t len = array_len(array);
+	char **copy = my_calloc(len + 1, sizeof(*copy));
+	for (size_t i = 0; i < len; ++i)
+		copy[i] = my_strdup(array[i]);
+	return copy;
+}
 
 int resolve_macro(char *str)
 {
@@ -62,28 +86,6 @@ int max(int a, int b)
 	return b;
 }
 
-void *my_calloc(size_t count, size_t size)
-{
-	void *mem = calloc(count, size);
-	if (mem == NULL)
-	{
-		logger("Allocation failed, count=%zu, size: %zu", count, size);
-		end_ncurses(errno);
-	}
-	return mem;
-}
-
-char *my_strdup(char *str)
-{
-	char *dup = strdup(str);
-	if (dup == NULL)
-	{
-		logger("strdup failed: %s", str);
-		end_ncurses(errno);
-	}
-	return dup;
-}
-
 void init_color_pairs(void)
 {
 	init_pair(COLOR_PAIR_RED, COLOR_RED, COLOR_BLACK);
@@ -113,6 +115,7 @@ void end_ncurses(int exit_value)
 		getch();
 	}
 	endwin();
+	free_allocations();
 	exit(exit_value);
 }
 
@@ -142,6 +145,17 @@ t_node *new_node(void *data)
 	return node;
 }
 
+void add_node_first(t_node **list, t_node *add)
+{
+	if (*list == NULL)
+	{
+		*list = add;
+		return;
+	}
+	add->next = *list;
+	*list = add;
+}
+
 void add_node_last(t_node **list, t_node *add)
 {
 	if (*list == NULL)
@@ -162,14 +176,14 @@ void remove_node(t_node **list, t_node *remove)
 	if (*list == remove)
 	{
 		*list = remove->next;
-		free(remove);
+		my_free(remove);
 		return;
 	}
 	t_node *prev = *list;
 	while (prev != NULL && prev->next != remove)
 		prev = prev->next;
 	prev->next = remove->next;
-	free(remove);
+	my_free(remove);
 }
 
 void list_clear(t_node **list)
@@ -265,7 +279,7 @@ void free_list_data(t_node *list)
 {
 	while (list != NULL)
 	{
-		free(list->data);
+		my_free(list->data);
 		list = list->next;
 	}
 }

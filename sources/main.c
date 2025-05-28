@@ -19,27 +19,28 @@ WINDOW *examine_win = NULL;
 WINDOW *inventory_win = NULL;
 
 t_item_group *g_item_groups = NULL;
-int g_item_group_count = 0;
+size_t g_item_group_count = 0;
 
 t_creature_group *g_creature_groups = NULL;
-int g_creature_group_count = 0;
+size_t g_creature_group_count = 0;
 
 t_fungus *g_fungi = NULL;
-int g_fungus_count = 0;
+size_t g_fungus_count = 0;
 
 t_area *g_area = NULL;
 e_direction g_dirs[] = {UPLEFT, UP, UPRIGHT, LEFT, RIGHT, DOWNLEFT, DOWN, DOWNRIGHT};
 
+t_node *g_allocations = NULL;
 
 void init_items(void)
 {
-	char *groups[] = {"weapon", "potion", "reagent"};
-	char *files[] = {WEAPON_FILE, POTION_FILE, REAGENT_FILE};
+	char *groups[] = {"weapon", "armor", "potion", "reagent"};
+	char *files[] = {WEAPON_FILE, ARMOR_FILE, POTION_FILE, REAGENT_FILE};
 
 	g_item_group_count = sizeof(groups) / sizeof(char *);
 	g_item_groups = my_calloc(g_item_group_count, sizeof(*g_item_groups));
 
-	for (int i = 0; i < g_item_group_count; ++i)
+	for (size_t i = 0; i < g_item_group_count; ++i)
 	{
 		g_item_groups[i].category = groups[i];
 		g_item_groups[i].array = parse_items(read_file(files[i]), groups[i], &g_item_groups[i].count);
@@ -54,7 +55,7 @@ void init_creatures(void)
 	g_creature_group_count = sizeof(groups) / sizeof(groups[0]);
 	g_creature_groups = my_calloc(g_creature_group_count, sizeof(*g_creature_groups));
 
-	for (int i = 0; i < g_creature_group_count; ++i)
+	for (size_t i = 0; i < g_creature_group_count; ++i)
 	{
 		g_creature_groups[i].category = groups[i];
 		g_creature_groups[i].array = parse_creatures(read_file(files[i]), groups[i], &g_creature_groups[i].count);
@@ -69,10 +70,14 @@ void init_fungi(void)
 
 void init_globals(void)
 {
+	logger("Initializing items");
 	init_items();
+	logger("Initializing creatures");
 	init_creatures();
+	logger("Initializing fungi");
 	init_fungi();
-	}
+	logger("Globals initialized");
+}
 
 void init(void)
 {
@@ -82,6 +87,7 @@ void init(void)
 	signal(SIGSEGV, handle_segfault);
 	init_ncurses();
 	init_windows();
+	logger("Init ready");
 }
 
 int main(void)
@@ -89,9 +95,8 @@ int main(void)
 	init();
 	g_area = parse_area(read_file(MAP_CAVES));
 	populate_fungi(g_area);
+	logger("Game started");
 	start();
-
-	free_game();
-	free_globals();
+	logger("Game ended");
 	end_ncurses(0);
 }

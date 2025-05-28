@@ -63,6 +63,7 @@ void print_win(WINDOW *win, char *format, va_list args)
 				case 'C':
 				{
 					t_creature *creature = va_arg(args, t_creature*);
+					wprintw(win, "%zu", creature->id);
 					if (creature != NULL)
 					{
 						color = creature->color;
@@ -73,6 +74,7 @@ void print_win(WINDOW *win, char *format, va_list args)
 				case 'I':
 				{
 					t_item *item = va_arg(args, t_item*);
+					wprintw(win, "%zu", item->id);
 					if (item != NULL)
 					{
 						color = item->color;

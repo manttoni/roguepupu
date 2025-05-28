@@ -3,7 +3,7 @@
 
 t_creature_group *get_creature_group(char *group)
 {
-	for (int i = 0; i < g_creature_group_count; ++i)
+	for (size_t i = 0; i < g_creature_group_count; ++i)
 	{
 		t_creature_group *creature_group = &g_creature_groups[i];
 		if (strcmp(group, creature_group->category) == 0)
@@ -15,7 +15,7 @@ t_creature_group *get_creature_group(char *group)
 t_item_group *get_item_group(char *group)
 {
 	// potions are in item_groups
-	for (int i = 0; i < g_item_group_count; ++i)
+	for (size_t i = 0; i < g_item_group_count; ++i)
 	{
 		t_item_group *item_group = &g_item_groups[i];
 		if (strcmp(group, item_group->category) == 0)

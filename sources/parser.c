@@ -2,6 +2,7 @@
 #include "cell.h"
 #include "globals.h"
 #include "utils.h"
+#include "memory.h"
 #include <string.h>
 #include <errno.h>
 
@@ -33,6 +34,33 @@ char **parse_string_array(cJSON *array)
 	return parsed;
 }
 
+t_armor_data parse_armor_data(cJSON *armor)
+{
+	t_armor_data data;
+	cJSON *proficiency = cJSON_GetObjectItemCaseSensitive(armor, "proficiency");
+	cJSON *ac = cJSON_GetObjectItemCaseSensitive(armor, "ac");
+	cJSON *maxdex = cJSON_GetObjectItemCaseSensitive(armor, "maxdex");
+	cJSON *strreq = cJSON_GetObjectItemCaseSensitive(armor, "strreq");
+	cJSON *stealth = cJSON_GetObjectItemCaseSensitive(armor, "stealth");
+
+	if (!cJSON_IsString(proficiency) || !cJSON_IsNumber(ac)
+		|| !cJSON_IsNumber(maxdex) || !cJSON_IsNumber(strreq) || !cJSON_IsString(stealth))
+	{
+		logger("Armor format fail");
+		end_ncurses(1);
+	}
+
+	data.proficiency = my_strdup(proficiency->valuestring);
+	data.ac = ac->valueint;
+	data.maxdex = maxdex->valueint;
+	data.strreq = strreq->valueint;
+	if (strcmp("disadvantage", stealth->valuestring) == 0)
+		data.stealth_disadvantage = 1;
+	else
+		data.stealth_disadvantage = 0;
+	return data;
+}
+
 t_reagent_data parse_reagent_data(cJSON *reagent)
 {
 	t_reagent_data data;
@@ -59,8 +87,8 @@ t_potion_data parse_potion_data(cJSON *potion)
 		end_ncurses(ERROR_JSON_PARSE);
 	}
 
-	data.effect = strdup(effect->valuestring);
-	data.duration = strdup(duration->valuestring);
+	data.effect = my_strdup(effect->valuestring);
+	data.duration = my_strdup(duration->valuestring);
 	return data;
 }
 
@@ -101,7 +129,7 @@ short get_color(char *rarity)
 	return 0;
 }
 
-t_creature *parse_creatures(char *raw, char *type, int *count)
+t_creature *parse_creatures(char *raw, char *type, size_t *count)
 {
 	cJSON *json = cJSON_Parse(raw);
 	if (json == NULL)
@@ -127,14 +155,14 @@ t_creature *parse_creatures(char *raw, char *type, int *count)
 	{
 		cJSON *name = cJSON_GetObjectItemCaseSensitive(creature, "name");
 		cJSON *level = cJSON_GetObjectItemCaseSensitive(creature, "level");
-		cJSON *size = cJSON_GetObjectItemCaseSensitive(creature, "size");
 		cJSON *color = cJSON_GetObjectItemCaseSensitive(creature, "color");
 		cJSON *ai = cJSON_GetObjectItemCaseSensitive(creature, "ai");
 		cJSON *faction = cJSON_GetObjectItemCaseSensitive(creature, "faction");
 		cJSON *abilities = cJSON_GetObjectItemCaseSensitive(creature, "abilities");
+		cJSON *inventory = cJSON_GetObjectItemCaseSensitive(creature, "inventory");
 
 		// Validate required fields
-		if (!cJSON_IsString(name) || !cJSON_IsNumber(level) || !cJSON_IsString(size) ||
+		if (!cJSON_IsString(name) || !cJSON_IsNumber(level) ||
 			!cJSON_IsString(color) || !cJSON_IsString(ai) || !cJSON_IsString(faction) ||
 			!cJSON_IsObject(abilities))
 		{
@@ -144,10 +172,10 @@ t_creature *parse_creatures(char *raw, char *type, int *count)
 
 		array[i].name = my_strdup(name->valuestring);
 		array[i].level = level->valueint;
-		array[i].size = my_strdup(size->valuestring);
 		array[i].color = resolve_macro(color->valuestring);
 		array[i].ai = resolve_macro(ai->valuestring);
 		array[i].faction = resolve_macro(faction->valuestring);
+		array[i].id = generate_id();
 
 		// Parse abilities individually
 		//cJSON *ability = NULL;
@@ -172,15 +200,24 @@ t_creature *parse_creatures(char *raw, char *type, int *count)
 		array[i].abilities.wisdom = wisdom->valueint;
 		array[i].abilities.charisma = charisma->valueint;
 
+		cJSON *item_name = NULL;
+		if (cJSON_IsArray(inventory))
+		{
+			cJSON_ArrayForEach(item_name, inventory)
+			{
+				char *name = item_name->valuestring;
+				add_item(&array[i], new_item(name));
+			}
+		}
 		i++;
 	}
 
 	cJSON_Delete(json);
-	free(raw);
+	my_free(raw);
 	return array;
 }
 
-t_item *parse_items(char *raw, char *type, int *count)
+t_item *parse_items(char *raw, char *type, size_t *count)
 {
 	cJSON *json = cJSON_Parse(raw);
 	if (json == NULL)
@@ -213,8 +250,9 @@ t_item *parse_items(char *raw, char *type, int *count)
 
 		array[i].name = my_strdup(name->valuestring);
 		array[i].rarity = my_strdup(rarity->valuestring);
-		array[i].type = type;
+		array[i].type = my_strdup(type);
 		array[i].color = get_color(array[i].rarity);
+		array[i].id = generate_id();
 
 		if (strcmp("weapon", type) == 0)
 			array[i].data.weapon_data = parse_weapon_data(item);
@@ -222,14 +260,16 @@ t_item *parse_items(char *raw, char *type, int *count)
 			array[i].data.potion_data = parse_potion_data(item);
 		else if(strcmp("reagent", type) == 0)
 			array[i].data.reagent_data = parse_reagent_data(item);
+		else if(strcmp("armor", type) == 0)
+			array[i].data.armor_data = parse_armor_data(item);
 		i++;
 	}
 	cJSON_Delete(json);
-	free(raw);
+	my_free(raw);
 	return array;
 }
 
-t_fungus *parse_fungi(char *raw, int *count)
+t_fungus *parse_fungi(char *raw, size_t *count)
 {
 	cJSON *json = cJSON_Parse(raw);
 	if (json == NULL)
@@ -277,7 +317,7 @@ t_fungus *parse_fungi(char *raw, int *count)
 		i++;
 	}
 	cJSON_Delete(json);
-	free(raw);
+	my_free(raw);
 	logger("%d fungi parsed", n);
 	return array;
 }
@@ -314,7 +354,7 @@ t_area *parse_area(char *raw)
 	}
 
 	area->moisture = moisture->valueint;
-	area->name = strdup(name->valuestring);
+	area->name = my_strdup(name->valuestring);
 	area->level = level->valueint;
 	area->height = cJSON_GetArraySize(terrain);
 	area->width = strlen(cJSON_GetArrayItem(terrain, 0)->valuestring);
@@ -356,7 +396,7 @@ t_area *parse_area(char *raw)
 
 	cJSON_Delete(json);
 
-	free(raw);
+	my_free(raw);
 	logger("Area parsed");
 	return area;
 }

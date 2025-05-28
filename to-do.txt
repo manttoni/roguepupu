@@ -1,8 +1,5 @@
-actions and bonus action
-weapon proficiency
-more weapons
-armor proficiency
-armor
 character sheet
-crafting
+armor
+equipped ranged weapon separately
+
 

@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "cell.h"
 #include "interface.h"
+#include "memory.h"
 #include <string.h>
 
 t_fungus *new_fungus(t_fungus *template)
@@ -73,7 +74,7 @@ void spawn_fungus(t_area *area, size_t cell_index)
 	if (rand() % 101 >= FUNGAL_DENSITY)
 		return;
 
-	for (int i = 0; i < g_fungus_count; ++i)
+	for (size_t i = 0; i < g_fungus_count; ++i)
 	{
 		t_fungus *f = &g_fungi[i];
 		if (cell_spawns_fungus(area, cell_index, f))
@@ -89,6 +90,9 @@ void populate_fungi(t_area *area)
 	for (size_t i = 0; i < AREA(area); ++i)
 	{
 		if (strchr(TERRAIN_BLOCKING, area->cells[i].terrain->ch) != NULL)
+			continue;
+
+		if (get_cell(i)->creature != NULL)
 			continue;
 
 		// check if a fungus will spawn here

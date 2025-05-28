@@ -10,6 +10,14 @@
 #include "item.h"
 #include "weapon.h"
 #include "equipment.h"
+#include "memory.h"
+
+int creature_equals(t_creature *a, t_creature *b)
+{
+	if (a == NULL || b == NULL)
+		logger("NULL creature");
+	return a->id == b->id;
+}
 
 /* Will need some ranged weapon update */
 int get_attack_range(t_creature *creature)
@@ -78,7 +86,6 @@ int drink_potion(t_creature *drinker, t_item *potion)
 	// heal potion format: "heal xdy +z"
 	if (strncmp(data.effect, "heal", 4) == 0)
 		heal_creature(drinker, strchr(data.effect, ' ') + 1);
-	free(potion);
 	remove_node(&drinker->inventory, get_node_data(drinker->inventory, potion));
 	update_stat_win();
 	return 1;
@@ -198,46 +205,84 @@ void set_max_health(t_creature *creature)
 	creature->max_health = health;
 }
 
-t_creature *new_creature(char *type, char *name)
+t_node *copy_inventory(t_node *inventory)
 {
-	t_creature_group *group = get_creature_group(type);
-	t_creature *array = group->array;
-	int count = group->count;
-
-	for (int i = 0; i < count; ++i)
+	t_node *copy = NULL;
+	while (inventory != NULL)
 	{
-		if (strcmp(array[i].name, name) == 0)
+		t_item *item = (t_item *) inventory->data;
+		add_node_last(&copy, new_node(new_item(item->name)));
+		inventory = inventory->next;
+	}
+	return copy;
+}
+
+static t_creature *copy_creature(t_creature *creature)
+{
+	t_creature *copy = my_calloc(1, sizeof(*copy));
+	copy->id = generate_id();
+	copy->ch = creature->ch;
+	copy->color = creature->color;
+	copy->name = my_strdup(creature->name);
+	// dont copy equipped, it is just info of what is equipped
+	// from inventory
+	copy->abilities = creature->abilities;
+	t_node *ptr = creature->inventory;
+	while (ptr != NULL)
+	{
+		t_item *item = (t_item *) ptr->data;
+		add_item(copy, new_item(item->name));
+		ptr = ptr->next;
+	}
+	copy->ai = creature->ai;
+	copy->health = creature->health;
+	copy->max_health = creature->max_health;
+	copy->faction = creature->faction;
+	copy->behavior = creature->behavior;
+	copy->level = creature->level;
+	return copy;
+}
+
+t_creature *new_creature(char *name)
+{
+	for (size_t i = 0; i < g_creature_group_count; ++i)
+	{
+		t_creature_group *group = &g_creature_groups[i];
+		t_creature *array = group->array;
+		size_t count = group->count;
+
+		for (size_t j = 0; j < count; ++j)
 		{
-			t_creature *creature = my_calloc(1, sizeof(*creature));
-			memmove(creature, &array[i], sizeof(*creature));
-			return creature;
+			if (strcmp(array[j].name, name) == 0)
+			{
+				t_creature *creature = copy_creature(&array[j]);
+				return creature;
+			}
 		}
 	}
-
-	logger("Creature not found: %s : %s", type, name);
+	logger("Creature not found: %s", name);
 	end_ncurses(1);
-	return NULL;
 }
 
 t_creature *spawn_creature(char ch, t_area *area)
 {
+	(void) area;
 	if (strchr(CREATURE_CHARS, ch) == NULL)
 		return NULL;
 	t_creature *creature;
 	switch (ch)
 	{
 		case 'g':
-			creature = new_creature("goblin", "crazy goblin");
-			creature->level = area->level;
-			add_item(creature, new_random_weapon());
+			creature = new_creature("crazy goblin");
 			break;
 		case CHAR_PLAYER:
 			creature = my_calloc(1, sizeof(*creature));
+			creature->id = generate_id();
 			creature->name = "Rabdin";
-			add_item(creature, new_weapon("light crossbow"));
-			add_item(creature, new_weapon("dagger"));
-			add_item(creature, new_weapon("dagger"));
-			add_item(creature, new_potion("potion of healing"));
+			add_item(creature, new_item("light crossbow"));
+			add_item(creature, new_item("dagger"));
+			add_item(creature, new_item("dagger"));
+			add_item(creature, new_item("potion of healing"));
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
 			randomize_abilities(&creature->abilities);

@@ -1,0 +1,136 @@
+{
+	"armor":
+	[
+		{
+		  "name": "padded armor",
+		  "ac": 11,
+		  "maxdex": -1,
+		  "strreq": 0,
+		  "stealth": "disadvantage",
+		  "weight": 8,
+		  "proficiency": "light",
+		  "rarity": "common"
+		},
+		{
+		  "name": "leather armor",
+		  "ac": 11,
+		  "maxdex": -1,
+		  "strreq": 0,
+		  "stealth": "none",
+		  "weight": 10,
+		  "proficiency": "light",
+		  "rarity": "common"
+		},
+		{
+		  "name": "studded leather armor",
+		  "ac": 12,
+		  "maxdex": -1,
+		  "strreq": 0,
+		  "stealth": "none",
+		  "weight": 13,
+		  "proficiency": "light",
+		  "rarity": "common"
+		},
+		{
+		  "name": "hide armor",
+		  "ac": 12,
+		  "maxdex": 2,
+		  "strreq": 0,
+		  "stealth": "none",
+		  "weight": 12,
+		  "proficiency": "medium",
+		  "rarity": "common"
+		},
+		{
+		  "name": "chain shirt",
+		  "ac": 13,
+		  "maxdex": 2,
+		  "strreq": 0,
+		  "stealth": "none",
+		  "weight": 20,
+		  "proficiency": "medium",
+		  "rarity": "common"
+		},
+		{
+		  "name": "scale mail",
+		  "ac": 14,
+		  "maxdex": 2,
+		  "strreq": 0,
+		  "stealth": "disadvantage",
+		  "weight": 45,
+		  "proficiency": "medium",
+		  "rarity": "common"
+		},
+		{
+		  "name": "breastplate",
+		  "ac": 14,
+		  "maxdex": 2,
+		  "strreq": 0,
+		  "stealth": "none",
+		  "weight": 20,
+		  "proficiency": "medium",
+		  "rarity": "common"
+		},
+		{
+		  "name": "half plate",
+		  "ac": 15,
+		  "maxdex": 2,
+		  "strreq": 0,
+		  "stealth": "disadvantage",
+		  "weight": 40,
+		  "proficiency": "medium",
+		  "rarity": "common"
+		},
+		{
+		  "name": "ring mail",
+		  "ac": 14,
+		  "maxdex": 0,
+		  "strreq": 0,
+		  "stealth": "disadvantage",
+		  "weight": 40,
+		  "proficiency": "heavy",
+		  "rarity": "common"
+		},
+		{
+		  "name": "chain mail",
+		  "ac": 16,
+		  "maxdex": 0,
+		  "strreq": 13,
+		  "stealth": "disadvantage",
+		  "weight": 55,
+		  "proficiency": "heavy",
+		  "rarity": "common"
+		},
+		{
+		  "name": "splint armor",
+		  "ac": 17,
+		  "maxdex": 0,
+		  "strreq": 15,
+		  "stealth": "disadvantage",
+		  "weight": 60,
+		  "proficiency": "heavy",
+		  "rarity": "common"
+		},
+		{
+		  "name": "plate armor",
+		  "ac": 18,
+		  "maxdex": 0,
+		  "strreq": 15,
+		  "stealth": "disadvantage",
+		  "weight": 65,
+		  "proficiency": "heavy",
+		  "rarity": "common"
+		},
+		{
+			"name": "shield",
+			"ac": 2,
+			"maxdex": -1,
+			"strreq": 0,
+			"stealth": "none",
+			"weight": 6,
+			"proficiency": "shield",
+			"rarity": "common"
+		}
+	]
+}
+

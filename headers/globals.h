@@ -91,9 +91,9 @@ typedef struct s_item t_item;
 #define MAP_DUNGEON "json/maps/dungeon.json"
 #define MAP_CAVES "json/maps/caves.json"
 
-#define WEAPON_FILE "json/items/weapons.json"
-#define POTION_FILE "json/items/potions.json"
-#define REAGENT_FILE "json/items/reagents.json"
+#define WEAPON_FILE "json/items/weapon.json"
+#define POTION_FILE "json/items/potion.json"
+#define REAGENT_FILE "json/items/reagent.json"
 #define ARMOR_FILE "json/items/armor.json"
 
 #define GOBLIN_FILE "json/creatures/goblin.json"
@@ -143,14 +143,15 @@ typedef struct s_item t_item;
 extern t_area *g_area;
 
 extern t_item_group	*g_item_groups;
-extern int			g_item_group_count;
+extern size_t g_item_group_count;
 
 extern t_creature_group	*g_creature_groups;
-extern int				g_creature_group_count;
+extern size_t g_creature_group_count;
 
 extern t_fungus *g_fungi;
-extern int g_fungus_count;
+extern size_t g_fungus_count;
 
 extern e_direction g_dirs[];
 
+extern t_node *g_allocations;
 #endif

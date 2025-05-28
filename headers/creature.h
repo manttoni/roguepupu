@@ -10,6 +10,7 @@
 
 typedef struct s_creature
 {
+	size_t		id;
 	char		ch; // what does it look like?
 	short		color;
 	char		*name;
@@ -22,9 +23,9 @@ typedef struct s_creature
 	int			faction;
 	int			behavior;
 	int			level;
-	char		*size;
 }	t_creature;
 
+int creature_equals(t_creature *a, t_creature *b);
 int get_attack_range(t_creature *creature);
 int enemy_factions(t_creature *creature);
 int is_in_combat(t_creature *creature);
@@ -37,7 +38,7 @@ int use_item(t_creature *user, t_node **inventory, int i);
 void add_item(t_creature *creature, t_item *item);
 int take_damage(t_creature *creature, t_roll damage_roll, char *damage_type);
 void perish(t_creature *creature, char *damage_type);
-t_creature *new_creature(char *type, char *name);
+t_creature *new_creature(char *name);
 t_creature *spawn_creature(char ch, t_area *area);
 
 #endif

@@ -1,8 +1,9 @@
 # Compiler and flags
 CC := gcc
 CFLAGS := -Wall -Wextra -Werror -Wstrict-prototypes \
-		  -fanalyzer -g -fsanitize=undefined -fsanitize=leak \
+		  -g -Iheaders #-fanalyzer -g -fsanitize=undefined -fsanitize=leak \
 		  -Iheaders
+
 LDFLAGS := -lncursesw -lm
 
 # Directories

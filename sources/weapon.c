@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "globals.h"
 #include "equipment.h"
+#include "memory.h"
 
 char *get_damage_type(t_item *weapon)
 {

@@ -1,6 +1,15 @@
 #ifndef ITEM_DATA_H
 #define ITEM_DATA_H
 
+typedef struct s_armor_data
+{
+	char	*proficiency;
+	int		ac;
+	int		maxdex;
+	int		strreq;
+	int		stealth_disadvantage;
+}	t_armor_data;
+
 typedef struct s_reagent_data
 {
 	char	**properties;

@@ -1,6 +1,7 @@
-#include "../headers/terrain.h"
-#include "../headers/utils.h"
-#include "../headers/globals.h"
+#include "terrain.h"
+#include "utils.h"
+#include "globals.h"
+#include "memory.h"
 #include <ncurses.h>
 
 t_terrain *spawn_terrain(char ch, t_area *area)

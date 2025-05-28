@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "time.h"
+#include "memory.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -32,14 +33,18 @@ void logger(const char *format, ...)
 
 char *read_file(char *file)
 {
+	logger("reading file");
 	int fd = open(file, O_RDONLY);
 	if (fd < 0)
 		end_ncurses(errno);
 	size_t len = lseek(fd, 0, SEEK_END);
 	lseek(fd, 0, SEEK_SET);
+	logger("before mymalloc");
 	char *buf = my_calloc(len + 1, sizeof(*buf));
+	logger("my_malloc in read_file success");
 	if (read(fd, buf, len) < 0)
 		end_ncurses(errno);
 	close(fd);
+	logger("file read");
 	return buf;
 }

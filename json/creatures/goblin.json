@@ -4,10 +4,15 @@
 		{
 			"name": "crazy goblin",
 			"level": 1,
-			"size": "small",
 			"color": "COLOR_GOBLIN",
 			"ai": "AI_CRAZY_GOBLIN",
 			"faction": "FACTION_GOBLIN",
+			"inventory":
+			[
+				"club",
+				"leather armor",
+				"potion of healing"
+			],
 			"abilities":
 			{
 				"strength": 14,

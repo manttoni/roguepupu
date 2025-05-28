@@ -74,11 +74,10 @@ int npc_act(void)
 		if (enemy->health <= 0)
 		{
 			short color = cell->creature->color;
-			free_terrain(cell->terrain);
 			cell->terrain = spawn_terrain(CHAR_LOOT, 0);
 			cell->terrain->color = color;
-			cell->terrain->loot = copy_list(cell->creature->inventory);
-			free_creature(cell->creature);
+			cell->terrain->loot = cell->creature->inventory;
+			my_free(cell->creature);
 			cell->creature = NULL;
 		}
 		else if (visibility(cell, player_cell) == VISION_NONE)

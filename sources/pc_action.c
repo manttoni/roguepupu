@@ -80,17 +80,9 @@ static void interact_harvest_fungus(t_cell *interactable)
 {
 	t_fungus *fungus = interactable->fungus;
 	print_log("%C harvests %F", get_player(), fungus);
-	add_item(get_player(), new_item("reagent", fungus->name));
-	free(fungus);
+	add_item(get_player(), new_item(fungus->name));
+	my_free(fungus);
 	interactable->fungus = NULL;
-}
-
-static void interact_pick_up(t_cell *interactable)
-{
-	t_item *item = interactable->item;
-	print_log("%C picks up %I", get_player(), item);
-	add_item(get_player(), item);
-	interactable->item = NULL;
 }
 
 static void interact_open_door(t_cell *interactable)
@@ -143,9 +135,6 @@ int pc_interact(void)
 			break;
 		case ENTITY_FUNGUS:
 			interact_harvest_fungus(interactable);
-			break;
-		case ENTITY_ITEM:
-			interact_pick_up(interactable);
 			break;
 		case ENTITY_TERRAIN:
 			if (ch == CHAR_DOOR)
