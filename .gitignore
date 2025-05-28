@@ -6,4 +6,5 @@ roguepupu
 *.a
 logs/
 build/
+core*
 
