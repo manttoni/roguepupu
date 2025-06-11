@@ -15,6 +15,8 @@ void start()
 	while(1)
 	{
 		print_debug();
+		g_allocations_made = 0;
+		g_allocations_size = 0;
 		update_stat_win();
 		draw_area();
 		if (pc_act() == QUIT_GAME)

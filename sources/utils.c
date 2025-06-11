@@ -142,6 +142,7 @@ t_node *new_node(void *data)
 {
 	t_node *node = my_calloc(1, sizeof(t_node));
 	node->data = data;
+	g_nodes_allocated++;
 	return node;
 }
 
@@ -203,9 +204,9 @@ t_node *copy_list(t_node *list)
 	return copy;
 }
 
-int list_len(t_node *list)
+size_t list_len(t_node *list)
 {
-	int len = 0;
+	size_t len = 0;
 	while (list != NULL)
 	{
 		len++;

@@ -20,7 +20,8 @@ WINDOW *inventory_win = NULL;
 WINDOW *deb_win = NULL;
 
 size_t g_allocations_made = 0;
-
+size_t g_allocations_size = 0;
+size_t g_nodes_allocated = 0;
 t_item_group *g_item_groups = NULL;
 size_t g_item_group_count = 0;
 

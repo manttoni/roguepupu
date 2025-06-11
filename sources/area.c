@@ -56,6 +56,7 @@ t_creature *get_player(void)
  * if creature == NULL, find globally */
 t_node *get_entities(t_creature *creature, int flags)
 {
+	static size_t entities_gotten = 0;
 	t_node *list = NULL;
 	for (size_t i = 0; i < AREA(g_area); ++i)
 	{
@@ -76,6 +77,8 @@ t_node *get_entities(t_creature *creature, int flags)
 
 		add_node_last(&list, new_node(cell));
 	}
+	entities_gotten++;
+	print_log("Entities got: %d", entities_gotten);
 	return list;
 }
 

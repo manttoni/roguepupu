@@ -201,7 +201,7 @@ int get_cell_flags(t_cell *cell)
 int is_illuminated(t_cell *cell)
 {
 	// get all light sources in area
-	t_node *lights = get_entities(NULL, TARGET_LIGHT_SOURCE);
+	t_node *lights = get_entities(NULL, TARGET_VISIBLE | TARGET_LIGHT_SOURCE);
 	t_node *ptr = lights;
 	while (ptr != NULL)
 	{

@@ -31,7 +31,7 @@ void add_node_last(t_node **list, t_node *add);
 void remove_node(t_node **list, t_node *remove);
 void list_clear(t_node **list);
 t_node *copy_list(t_node *list);
-int list_len(t_node *list);
+size_t list_len(t_node *list);
 t_node *get_node(t_node *list, int i);
 t_node *get_node_data(t_node *list, void *data);
 void list_sort(t_node *list, int (*compare)(t_node *a, t_node *b));

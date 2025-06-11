@@ -18,6 +18,7 @@ void *my_calloc(size_t count, size_t size)
 	new_node->next = NULL;
 	add_node_first(&g_allocations, new_node);
 	g_allocations_made++;
+	g_allocations_size += size;
 	return mem;
 }
 
@@ -35,6 +36,8 @@ char *my_strdup(char *str)
 	new_node->data = dup;
 	new_node->next = NULL;
 	add_node_first(&g_allocations, new_node);
+	g_allocations_made++;
+	g_allocations_size += strlen(str);
 	return dup;
 }
 

@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "globals.h"
 #include "memory.h"
+#include "interface.h"
 #include <ncurses.h>
 
 t_terrain *spawn_terrain(char ch, t_area *area)

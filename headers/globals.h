@@ -155,4 +155,6 @@ extern e_direction g_dirs[];
 
 extern t_node *g_allocations;
 extern size_t g_allocations_made;
+extern size_t g_allocations_size;
+extern size_t g_nodes_allocated;
 #endif

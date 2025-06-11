@@ -11,10 +11,44 @@
 
 void print_debug(void)
 {
+	size_t terrain_count = 0;
+	size_t item_count = 0;
+	size_t creature_count = 0;
+	size_t mech_count = 0;
+	size_t fungus_count = 0;
+	size_t cell_count = AREA(g_area);
+	for (size_t i = 0; i < AREA(g_area); ++i)
+	{
+		t_cell *cell = &g_area->cells[i];
+		if (cell->terrain != NULL)
+		{
+			terrain_count++;
+			item_count += list_len(cell->terrain->loot);
+		}
+		if (cell->item != NULL)
+			item_count++;
+		if (cell->creature != NULL)
+		{
+			creature_count++;
+			item_count += list_len(cell->creature->inventory);
+		}
+		if (cell->mech != NULL)
+			mech_count++;
+		if (cell->fungus != NULL)
+			fungus_count++;
+	}
 	werase(deb_win);
 	wprintw(deb_win, "\n");
-	wprintw(deb_win, "  Current allocations: %d\n", list_len(g_allocations));
-	wprintw(deb_win, "  Total allocations: %zu\n", g_allocations_made);
+	wprintw(deb_win, "  Current allocations: %zu\n", list_len(g_allocations));
+	wprintw(deb_win, "  Allocations made: %zu\n", g_allocations_made);
+	wprintw(deb_win, "  Allocations size: %zu\n", g_allocations_size);
+	wprintw(deb_win, "  Nodes allocated:  %zu\n", g_nodes_allocated);
+	wprintw(deb_win, "  Cells:     %zu\n", cell_count);
+	wprintw(deb_win, "  Terrain:   %zu\n", terrain_count);
+	wprintw(deb_win, "  Items:     %zu\n", item_count);
+	wprintw(deb_win, "  Creatures: %zu\n", creature_count);
+	wprintw(deb_win, "  Mechs:     %zu\n", mech_count);
+	wprintw(deb_win, "  Fungi:     %zu\n", fungus_count);
 	refresh_window(deb_win);
 }
 
@@ -217,7 +251,7 @@ int open_inventory(t_node **inventory, int mode)
 {
 	list_sort(*inventory, &compare_item_name);
 	print_log("%C opens %s", get_player(), mode == INVENTORY_LOOT ? "remains" : "inventory");
-	int selected = 0;
+	size_t selected = 0;
 	int input = 0;
 	int action = 0;
 	while (list_len(*inventory) > 0 && input != ESCAPE && input != 'i')
