@@ -43,11 +43,12 @@ short cell_fg(t_cell *cell)
 
 short cell_bg(t_cell *cell)
 {
-	t_node *lights = get_entities(cell, TARGET_LIGHT_SOURCE | TARGET_VISIBLE);
-	t_node *ptr = lights;
 	short bg = cell->color;
 	if (cell_char(cell) == CHAR_WALL)
 		bg = cell->terrain->color;
+	return bg; // for now calculating nightlight fungus lighting is too heavy
+	t_node *lights = get_entities(cell, TARGET_LIGHT_SOURCE | TARGET_VISIBLE);
+	t_node *ptr = lights;
 
 	while (ptr != NULL)
 	{

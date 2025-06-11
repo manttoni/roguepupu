@@ -1,5 +1,5 @@
 character sheet
 armor
-equipped ranged weapon separately
+equipped ranged weapon separately and use r to shoot, a to melee
 
 
