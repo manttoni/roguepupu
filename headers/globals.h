@@ -57,11 +57,12 @@ typedef struct s_item t_item;
 #define VISION_GHOST 1 // was seen before
 #define VISION_FULL 3
 
-/* For scanning and targeting */
+/* For scanning and targeting for get_entities*/
 #define TARGET_INTERACTABLE (1 << 0)
 #define TARGET_LIGHT_SOURCE (1 << 1)
 #define TARGET_VISIBLE (1 << 2)
 #define TARGET_CREATURE (1 << 3)
+#define TARGET_FIRST (1 << 4) // get only one entity to save memory in cases when checking if any targets exist
 
 #define RANGE_MELEE (1 << 10)
 #define RANGE_SHORT (1 << 11)

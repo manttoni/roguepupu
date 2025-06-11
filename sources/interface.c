@@ -380,7 +380,7 @@ void update_stat_win(void)
 {
 	werase(stat_win);
 	wmove(stat_win, 1, 0);
-	t_node *creatures = get_entities(get_player(), TARGET_CREATURE | TARGET_VISIBLE);
+	t_node *creatures = get_entities(get_player_cell(), TARGET_CREATURE | TARGET_VISIBLE);
 	t_node *ptr = creatures;
 
 	while (ptr != NULL)

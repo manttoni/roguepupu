@@ -20,7 +20,7 @@ typedef struct s_area
 t_cell *get_player_cell(void);
 t_creature *get_player(void);
 int	get_player_index(void);
-t_node *get_entities(t_creature *creature, int flags);
+t_node *get_entities(t_cell *cell, int flags);
 int get_creature_index(t_creature *creature);
 t_cell *get_creature_cell(t_creature *creature);
 

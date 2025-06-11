@@ -52,11 +52,10 @@ t_creature *get_player(void)
 	return c->creature;
 }
 
-/* Get creatures visible by creature, filtered by flags
- * if creature == NULL, find globally */
-t_node *get_entities(t_creature *creature, int flags)
+/* Get entities visible from viewer_cell, filtered by flags
+ * if cell == NULL, find globally */
+t_node *get_entities(t_cell *viewer_cell, int flags)
 {
-	static size_t entities_gotten = 0;
 	t_node *list = NULL;
 	for (size_t i = 0; i < AREA(g_area); ++i)
 	{
@@ -66,19 +65,19 @@ t_node *get_entities(t_creature *creature, int flags)
 		if (cell->creature != NULL)
 			cell_flags |= TARGET_CREATURE;
 
-		if (creature != NULL && is_neighbor(cell, get_creature_cell(creature)))
+		if (viewer_cell != NULL && is_neighbor(cell, viewer_cell))
 			cell_flags |= RANGE_MELEE;
 
-		if (creature != NULL && visibility(get_creature_cell(creature), cell) == VISION_FULL)
+		if (viewer_cell != NULL && visibility(viewer_cell, cell) == VISION_FULL)
 			cell_flags |= TARGET_VISIBLE;
 
 		if ((flags & cell_flags) != flags)
 			continue;
 
 		add_node_last(&list, new_node(cell));
+		if ((flags & TARGET_FIRST) == TARGET_FIRST)
+			break;
 	}
-	entities_gotten++;
-	print_log("Entities got: %d", entities_gotten);
 	return list;
 }
 

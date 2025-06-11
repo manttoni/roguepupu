@@ -55,7 +55,7 @@ t_cell *select_cell(t_node *list)
 t_cell *select_target(int flags)
 {
 	// get list
-	t_node *list = get_entities(get_player(), flags);
+	t_node *list = get_entities(get_player_cell(), flags);
 	if (list == NULL)
 	{
 		print_log("Nothing to see here");

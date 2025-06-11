@@ -43,7 +43,7 @@ short cell_fg(t_cell *cell)
 
 short cell_bg(t_cell *cell)
 {
-	t_node *lights = get_entities(NULL, TARGET_LIGHT_SOURCE);
+	t_node *lights = get_entities(cell, TARGET_LIGHT_SOURCE | TARGET_VISIBLE);
 	t_node *ptr = lights;
 	short bg = cell->color;
 	if (cell_char(cell) == CHAR_WALL)
@@ -201,7 +201,7 @@ int get_cell_flags(t_cell *cell)
 int is_illuminated(t_cell *cell)
 {
 	// get all light sources in area
-	t_node *lights = get_entities(NULL, TARGET_VISIBLE | TARGET_LIGHT_SOURCE);
+	t_node *lights = get_entities(NULL, TARGET_VISIBLE | TARGET_LIGHT_SOURCE | TARGET_FIRST);
 	t_node *ptr = lights;
 	while (ptr != NULL)
 	{

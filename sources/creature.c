@@ -44,7 +44,7 @@ int enemy_factions(t_creature *creature)
 
 int is_in_combat(t_creature *creature)
 {
-	t_node *enemies = get_entities(creature, enemy_factions(creature) | TARGET_VISIBLE);
+	t_node *enemies = get_entities(get_creature_cell(creature), enemy_factions(creature) | TARGET_VISIBLE | TARGET_FIRST);
 	int in_combat = enemies != NULL;
 	list_clear(&enemies);
 	return in_combat;
