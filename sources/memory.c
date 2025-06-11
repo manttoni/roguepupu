@@ -17,6 +17,7 @@ void *my_calloc(size_t count, size_t size)
 	new_node->data = mem;
 	new_node->next = NULL;
 	add_node_first(&g_allocations, new_node);
+	g_allocations_made++;
 	return mem;
 }
 

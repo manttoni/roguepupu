@@ -5,6 +5,7 @@
 #include "creature.h"
 #include <ncurses.h>
 
+void print_debug(void);
 int open_inventory(t_node **inventory, int mode);
 void print_selected(t_cell *cell);
 void print_win(WINDOW *win, char *format, va_list args);

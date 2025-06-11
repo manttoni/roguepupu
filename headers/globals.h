@@ -154,4 +154,5 @@ extern size_t g_fungus_count;
 extern e_direction g_dirs[];
 
 extern t_node *g_allocations;
+extern size_t g_allocations_made;
 #endif

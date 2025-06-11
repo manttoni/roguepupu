@@ -14,7 +14,7 @@ void start()
 	print_log("str:%d dex:%d con:%d int:%d wis:%d cha:%d", a.strength, a.dexterity, a.constitution, a.intelligence, a.wisdom, a.charisma);
 	while(1)
 	{
-		print_log("Allocations: %d", list_len(g_allocations));
+		print_debug();
 		update_stat_win();
 		draw_area();
 		if (pc_act() == QUIT_GAME)

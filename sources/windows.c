@@ -85,10 +85,16 @@ static void init_inventory_win(t_winset invset)
 	refresh_window(inventory_win);
 }
 
+static void init_deb_win(t_winset debset)
+{
+	deb_win = my_newwin(debset);
+	refresh_window(deb_win);
+}
+
 void init_windows(void)
 {
 	// winsets values are relative to stdcr size
-	t_winset logset, mapset, legset, statset, invset;
+	t_winset logset, mapset, legset, statset, invset, debset;
 
 	// status window
 	statset.height = 50;
@@ -120,12 +126,19 @@ void init_windows(void)
 	invset.y = 75;
 	invset.x = 75;
 
+	// debug window
+	debset.height = 50;
+	debset.width = 25;
+	debset.x = 0;
+	debset.y = 50;
+
 	init_stat_win(statset);
 	init_log_win(logset);
 	init_map_win(mapset);
 	init_leg_win(legset);
 	init_examine_win();
 	init_inventory_win(invset);
+	init_deb_win(debset);
 }
 
 void delete_windows(void)

@@ -225,13 +225,15 @@ int pc_act(void)
 				select_target(TARGET_VISIBLE | TARGET_INTERACTABLE);
 				continue;
 			case 'a':
-				t_cell *target = select_target(ATTACK_FLAGS(player));
-				if (target != NULL)
 				{
-					act_attack(player, target->creature);
-					break;
+					t_cell *target = select_target(ATTACK_FLAGS(player));
+					if (target != NULL)
+					{
+						act_attack(player, target->creature);
+						break;
+					}
+					continue;
 				}
-				continue;
 			case 'i':
 				if (open_inventory(&get_player()->inventory, INVENTORY_PLAYER) == 1)
 					break;

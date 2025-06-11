@@ -9,6 +9,15 @@
 #include "equipment.h"
 #include <ncurses.h>
 
+void print_debug(void)
+{
+	werase(deb_win);
+	wprintw(deb_win, "\n");
+	wprintw(deb_win, "  Current allocations: %d\n", list_len(g_allocations));
+	wprintw(deb_win, "  Total allocations: %zu\n", g_allocations_made);
+	refresh_window(deb_win);
+}
+
 void print_legend(void)
 {
 	wprintw(leg_win, " Cells:\n");
