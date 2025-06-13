@@ -4,7 +4,14 @@
 #include "weapon.h"
 #include "interface.h"
 
-int is_valid_weaponset(t_item *weapon, t_item *offhand)
+void swap_weapon_set(t_creature *creature)
+{
+	t_weapon_set tmp = creature->equipped.weapon_set;
+	creature->equipped.weapon_set = creature->equipped.other_set;
+	creature->equipped.other_set = tmp;
+}
+
+int is_valid_weapon_set(t_item *weapon, t_item *offhand)
 {
 	if (weapon == NULL || offhand == NULL)
 		return 1;
@@ -42,22 +49,22 @@ int is_dual_wielding(t_creature *creature)
 
 t_item *get_offhand(t_creature *creature)
 {
-	return creature->equipped.offhand;
+	return creature->equipped.weapon_set.offhand;
 }
 
 void set_offhand(t_creature *creature, t_item *weapon)
 {
-	creature->equipped.offhand = weapon;
+	creature->equipped.weapon_set.offhand = weapon;
 }
 
 t_item *get_weapon(t_creature *creature)
 {
-	return creature->equipped.weapon;
+	return creature->equipped.weapon_set.weapon;
 }
 
 void set_weapon(t_creature *creature, t_item *weapon)
 {
-	creature->equipped.weapon = weapon;
+	creature->equipped.weapon_set.weapon = weapon;
 	if (has_property(weapon, "two-handed") || has_property(weapon, "versatile"))
 	{
 		set_offhand(creature, weapon);
@@ -81,11 +88,11 @@ int equip(t_creature *creature, t_item *item)
 		return 0;
 	if (is_weapon(item))
 	{
-		if (get_weapon(creature) == NULL && is_valid_weaponset(item, get_offhand(creature)))
+		if (get_weapon(creature) == NULL && is_valid_weapon_set(item, get_offhand(creature)))
 		{
 			set_weapon(creature, item);
 		}
-		else if (get_offhand(creature) == NULL && is_valid_weaponset(get_weapon(creature), item))
+		else if (get_offhand(creature) == NULL && is_valid_weapon_set(get_weapon(creature), item))
 		{
 			set_offhand(creature, item);
 		}

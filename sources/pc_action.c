@@ -221,6 +221,10 @@ int pc_act(void)
 
 		switch(input)
 		{
+			case 'w':
+				swap_weapon_set(player);
+				print_log("%C swaps weapon set", player);
+				break;
 			case 'e':
 				select_target(TARGET_VISIBLE | TARGET_INTERACTABLE);
 				continue;
