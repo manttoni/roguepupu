@@ -49,13 +49,17 @@ t_roll damage_roll(t_creature *creature, t_item *weapon)
 	return throw(dice, mods, 0);
 }
 
-t_roll attack_roll(t_creature *creature, t_item *weapon)
+int get_AB(t_creature *creature, t_item *weapon)
 {
 	int mods = get_weapon_bonus(weapon);
 	mods += get_ability_mod(creature, weapon); // offhand gets bonus to hit also
+	return mods;
+}
 
+t_roll attack_roll(t_creature *creature, t_item *weapon)
+{
 	char *dice = "1d20";
-
+	int mods = get_AB(creature, weapon);
 	return throw(dice, mods, 0);
 }
 

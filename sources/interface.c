@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "utils.h"
 #include "equipment.h"
+#include "weapon.h"
 #include <ncurses.h>
 
 void print_debug(void)
@@ -50,33 +51,6 @@ void print_debug(void)
 	wprintw(deb_win, "  Mechs:     %zu\n", mech_count);
 	wprintw(deb_win, "  Fungi:     %zu\n", fungus_count);
 	refresh_window(deb_win);
-}
-
-void print_legend(void)
-{
-	wprintw(leg_win, " Cells:\n");
-	wprintw(leg_win, "  . is floor\n");
-	wprintw(leg_win, "  # is wall\n");
-	wprintw(leg_win, "  D is door\n");
-	wprintw(leg_win, "  R is remains\n");
-	wprintw(leg_win, "  W is weapon\n");
-	wprintw(leg_win, "  @ is player\n");
-	wprintw(leg_win, " Controls:\n");
-	wprintw(leg_win, "  Arrows move\n");
-	wprintw(leg_win, "  numpad diagonal move\n");
-	wprintw(leg_win, "  e is examine\n");
-	wprintw(leg_win, "  u is unlock\n");
-	wprintw(leg_win, "  o is open\n");
-	wprintw(leg_win, "  a is attack\n");
-	wprintw(leg_win, "  p is pick up\n");
-	wprintw(leg_win, "  i is inventory\n");
-	wprintw(leg_win, "  w is swap weapon\n");
-	wprintw(leg_win, "  SPACE is pass\n");
-	wprintw(leg_win, " Scanning:\n");
-	wprintw(leg_win, "  any key selects next object\n");
-	wprintw(leg_win, "  enter confirms selected object\n");
-	wprintw(leg_win, "  ESCAPE cancels interaction\n");
-	wprintw(leg_win, " ESCAPE exit\n");
 }
 
 void print_win(WINDOW *win, char *format, va_list args)
@@ -212,11 +186,44 @@ static void print_win_va(WINDOW *win, char *format, ...)
 	va_end(args);
 }
 
+void print_charactersheet(t_creature *creature)
+{
+	werase(inv_win);
+	wmove(cha_win, 1, 0);
+
+	// name, race, etc
+	print_win_va(cha_win, "\t%C\n\n", creature);
+
+	// ablities
+	t_abilities abs = creature->abilities;
+	print_win_va(cha_win,
+			"\tStrength:    \t%d\n"
+			"\tDexterity:   \t%d\n"
+			"\tConstitution:\t%d\n"
+			"\tIntelligence:\t%d\n"
+			"\tWisdom:      \t%d\n"
+			"\tCharisma:    \t%d\n\n",
+			abs.strength, abs.dexterity, abs.constitution,
+			abs.intelligence, abs.wisdom, abs.charisma);
+
+	// equipped items
+	t_item *weapon = get_weapon(creature);
+	t_item *offhand = get_offhand(creature);
+	if (weapon == NULL)
+		print_win_va(cha_win, "\tUnarmed (%d)\n", get_AB(creature, weapon));
+	else
+		print_win_va(cha_win, "\tWeapon (%d): \t%I\n", get_AB(creature, weapon), weapon);
+	if (is_dual_wielding(creature))
+		print_win_va(cha_win, "\tOffhand (%d):\t%I\n\n", get_AB(creature, offhand), offhand);
+
+	// AC, DC etc
+	refresh_window(cha_win);
+}
+
 void print_inventory(t_node *inventory, int selected)
 {
-	WINDOW *win = inventory_win;
-	werase(win);
-	wmove(win, 1, 0);
+	werase(inv_win);
+	wmove(inv_win, 1, 0);
 
 	int i = 0;
 	while (inventory != NULL)
@@ -224,27 +231,27 @@ void print_inventory(t_node *inventory, int selected)
 		t_item *item = (t_item *) inventory->data;
 
 		if (i == selected)
-			wattron(win, A_REVERSE);
-		wprintw(win, " ");
+			wattron(inv_win, A_REVERSE);
+		wprintw(inv_win, " ");
 		if (is_equipped(get_player(), item))
 		{
 			if (get_weapon(get_player()) == get_offhand(get_player()))
-				wprintw(win, " MO | ");
+				wprintw(inv_win, " MO | ");
 			else if (get_weapon(get_player()) == item)
-				wprintw(win, "  M | ");
+				wprintw(inv_win, "  M | ");
 			else if (get_offhand(get_player()) == item)
-				wprintw(win, "  O | ");
+				wprintw(inv_win, "  O | ");
 		}
 		else
-			wprintw(win, "      ");
-		print_win_va(win, "%I\n", item);
+			wprintw(inv_win, "      ");
+		print_win_va(inv_win, "%I\n", item);
 		if (i == selected)
-			wattroff(win, A_REVERSE);
+			wattroff(inv_win, A_REVERSE);
 
 		inventory = inventory->next;
 		i++;
 	}
-	refresh_window(inventory_win);
+	refresh_window(inv_win);
 }
 
 int open_inventory(t_node **inventory, int mode)
@@ -297,35 +304,35 @@ int open_inventory(t_node **inventory, int mode)
 		print_log("%C closes inventory", get_player());
 	else if (mode == INVENTORY_LOOT)
 		print_log("%C closes remains", get_player());
-	werase(inventory_win);
-	refresh_window(inventory_win);
+	werase(inv_win);
+	refresh_window(inv_win);
 	return action;
 }
 
 void print_selected(t_cell *cell)
 {
-	werase(examine_win);
-	wmove(examine_win, 1, 2);
+	werase(exa_win);
+	wmove(exa_win, 1, 2);
 	switch (top_entity(cell))
 	{
 		case ENTITY_CREATURE:
-			print_win_va(examine_win, "%C", cell->creature);
+			print_win_va(exa_win, "%C", cell->creature);
 			break;
 		case ENTITY_ITEM:
-			print_win_va(examine_win, "%I", cell->item);
+			print_win_va(exa_win, "%I", cell->item);
 			break;
 		case ENTITY_TERRAIN:
-			print_win_va(examine_win, "%T", cell->terrain);
+			print_win_va(exa_win, "%T", cell->terrain);
 			break;
 		case ENTITY_MECH:
-			print_win_va(examine_win, "%M", cell->mech);
+			print_win_va(exa_win, "%M", cell->mech);
 			break;
 		case ENTITY_FUNGUS:
-			print_win_va(examine_win, "%F", cell->fungus);
+			print_win_va(exa_win, "%F", cell->fungus);
 		default:
 			break;
 	}
-	wrefresh(examine_win);
+	wrefresh(exa_win);
 }
 
 void print_log(char *format, ...)

@@ -18,6 +18,7 @@ void start()
 		g_allocations_made = 0;
 		g_allocations_size = 0;
 		update_stat_win();
+		print_charactersheet(get_player());
 		draw_area();
 		if (pc_act() == QUIT_GAME)
 			return;

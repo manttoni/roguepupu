@@ -6,9 +6,9 @@
 extern WINDOW *stat_win;
 extern WINDOW *map_win;
 extern WINDOW *log_win;
-extern WINDOW *leg_win;
-extern WINDOW *examine_win;
-extern WINDOW *inventory_win;
+extern WINDOW *exa_win;
+extern WINDOW *inv_win;
+extern WINDOW *cha_win;
 extern WINDOW *deb_win;
 
 typedef struct s_winset

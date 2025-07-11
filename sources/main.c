@@ -14,9 +14,9 @@
 WINDOW *stat_win = NULL;
 WINDOW *map_win = NULL;
 WINDOW *log_win = NULL;
-WINDOW *leg_win = NULL;
-WINDOW *examine_win = NULL;
-WINDOW *inventory_win = NULL;
+WINDOW *exa_win = NULL;
+WINDOW *inv_win = NULL;
+WINDOW *cha_win = NULL;
 WINDOW *deb_win = NULL;
 
 size_t g_allocations_made = 0;
