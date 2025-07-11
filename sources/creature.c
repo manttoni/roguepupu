@@ -122,6 +122,9 @@ void add_item(t_creature *creature, t_item *item)
 	if (is_weapon(item))
 		if (get_weapon(creature) == NULL || get_offhand(creature) == NULL)
 			equip(creature, item);
+	if (is_armor(item))
+		if (get_armor(creature) == NULL)
+			equip(creature, item);
 }
 
 void perish(t_creature *creature, char *damage_type)
@@ -283,6 +286,7 @@ t_creature *spawn_creature(char ch, t_area *area)
 			add_item(creature, new_item("dagger"));
 			add_item(creature, new_item("dagger"));
 			add_item(creature, new_item("potion of healing"));
+			add_item(creature, new_item("leather armor"));
 			creature->color = COLOR_BLUE;
 			creature->faction = FACTION_PLAYER;
 			randomize_abilities(&creature->abilities);

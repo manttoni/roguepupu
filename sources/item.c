@@ -71,7 +71,12 @@ t_item *new_item(char *name)
 
 int is_equipment(t_item *item)
 {
-	return is_weapon(item);
+	return is_weapon(item) || is_armor(item);
+}
+
+int is_armor(t_item *item)
+{
+	return strcmp(item->type, "armor") == 0;
 }
 
 int is_potion(t_item *item)

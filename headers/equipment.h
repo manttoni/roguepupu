@@ -14,11 +14,14 @@ typedef struct s_equipped
 {
 	t_weapon_set	weapon_set;
 	t_weapon_set	other_set;
+	t_item			*armor;
 }	t_equipped;
 
 void swap_weapon_set(t_creature *creature);
 int unequip(t_creature *creature, t_item *item);
 int equip(t_creature *creature, t_item *item);
+t_item *get_armor(t_creature *creature);
+void set_armor(t_creature *creature, t_item *armor);
 t_item *get_weapon(t_creature *creature);
 void set_weapon(t_creature *creature, t_item *weapon);
 t_item *get_offhand(t_creature *creature);

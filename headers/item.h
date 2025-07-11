@@ -25,7 +25,9 @@ typedef struct s_item
 int item_equals(t_item *a, t_item *b);
 t_item *new_item(char *name);
 int is_equipment(t_item *item);
+int is_armor(t_item *item);
 int is_weapon(t_item *item);
 int is_potion(t_item *item);
+int get_ac(t_item *item);
 
 #endif

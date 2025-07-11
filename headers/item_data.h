@@ -7,7 +7,7 @@ typedef struct s_armor_data
 	int		ac;
 	int		maxdex;
 	int		strreq;
-	int		stealth_disadvantage;
+	int		stedis;
 }	t_armor_data;
 
 typedef struct s_reagent_data

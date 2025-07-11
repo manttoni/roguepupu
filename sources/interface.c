@@ -80,7 +80,6 @@ void print_win(WINDOW *win, char *format, va_list args)
 				case 'C':
 				{
 					t_creature *creature = va_arg(args, t_creature*);
-					wprintw(win, "%zu", creature->id);
 					if (creature != NULL)
 					{
 						color = creature->color;
@@ -91,7 +90,6 @@ void print_win(WINDOW *win, char *format, va_list args)
 				case 'I':
 				{
 					t_item *item = va_arg(args, t_item*);
-					wprintw(win, "%zu", item->id);
 					if (item != NULL)
 					{
 						color = item->color;
@@ -206,7 +204,7 @@ void print_charactersheet(t_creature *creature)
 			abs.strength, abs.dexterity, abs.constitution,
 			abs.intelligence, abs.wisdom, abs.charisma);
 
-	// equipped items
+	// equipped weapons
 	t_item *weapon = get_weapon(creature);
 	t_item *offhand = get_offhand(creature);
 	if (weapon == NULL)
@@ -214,9 +212,19 @@ void print_charactersheet(t_creature *creature)
 	else
 		print_win_va(cha_win, "\tWeapon (%d): \t%I\n", get_AB(creature, weapon), weapon);
 	if (is_dual_wielding(creature))
-		print_win_va(cha_win, "\tOffhand (%d):\t%I\n\n", get_AB(creature, offhand), offhand);
+		print_win_va(cha_win, "\tOffhand (%d):\t%I\n", get_AB(creature, offhand), offhand);
+
+	// equipped armor
+	t_item *armor = get_armor(creature);
+	if (armor == NULL)
+		print_win_va(cha_win, "\tUnarmored\n");
+	else
+		print_win_va(cha_win, "\tArmor (%d):  \t%I\n", get_ac(armor), armor);
 
 	// AC, DC etc
+	print_win_va(cha_win, "\tAC: %d\n\n", get_AC(creature));
+
+
 	refresh_window(cha_win);
 }
 
@@ -234,14 +242,7 @@ void print_inventory(t_node *inventory, int selected)
 			wattron(inv_win, A_REVERSE);
 		wprintw(inv_win, " ");
 		if (is_equipped(get_player(), item))
-		{
-			if (get_weapon(get_player()) == get_offhand(get_player()))
-				wprintw(inv_win, " MO | ");
-			else if (get_weapon(get_player()) == item)
-				wprintw(inv_win, "  M | ");
-			else if (get_offhand(get_player()) == item)
-				wprintw(inv_win, "  O | ");
-		}
+			wprintw(inv_win, "  * | ");
 		else
 			wprintw(inv_win, "      ");
 		print_win_va(inv_win, "%I\n", item);
@@ -263,6 +264,7 @@ int open_inventory(t_node **inventory, int mode)
 	int action = 0;
 	while (list_len(*inventory) > 0 && input != ESCAPE && input != 'i')
 	{
+		print_charactersheet(get_player());
 		if (selected >= list_len(*inventory))
 			selected = list_len(*inventory) - 1;
 		print_inventory(*inventory, selected);

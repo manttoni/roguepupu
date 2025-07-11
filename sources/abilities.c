@@ -2,14 +2,16 @@
 
 int get_AC(t_creature *creature)
 {
-	int AC = 10;
+	int AC = max(10, get_ac(get_armor(creature)));;
 	AC += dexmod(creature);
+	AC += get_ac(get_weapon(creature));
+	AC += get_ac(get_offhand(creature));
 	return AC;
 }
 
 static int mod(int val)
 {
-	return (val - 10) / 2;
+	return val / 2 - 5;
 }
 
 int strmod(t_creature *creature)

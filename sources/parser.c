@@ -55,9 +55,9 @@ t_armor_data parse_armor_data(cJSON *armor)
 	data.maxdex = maxdex->valueint;
 	data.strreq = strreq->valueint;
 	if (strcmp("disadvantage", stealth->valuestring) == 0)
-		data.stealth_disadvantage = 1;
+		data.stedis = 1;
 	else
-		data.stealth_disadvantage = 0;
+		data.stedis = 0;
 	return data;
 }
 
